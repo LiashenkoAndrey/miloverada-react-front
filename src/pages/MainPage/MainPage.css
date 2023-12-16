@@ -1,0 +1,19 @@
+
+
+.mainImg {
+    position: relative;
+    background-image: url("../../assets/Screenshot (60).png");
+    /* Set a specific height */
+    min-height: 1000px;
+
+    background-attachment: fixed;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+
+.content {
+    height: 1000px;
+    color: black;
+}

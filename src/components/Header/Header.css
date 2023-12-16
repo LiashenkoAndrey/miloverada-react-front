@@ -1,0 +1,35 @@
+
+
+.navBtnWrapper span {
+    font-size: 22px;
+    font-weight: 300;
+    font-family: 'Open Sans', sans-serif;
+    color: white;
+    padding: 10px 5px;
+    width: fit-content;
+}
+
+
+
+.navbar {
+    height: fit-content;
+    padding-bottom: 40px;
+    width: 100%;
+    background: linear-gradient(0deg,transparent,rgb(35, 34, 53)),linear-gradient(0deg,transparent 20%,rgba(0,0,0,.6));
+    z-index: 100;
+    position: fixed;
+}
+
+.title {
+    letter-spacing: 10px;
+    font-weight: 300;
+    color: #FFF;
+    text-align: center;
+    font-size: 42px;
+}
+.title span {
+    max-width: 900px ;
+    background: -webkit-linear-gradient(white, #cde0f6);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
