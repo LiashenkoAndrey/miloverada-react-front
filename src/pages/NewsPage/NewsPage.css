@@ -1,0 +1,36 @@
+
+
+
+.newsPage {
+    margin-top: 10vh;
+    color: #343434;
+    font-family: 'Source Serif 4', serif;
+}
+
+
+.newsData {
+    margin: 0;
+    text-transform: uppercase;
+    font-size: 20px;
+    font-weight: 600;
+    color: #820000;
+}
+
+.newsTitle {
+    margin: 10px 0 0 0;
+    font-size: 36px;
+    font-weight: 700;
+}
+
+.newsText {
+    margin: 1em 0;
+    font-size: 17px;
+    line-height: 1.52941176em;
+}
+
+.whatReadNext {
+    margin-top: 60px;
+    font-size: 42px;
+    text-align: center;
+    color: #820000;
+}

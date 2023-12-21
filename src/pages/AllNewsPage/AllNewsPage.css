@@ -1,0 +1,42 @@
+
+
+.allnewsWrapper {
+    padding-top: 20vh;
+    background: linear-gradient(to bottom, #585754, #F2F1EB);
+}
+
+.AllNewsList {
+    max-width:735px;
+    gap: 20px!important;
+    margin: 0;
+}
+
+.AllNewsList .newsCard {
+    box-shadow: none;
+    font-family: 'Source Serif 4', serif;
+    background-color: #FFF;
+    max-height: 480px;
+    max-width: 277px;
+}
+
+.AllNewsList .newsCard:hover {
+    box-shadow: none;
+}
+
+.AllNewsList .newsCard .newsCardDescription {
+    font-size:18px;
+    font-weight: 400;
+}
+
+.AllNewsList .newsCard .newsCardDescription:hover {
+    text-decoration: underline;
+}
+
+.AllNewsList .newsCard .newsCardContent {
+    padding: 20px;
+}
+
+
+/*.NewsWrapper div:first-of-type  {*/
+/*    max-height: 700px;*/
+/*}*/
