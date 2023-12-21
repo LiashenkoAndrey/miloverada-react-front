@@ -1,0 +1,99 @@
+
+
+
+.message {
+    width: fit-content;
+    padding: 0 10px 10px 10px;
+    color: #FFF;
+    border-radius: 2px;
+    margin: 5px 0;
+    background-color: #46304A;
+    font-family: 'Libre Baskerville', serif;
+}
+
+.messageImg {
+    min-width: 35px;
+    border-radius: 5px;
+}
+
+.messagesWrapper {
+    scrollbar-width: thin;          /* "auto" or "thin" */
+    scrollbar-color: rgba(108, 108, 108, 0.62) rgba(255, 165, 0, 0);   /* scroll thumb and track */
+    padding: 8px;
+    align-self: flex-start;
+    overflow-y: auto;
+    width: 100%;
+
+}
+::-webkit-scrollbar {
+    width: 10px;
+}
+
+.messagesWrapper::-webkit-scrollbar-thumb {
+    background-color: blue;    /* color of the scroll thumb */
+    border-radius: 20px;       /* roundness of the scroll thumb */
+    border: 3px solid orange;  /* creates padding around scroll thumb */
+}
+
+.messagesWrapper::-webkit-scrollbar-track {
+    background: orange;        /* color of the tracking area */
+}
+
+.messagesWrapper::-webkit-scrollbar {
+    width: 12px;               /* width of the entire scrollbar */
+}
+
+.user {
+
+}
+
+.senderName {
+    font-size: 15px;
+    font-weight: 300;
+}
+
+.messageText {
+    color: #FFF;
+    font-weight: 400;
+    margin-top: 3px;
+    font-family: 'Source Serif 4', serif;
+}
+
+.messageDate {
+    position: relative;
+    top: -2px;
+    color: rgba(189, 189, 189, 0.94);
+    font-size: 12px;
+    font-weight: 400;
+    font-family: serif;
+}
+
+
+.chatBarItem {
+    cursor: pointer;
+    background-color: #DADAE7;
+    padding: 5px 10px;
+    border-radius: 3px;
+    max-width: 300px;
+}
+
+.chatBarItem:hover {
+    background-color: #CDCDDF;
+}
+
+.chatBarItem:active {
+    background-color: #C1C1D7;
+}
+
+
+.chat {
+    width: 50vw;
+    height: 700px;
+    background-color: #CDCDDF;
+    /*background-image: url("https://wallpapercave.com/wp/wp9875549.jpg");*/
+    /*background-image: url("https://i.pinimg.com/736x/67/37/ec/6737ecdb57c1381079cede4a35b1a5d4.jpg");*/
+    /*background-image: url("https://wallpapers.com/images/hd/whatsapp-chat-background-fb34cc4b2hg9lmix.jpg");*/
+    /*background-position: center;*/
+    /*background-repeat: no-repeat;*/
+    /*background-size: cover;*/
+}

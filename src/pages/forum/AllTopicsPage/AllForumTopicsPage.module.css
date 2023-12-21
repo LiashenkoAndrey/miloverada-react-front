@@ -1,0 +1,24 @@
+
+
+.chat:hover {
+    border-radius: 25px;
+    background-color: #CDCDDF;
+}
+
+.chat:active {
+    background-color: #C1C1D7;
+}
+
+.chat {
+    user-select: none;
+    transition: background-color 100ms;
+    cursor: pointer;
+    padding: 5px 10px;
+    border: solid #a1a1a1 1px;
+    border-radius: 8px;
+    background-color: #DADAE7;
+}
+
+.topic {
+
+}
