@@ -11,7 +11,7 @@ const ForumWrapper : FC<Wrapper> = ({style, children, gap}) => {
     return (
         <Flex align={"flex-start"} justify={"center"}
               style={{paddingTop: "15vh", minHeight: "100vh", backgroundColor: "#1F2232"}}>
-            <Flex style={style} gap={gap || 20} justify={"center"}>
+            <Flex wrap={"wrap"} style={style} gap={gap || 20} justify={"center"}>
                 {children}
             </Flex>
         </Flex>

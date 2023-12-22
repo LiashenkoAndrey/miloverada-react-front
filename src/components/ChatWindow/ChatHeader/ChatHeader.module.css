@@ -1,0 +1,68 @@
+
+
+.chatHeader {
+    padding: 3px 10px;
+    background-color: rgb(167, 172, 200);
+    width: 50vw;
+}
+
+.chatName {
+    font-size: 25px;
+    font-weight: 900;
+    color: #282A3E;
+}
+
+.chatDescription {
+    font-size: 20px;
+    font-weight: 900;
+    color: #282A3E;
+}
+
+.chatPicture {
+    border-radius: 20px;
+    padding: 5px;
+}
+
+
+.typing {
+    align-items: center;
+    display: flex;
+    height: 17px;
+}
+.typing .dot {
+    animation: mercuryTypingAnimation 1.8s infinite ease-in-out;
+    background-color: #202032;
+    border-radius: 50%;
+    height: 5px;
+    margin-right: 4px;
+    vertical-align: middle;
+    width: 5px;
+    display: inline-block;
+}
+.typing .dot:nth-child(1) {
+    animation-delay: 200ms;
+}
+.typing .dot:nth-child(2) {
+    animation-delay: 300ms;
+}
+.typing .dot:nth-child(3) {
+    animation-delay: 400ms;
+}
+.typing .dot:last-child {
+    margin-right: 0;
+}
+
+@keyframes mercuryTypingAnimation {
+    0% {
+        transform: translateY(0px);
+        background-color: #202032;
+    }
+    28% {
+        transform: translateY(-7px);
+        background-color: #50507c;
+    }
+    44% {
+        transform: translateY(0px);
+        background-color: #8F8FB7;
+    }
+}

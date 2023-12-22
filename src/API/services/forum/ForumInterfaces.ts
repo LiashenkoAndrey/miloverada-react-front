@@ -11,11 +11,12 @@ export interface Message {
 }
 
 export interface Chat {
-    id? : number,
-    name? : string,
-    description? : string,
-    picture? : string,
-    owner : User
+    id : number,
+    name : string,
+    description : string,
+    picture : string,
+    owner : User,
+    totalMessagesAmount : number
 }
 
 export interface User {

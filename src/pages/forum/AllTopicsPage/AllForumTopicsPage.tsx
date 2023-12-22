@@ -38,6 +38,14 @@ const AllForumTopicsPage = () => {
         getMessages()
     }, []);
 
+    const onSelectChat = (chatId : number, topicId : number | undefined) => {
+        const params = createSearchParams({topicId: String(topicId)}).toString()
+        nav({
+                pathname: "/chat/" + chatId,
+                search : params
+        })
+    }
+
     return (
         <Flex align={"flex-start"} justify={"center"}
               style={{paddingTop: "20vh", minHeight: "100vh", backgroundColor: "#1F2232"}}>
@@ -63,8 +71,12 @@ const AllForumTopicsPage = () => {
                                 {topic.chats
                                     ?
                                     topic.chats.map((chat) =>
-                                        <Flex onClick={() => nav({pathname: "/chat/" + chat.id, search : createSearchParams({topicId: String(topic.id)}).toString()})} className={classes.chat} gap={20} justify={"space-between"}
-                                              align={"center"}>
+                                        <Flex onClick={() => onSelectChat(chat.id, topic.id)}
+                                              className={classes.chat}
+                                              gap={20}
+                                              justify={"space-between"}
+                                              align={"center"}
+                                        >
                                             <Flex gap={15} align={"center"}>
                                                 <WechatOutlined style={{fontSize: 30}}/>
                                                 <h4>{chat.name}</h4>

@@ -2,11 +2,12 @@ import React, {useEffect, useState} from 'react';
 import {Breadcrumb, Button, Flex, Image, Skeleton} from "antd";
 import {getAllChatsByThemeId, getAllMessagesByChatId, getChatById} from "../../../API/services/forum/ChatService";
 import {LeftOutlined, WechatOutlined} from "@ant-design/icons";
-import {Chat, Message} from "../../../API/services/forum/ForumInterfaces";
+import {Chat, Message, User} from "../../../API/services/forum/ForumInterfaces";
 import './ChatPage.css'
 import {useNavigate, useParams, useSearchParams} from "react-router-dom";
 import ForumWrapper from "../../../components/ForumWrapper/ForumWrapper";
-import ChatWindow from "../../../components/Chat/Chat";
+import ChatWindow from "../../../components/ChatWindow/ChatWindow";
+import {StompSessionProvider} from "react-stomp-hooks";
 
 const ChatPage = () => {
 
@@ -17,6 +18,7 @@ const ChatPage = () => {
     const nav = useNavigate()
     const [currentChatId, setCurrentChatId] = useState<number>(Number(id))
     const [chat, setChat] = useState<Chat>();
+    const [typingUsers, setTypingUsers] = useState<Array<User>>([]);
 
     useEffect(() => {
         const getChats = async () => {
@@ -52,9 +54,12 @@ const ChatPage = () => {
     }
 
 
+
+
     const onChatChanged = async (chatId : number) => {
         if (chatId !== currentChatId) {
             setCurrentChatId(chatId)
+            setTypingUsers([])
             getMessages(chatId)
             changeChat(chatId)
         }
@@ -64,19 +69,34 @@ const ChatPage = () => {
         <ForumWrapper style={{maxWidth: "90vw", width: "100%"}}>
             <Flex gap={5} vertical style={{marginTop: "5vh"}}>
                 <Flex vertical={false} align={"center"} gap={30}>
-                    <Button onClick={() => nav(-1)} style={{maxWidth: 150, color: "white"}} icon={<LeftOutlined/>}
-                            type={"text"}>Назад</Button>
+
+                    <Button onClick={() => nav(-1)}
+                            style={{maxWidth: 150, color: "white"}}
+                            icon={<LeftOutlined/>}
+                            type={"text"}>
+                        Назад
+                    </Button>
+
                     <Breadcrumb style={{color: "white"}}>
-                        <Breadcrumb.Item><Button onClick={() => nav("/")} type={"text"} size={"small"}
-                                                 style={{color: "white"}}>Головна</Button> </Breadcrumb.Item>
+                        <Breadcrumb.Item>
+                            <Button onClick={() => nav("/")}
+                                    type={"text"}
+                                    size={"small"}
+                                    style={{color: "white"}}>
+                                Головна
+                            </Button>
+                        </Breadcrumb.Item>
                     </Breadcrumb>
                 </Flex>
+
                 {chats
                     ?
                     chats.map((chat) =>
-                        <Flex className={"chatBarItem"} key={"chat-" + chat.id} align={"center"} gap={20}
+                        <Flex className={"chatBarItem"}
+                              key={"chat-" + chat.id}
+                              align={"center"} gap={20}
                               onClick={() => onChatChanged(Number(chat.id))}
-                              >
+                        >
                             <WechatOutlined style={{fontSize: 30}}/>
                             <Flex vertical>
                                 <p>{chat.name}</p>
@@ -89,21 +109,20 @@ const ChatPage = () => {
                 }
             </Flex>
 
-            <Flex  vertical={true}>
-                {chat
-                    ?
-                    <Flex style={{backgroundColor: "rgb(167, 172, 200)", width: "50vw"}} justify={"space-between"} gap={5}>
-                        <Flex style={{padding: "5px 10px"}} gap={20} align={"center"}>
-                            <span style={{fontSize: 25, fontWeight: 900, color: "#282A3E"}}>{chat.name}</span>
-                            <span style={{fontSize: 20, fontWeight: 900, color: "#282A3E"}}>{chat.description}</span>
-                        </Flex>
-                        <Image preview={false} className={"nonSelect"} width={50} height={50} style={{borderRadius: 20, padding: 5}} src={chat.picture}/>
-                    </Flex>
-                    :
-                    <Skeleton style={{height: 50}} active/>
-                }
-                <ChatWindow chatId={Number(id)} setMessages={setMessages} messages={messages}/>
-            </Flex>
+
+            <StompSessionProvider
+                url={'http://localhost:8080/ws-endpoint'}
+            >
+                <ChatWindow typingUsers={typingUsers}
+                            setTypingUsers={setTypingUsers}
+                            chat={chat}
+                            setChat={setChat}
+                            chatId={currentChatId}
+                            setMessages={setMessages}
+                            messages={messages}
+                />
+            </StompSessionProvider>
+
         </ForumWrapper>
     );
 };
