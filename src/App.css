@@ -3,6 +3,23 @@
 
 }
 
+:root {
+    --forum-primary-bg-color : #C4BBAF;
+    --forum-primary-title-color : #282A3E;
+    --forum-secondary-title-color : #282A3E ;
+    --forum-secondary-bg-color : #A5978B;
+
+    --chat-header-bg-color :#A5978B;
+    --chat-bg-color : #5C4742;
+
+    --message-bg-color : #8D5B4C;
+
+    --chat-float-button-bg-color : var(--message-bg-color);
+    --chat-float-button-arrow-color : var(--chat-bg-color);
+    --chat-float-button-border-color : var(--forum-primary-bg-color);
+
+    --chat-item-bg-color: var(--chat-header-bg-color);
+}
 
 .nonSelect {
     -webkit-user-select: none;

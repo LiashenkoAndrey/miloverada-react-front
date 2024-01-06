@@ -1,103 +1,152 @@
-import React, {FC, useEffect, useState} from 'react';
-import {Flex} from "antd";
-import {Chat, Message, User} from "../../API/services/forum/ForumInterfaces";
+import React, {FC, useCallback, useEffect, useRef, useState} from 'react';
+import {Badge, Button, Flex} from "antd";
+import {Chat, LastReadMessageDto, Message, User} from "../../API/services/forum/ForumInterfaces";
 import {useStompClient, useSubscription} from "react-stomp-hooks";
-import {MessageDto} from "../../API/services/forum/MessageDto";
 import MessageList from "./MessageList/MessageList";
 import ChatInput from "./ChatInput/ChatInput";
 import ChatHeader from "./ChatHeader/ChatHeader";
+import {IMessage} from "@stomp/stompjs/src/i-message";
+import {useAuth0} from "@auth0/auth0-react";
+import {DownOutlined} from "@ant-design/icons";
 
 interface ChatProps {
     chat? : Chat
     messages : Array<Message>,
-    setMessages : Function,
+    setMessages :  React.Dispatch<React.SetStateAction<Message[]>>,
     chatId : number,
     typingUsers : Array<User>,
     setTypingUsers : React.Dispatch<React.SetStateAction<User[]>>,
-    setChat : React.Dispatch<React.SetStateAction<Chat | undefined>>
+    lastReadMessageId? : number
+    setLastReadMessageId :  React.Dispatch<React.SetStateAction<number | undefined>>
+    unreadMessagesCount? : number
+    setUnreadMessagesCount : React.Dispatch<React.SetStateAction<number | undefined>>
+    nextMessagePageBottom : () => void
+
 }
 
-const ChatWindow: FC<ChatProps> = ({messages, setMessages, chatId, chat, typingUsers, setTypingUsers, setChat}) => {
+const ChatWindow: FC<ChatProps> = ({
+                                       messages,
+                                       setMessages,
+                                       chatId,
+                                       chat,
+                                       typingUsers,
+                                       setTypingUsers,
+                                       lastReadMessageId,
+                                       setLastReadMessageId,
+                                       unreadMessagesCount,
+                                       setUnreadMessagesCount,
+    nextMessagePageBottom
+                                   }) => {
 
+
+    const stompClient = useStompClient()
+    const {user} = useAuth0()
+    const lastMessageObserver = useRef<IntersectionObserver>()
+    const [isScrollDownButtonActive, setIsScrollDownButtonActive] = useState<boolean>(false)
     const [input, setInput] = useState<string>('');
-    const destination = `/chat/` + chatId;
 
+    useEffect(() => {
+        if (messages.length > 0) {
+            const lastMessage = document.getElementById("msgId-" + messages[messages.length-1].id)
 
-    useSubscription(destination, (message) => {
-        const data = JSON.parse( message.body)
-        console.log("new message", JSON.parse( message.body))
+            const callBack: IntersectionObserverCallback = (entries, observer) => {
+                if (entries[0].isIntersecting) {
+                    console.log("isIntersecting, load...")
+                    nextMessagePageBottom()
+                    setIsScrollDownButtonActive(false)
+                } else {
+                    setIsScrollDownButtonActive(true)
+                }
+            }
+            if (lastMessage) {
+                const observer = new IntersectionObserver(callBack)
+                observer.observe(lastMessage)
+
+                if (lastMessageObserver.current) {
+                    lastMessageObserver.current?.disconnect()
+                }
+                lastMessageObserver.current = observer
+            }
+        }
+    }, [messages]);
+
+    const onChatMessagesSubscribe = (message: IMessage) => {
+        const data = JSON.parse(message.body)
+        // console.log("new message", data)
         setInput('')
         let msg = messages === undefined ? [] : messages;
         if (chat !== undefined) {
-            console.log("increment")
             chat.totalMessagesAmount  = chat?.totalMessagesAmount + 1;
         }
         setMessages([...msg, data])
-    });
-    const stompClient = useStompClient();
+    }
 
+    const saveLastReadMessageId = (messageId : number) => {
+        if (user?.sub && stompClient) {
+            // console.log("save", messageId, lastReadMessageId)
+            setLastReadMessageId(messageId)
+            const dto : LastReadMessageDto = {
+                chatId: chatId,
+                userId : user.sub,
+                messageId : messageId
+            }
 
-    const onSend = async () => {
-        if (input !== '' && input.length < 3000) {
-            if(stompClient) {
-
-                console.log("send message: chatId:" + chatId)
-                const messageDto : MessageDto  = {
-                    senderId : 1,
-                    text: input,
-                    chatId: chatId
-                }
-
-                const body = JSON.stringify(messageDto)
-
-                stompClient.publish({
-                    destination: '/app/userMessage/new', body: body,
-                    headers: {
+            // console.log("update or save last read message", dto)
+            stompClient.publish({
+                destination: '/app/userMessage/lastReadId/update', body: JSON.stringify(dto),
+                headers: {
                     'content-type': 'application/json'
-                    }}
-                )
-            }
+                }}
+            )
+        } else {
+            console.log(user?.sub, stompClient)
+            throw new Error("saveLastReadMessageId error")
         }
     }
 
-    const [isTyping, setIsTyping] = useState<boolean>();
+    useSubscription(`/chat/` + chatId, onChatMessagesSubscribe)
 
-    useEffect(() => {
-        if (input !== '') {
-            const delayDebounceFn = setTimeout(() => {
-                console.log(input, "stop typing.")
-
-                setIsTyping(false)
-            }, 3000)
-            return () => clearTimeout(delayDebounceFn)
+    const filterTypingUsers = (userId : string | undefined) => {
+        if (userId) {
+            const filtered = typingUsers.filter((user) => user.id !== userId)
+            setTypingUsers(filtered)
         }
-    }, [input]);
-
-    useEffect(() => {
-        if (isTyping !== undefined) {
-            if (isTyping) {
-                const arr =[...typingUsers, {name :"Andrew Liashenko", id: 1}]
-                setTypingUsers(arr)
-                console.log("isTyping", isTyping, arr)
-            } else {
-                const filtered = typingUsers.filter((user) => user.id !== 1)
-                setTypingUsers(filtered)
-            }
-        }
-    }, [isTyping]);
-
-    const handleEvent = (e: any) => {
-        if (!isTyping) setIsTyping(true)
-        setInput(e.target.value)
     }
+
+    const toBottom = useCallback(() => {
+        const lastMessage = document.getElementById("msgId-" + messages[messages.length-1].id)
+        lastMessage?.scrollIntoView({behavior: "smooth", block: 'end'});
+    }, [messages]);
 
     return (
         <Flex vertical={true}>
-            <ChatHeader typingUsers={typingUsers} chat={chat}/>
-
+            {/*<Button onClick={() => nextMessagePageBottom()}>Next</Button>*/}
+            <ChatHeader typingUsers={typingUsers}
+                        chatId={chatId}
+                        setTypingUsers={setTypingUsers}
+                        chat={chat}
+                        filterTypingUsers={filterTypingUsers}
+            />
             <Flex vertical={true} className={"chat"} justify={"space-between"}>
-                <MessageList messages={messages}/>
-                <ChatInput input={input} handleEvent={handleEvent} onSend={onSend}/>
+
+                    <MessageList setUnreadMessagesCount={setUnreadMessagesCount}
+                                 unreadMessagesCount={unreadMessagesCount}
+                                 chat={chat}
+                                 messages={messages}
+                                 saveLastReadMessageId={saveLastReadMessageId}
+                                 lastReadMessageId={lastReadMessageId}
+                    />
+                    <Flex style={{display: isScrollDownButtonActive ? "flex" : "none"}} onClick={toBottom} className={"unreadMessagesFloatButtonWrapper"}>
+                        <Badge count={unreadMessagesCount} color={"#8f4c58"}>
+                            <DownOutlined className={"unreadMessagesFloatButton"} />
+                        </Badge>
+                    </Flex>
+                <ChatInput chatId={chatId}
+                           input={input}
+                           setInput={setInput}
+                           stompClient={stompClient}
+                           filterTypingUsers={filterTypingUsers}
+                />
             </Flex>
         </Flex>
     );

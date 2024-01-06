@@ -1,36 +1,123 @@
-import React, {FC} from 'react';
-import {Empty, Flex, Image} from "antd";
-import {toTime} from "../../../API/Util";
-import {Message} from "../../../API/services/forum/ForumInterfaces";
+import React, {FC, useCallback, useEffect, useRef, useState} from 'react';
+import {Empty, Flex} from "antd";
+import {Chat, Message} from "../../../API/services/forum/ForumInterfaces";
+import MessageListItem from "../../../pages/forum/Message/MessageListItem";
+import {useAuth0} from "@auth0/auth0-react";
 
 interface MessageListProps {
-    messages : Array<Message>
+    messages: Array<Message>
+    chat?: Chat,
+    unreadMessagesCount? : number
+    setUnreadMessagesCount : React.Dispatch<React.SetStateAction<number | undefined>>
+    saveLastReadMessageId(messageId: number): void
+    lastReadMessageId? : number
 }
 
-const MessageList: FC<MessageListProps> = ({messages}) => {
+const MessageList: FC<MessageListProps> = ({
+                                               messages,
+                                               setUnreadMessagesCount,
+                                               unreadMessagesCount,
+                                               saveLastReadMessageId,
+    lastReadMessageId
+                                           }) => {
+
+    const readMessagesObserver = useRef<IntersectionObserver>()
+    const {isAuthenticated, user} = useAuth0()
+
+    const [newSeenMessageId, setNewSeenMessageId] = useState<number>()
+    const [oldSeenMsgID, setOldSeenMsgID] = useState<number>()
+
+    useEffect(() => {
+        if (newSeenMessageId === undefined) {
+            setNewSeenMessageId(oldSeenMsgID)
+        } else {
+            if (oldSeenMsgID !== undefined) {
+                if (newSeenMessageId < oldSeenMsgID) {
+                    setNewSeenMessageId(oldSeenMsgID)
+                }
+            }
+        }
+    }, [oldSeenMsgID]);
+
+    const callBack: IntersectionObserverCallback = (entries, observer) => {
+        const element = entries[0]
+        if (element.isIntersecting) {
+            const elemId = element.target.getAttribute("id");
+            if (elemId) {
+                const messageId = Number(elemId.split("-")[1])
+                // console.log("seen message", element)
+                setOldSeenMsgID(messageId)
+
+            } else throw new Error("")
+        } else {
+            observer.unobserve(element.target)
+        }
+    }
+
+    useEffect(() => {
+        if (isAuthenticated) {
+            readMessagesObserver.current = new IntersectionObserver(callBack)
+        }
+    }, []);
+
+    const decrementCount = useCallback(() => {
+        if (unreadMessagesCount) {
+            console.log("decrement count")
+            setUnreadMessagesCount(unreadMessagesCount - 1)
+        } else console.log("ERROR CANT DECREMENT")
+    }, [setUnreadMessagesCount, unreadMessagesCount]);
+    
+    useEffect(() => {
+        if (isAuthenticated) {
+
+            if (newSeenMessageId) {
+                if (lastReadMessageId) {
+                    if (newSeenMessageId > lastReadMessageId) {
+                        decrementCount()
+                        const delayFunc = setTimeout(() => {
+                            // console.log("last seen message is", newSeenMessageId)
+                            saveLastReadMessageId(newSeenMessageId)
+
+                        }, 1500)
+                        return () => clearTimeout(delayFunc)
+                    } else {
+                        // console.log("one of contition is false: ", user?.sub, "stompClient", (newSeenMessageId > lastReadMessageId))
+                    }
+                } else {
+                    decrementCount()
+                    const delayFunc = setTimeout(() => {
+                        // console.log("last seen message is", newSeenMessageId)
+                        saveLastReadMessageId(newSeenMessageId)
+
+                    }, 1500)
+                    return () => clearTimeout(delayFunc)
+                }
+            } else {
+                // console.log("newSeenMessageId is passed to save, but it is undefined!")
+            }
+        }
+    }, [newSeenMessageId]);
+
+
+
+    // useEffect(() => {
+    //     setTimeout(() => {
+    //         scrollToBottom()
+    //     }, 500)
+    // }, []);
+
     return (
-        <Flex className={"messagesWrapper"} vertical={true}>
+        <Flex id={"msgWrapper"} className={"messagesWrapper"} vertical={true}>
             {messages.length > 0
                 ?
                 messages.map((msg) =>
-                    <Flex className={"message"} key={"msg-"+msg.id} gap={8} >
-                        <div style={{marginTop: 4}}>
-                            <Image className={"messageImg nonSelect"} width={35} height={35} src={msg.sender.avatar}/>
-                        </div>
-                        <Flex vertical={true}>
-                            <Flex style={{position: "relative"}} className={"nonSelect"} gap={5} align={"center"} justify={"space-between"}>
-                                <span className={"senderName"}>{msg.sender.name}</span>
-                                <span className={"messageDate"} style={{margin: 0, alignSelf: "flex-end"}} >{toTime(msg.createdOn)}</span>
-                            </Flex>
-                            <div style={{marginTop: 3}}>
-                                <span className={"messageText"} style={{margin: 0, alignSelf: "flex-end"}} >{msg.text}</span>
-                            </div>
-                        </Flex>
-                    </Flex>
+                    <MessageListItem observer={readMessagesObserver.current} key={"msg-" + msg.id}  message={msg}/>
                 )
                 :
                 <Empty style={{marginTop: "5vh"}} description={"Поки немає обрговорень. Почніть першим)!"}/>
             }
+
+            <div style={{float: "left", clear: "both"}} id={"chatBottom"}></div>
         </Flex>
     );
 };

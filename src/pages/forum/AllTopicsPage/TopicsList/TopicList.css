@@ -1,0 +1,14 @@
+
+
+.topicName {
+    color: var(--forum-secondary-title-color);
+    font-size: 18px;
+    font-weight: 900;
+}
+.topicName:hover {
+
+    text-decoration: underline;
+    cursor: pointer;
+    user-select: none;
+    text-decoration-thickness: 2px;
+}

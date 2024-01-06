@@ -14,11 +14,13 @@
     transition: background-color 100ms;
     cursor: pointer;
     padding: 5px 10px;
-    border: solid #a1a1a1 1px;
-    border-radius: 8px;
-    background-color: #DADAE7;
+    background-color: var(--forum-secondary-bg-color);
+    border: solid rgba(92, 71, 66, 0.15) 3px ;
 }
 
 .topic {
-
+    padding: 5px;
+    border-top-right-radius: 8px;
+    border-top-left-radius: 8px;
+    background-color: var(--forum-secondary-bg-color);
 }

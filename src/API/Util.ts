@@ -1,7 +1,7 @@
 
 
 export function toTime(date : Array<string>) {
-    return `${formatVal(date[3])}:${formatVal(date[4])}`
+    return new Date(date.toString()).toTimeString().substring(0, 5)
 }
 
 

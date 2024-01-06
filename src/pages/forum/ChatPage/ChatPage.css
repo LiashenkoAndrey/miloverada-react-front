@@ -6,8 +6,9 @@
     padding: 0 10px 10px 10px;
     color: #FFF;
     border-radius: 2px;
-    margin: 5px 0;
-    background-color: #46304A;
+    margin: 5px 3em 5px 0;
+    /*background-color: #46304A;*/
+    background-color: var(--message-bg-color);
     font-family: 'Libre Baskerville', serif;
 }
 
@@ -16,31 +17,34 @@
     border-radius: 5px;
 }
 
+.loadNewMessagesHandler {
+    height: 4px;
+    background-color: red;
+    position: relative;
+    top: 0px;
+}
+
 .messagesWrapper {
     scrollbar-width: thin;          /* "auto" or "thin" */
     scrollbar-color: rgba(108, 108, 108, 0.62) rgba(255, 165, 0, 0);   /* scroll thumb and track */
     padding: 8px;
     align-self: flex-start;
-    overflow-y: auto;
+    overflow-y: scroll;
     width: 100%;
 
 }
-::-webkit-scrollbar {
-    width: 10px;
-}
+
 
 .messagesWrapper::-webkit-scrollbar-thumb {
-    background-color: blue;    /* color of the scroll thumb */
-    border-radius: 20px;       /* roundness of the scroll thumb */
-    border: 3px solid orange;  /* creates padding around scroll thumb */
+    background-color: rgba(108, 108, 108, 0.62);    /* color of the scroll thumb */
 }
 
 .messagesWrapper::-webkit-scrollbar-track {
-    background: orange;        /* color of the tracking area */
+    background: rgba(255, 165, 0, 0);        /* color of the tracking area */
 }
 
 .messagesWrapper::-webkit-scrollbar {
-    width: 12px;               /* width of the entire scrollbar */
+    width: 8px;               /* width of the entire scrollbar */
 }
 
 .user {
@@ -71,25 +75,73 @@
 
 .chatBarItem {
     cursor: pointer;
-    background-color: #DADAE7;
+    background-color: rgba(165, 151, 139, 0.78);
+    border: solid rgba(92, 71, 66, 0.15) 3px ;
     padding: 5px 10px;
     border-radius: 3px;
     max-width: 300px;
+    transition: background-color 130ms;
 }
 
 .chatBarItem:hover {
-    background-color: #CDCDDF;
+    background-color: rgb(145, 128, 116);
 }
 
 .chatBarItem:active {
     background-color: #C1C1D7;
 }
 
+.unreadMessagesFloatButtonWrapper {
+    position: absolute;
+    bottom: 55px;
+    right: 10px;
+    transition: all 2s linear;
+}
+
+
+
+.stickyBadge {
+    top: 15px;
+    position: -webkit-sticky;
+    position: sticky;
+}
+
+.unreadMessagesFloatButton {
+    color: var(--chat-float-button-border-color);
+    border: solid 3px var(--chat-float-button-border-color);
+    background-color: var(--chat-float-button-bg-color);
+    border-radius: 30px;
+    padding: 10px;
+    cursor: pointer;
+}
+
+.unreadMessagesFloatButton:not(:active) {
+    /*animation: example 1s ease-in;*/
+    transition: background-color 1000ms;
+}
+
+.unreadMessagesFloatButton:hover {
+    border: solid 3px rgba(196, 187, 175, 0.6);
+
+}
+
+
+
+
+.unreadMessagesFloatButton:active {
+    background: radial-gradient(circle, #C4BBAF 0%, #8D5B4C 100%);
+}
+
+
+.unreadMessagesFloatButtonWrapper span sup {
+    transform: translate(-45%, -66%) !important;
+}
 
 .chat {
+    position: relative;
     width: 50vw;
     height: 700px;
-    background-color: #CDCDDF;
+    background-color: var(--chat-bg-color);
     /*background-image: url("https://wallpapercave.com/wp/wp9875549.jpg");*/
     /*background-image: url("https://i.pinimg.com/736x/67/37/ec/6737ecdb57c1381079cede4a35b1a5d4.jpg");*/
     /*background-image: url("https://wallpapers.com/images/hd/whatsapp-chat-background-fb34cc4b2hg9lmix.jpg");*/

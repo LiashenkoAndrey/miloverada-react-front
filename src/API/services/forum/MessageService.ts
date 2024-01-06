@@ -8,3 +8,11 @@ export const getLatestMessages = () => {
     }
     return callAndGetResult(config)
 }
+
+export const getLatestMessagesOfChat = (chatId : number) => {
+    const config = {
+        url: `${apiServerUrl}/api/forum/chat/${chatId}/message/latest`,
+        method: "GET"
+    }
+    return callAndGetResult(config)
+}

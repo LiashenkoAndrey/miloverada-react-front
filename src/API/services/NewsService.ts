@@ -1,7 +1,8 @@
 import {callAndGetResult} from "./ExternalApiService";
 
 
-const apiServerUrl: string = "http://localhost:8080";
+
+const apiServerUrl = process.env.REACT_APP_API_SERVER_URL;
 
 export const getAllNews = () => {
     const config = {

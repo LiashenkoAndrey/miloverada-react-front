@@ -2,20 +2,22 @@
 
 .chatHeader {
     padding: 3px 10px;
-    background-color: rgb(167, 172, 200);
+    border-radius: 5px;
+    background-color: var(--chat-header-bg-color);
     width: 50vw;
 }
 
 .chatName {
     font-size: 25px;
     font-weight: 900;
-    color: #282A3E;
+    color: var(--forum-primary-title-color);
+
 }
 
 .chatDescription {
     font-size: 20px;
     font-weight: 900;
-    color: #282A3E;
+    color: var(--forum-primary-title-color);
 }
 
 .chatPicture {

@@ -1,17 +1,40 @@
-import React, {FC, useEffect} from 'react';
+import React, {FC} from 'react';
 import {Flex, Image, Skeleton} from "antd";
-import {Chat, User} from "../../../API/services/forum/ForumInterfaces";
+import {Chat, ForumUserDto, User} from "../../../API/services/forum/ForumInterfaces";
 import classes from './ChatHeader.module.css'
+import {useSubscription} from "react-stomp-hooks";
+import {IMessage} from "@stomp/stompjs/src/i-message";
+
 interface ChatHeaderProps {
     chat? : Chat,
     typingUsers : Array<User>
+    setTypingUsers : React.Dispatch<React.SetStateAction<User[]>>
+    chatId : number
+    filterTypingUsers ( userId: string | undefined) : void
 }
 
-const ChatHeader: FC<ChatHeaderProps> = ({chat, typingUsers}) => {
+const ChatHeader: FC<ChatHeaderProps> = ({
+                                             chat,
+                                             typingUsers,
+                                             setTypingUsers,
+                                             chatId,
+                                             filterTypingUsers
+                                         }) => {
 
-    useEffect(() => {
-        console.log(typingUsers)
-    }, [typingUsers]);
+
+    const onUsersStartTyping = (message : IMessage) => {
+        console.log("start typing", message)
+        const userDto : ForumUserDto = JSON.parse( message.body)
+        setTypingUsers([{name: userDto.name, id: userDto.id},...typingUsers])
+    }
+
+    const onUsersStopTyping = (message : IMessage) => {
+        const data : ForumUserDto = JSON.parse( message.body)
+        filterTypingUsers(data.id)
+    }
+
+    useSubscription(`/chat/` + chatId + "/userStopTyping", onUsersStopTyping)
+    useSubscription(`/chat/` + chatId + "/typingUsers", onUsersStartTyping)
 
     return chat
         ?

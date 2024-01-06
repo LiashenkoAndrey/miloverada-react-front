@@ -1,13 +1,21 @@
-import React, {useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {Breadcrumb, Button, Flex, Image, Skeleton} from "antd";
-import {getAllChatsByThemeId, getAllMessagesByChatId, getChatById} from "../../../API/services/forum/ChatService";
+import {
+    getAllChatsByThemeId,
+    getChatById,
+    getChatMetadata,
+    getMessagesByChatIdAndLastReadMessage, getNewPageOfMessagesAuthUser
+} from "../../../API/services/forum/ChatService";
 import {LeftOutlined, WechatOutlined} from "@ant-design/icons";
-import {Chat, Message, User} from "../../../API/services/forum/ForumInterfaces";
+import {Chat, ChatMetadata, Message, User} from "../../../API/services/forum/ForumInterfaces";
 import './ChatPage.css'
 import {useNavigate, useParams, useSearchParams} from "react-router-dom";
 import ForumWrapper from "../../../components/ForumWrapper/ForumWrapper";
 import ChatWindow from "../../../components/ChatWindow/ChatWindow";
 import {StompSessionProvider} from "react-stomp-hooks";
+import {useAuth0} from "@auth0/auth0-react";
+import {getLatestMessagesOfChat} from "../../../API/services/forum/MessageService";
+
 
 const ChatPage = () => {
 
@@ -19,11 +27,20 @@ const ChatPage = () => {
     const [currentChatId, setCurrentChatId] = useState<number>(Number(id))
     const [chat, setChat] = useState<Chat>();
     const [typingUsers, setTypingUsers] = useState<Array<User>>([]);
+    const {user, isAuthenticated} = useAuth0()
+    const [unreadMessagesCount, setUnreadMessagesCount] = useState<number>()
+
+    const [chatMetadata, setchatMetadata] = useState<ChatMetadata>()
+    const [lastReadMessageId, setLastReadMessageId] = useState<number>()
+    const [currentBottomChatPage, setCurrentBottomChatPage] = useState<number>(0)
+    const [hasMessages, setHasMessages] = useState<boolean>(true)
+    const PAGE_SIZE = 5
 
     useEffect(() => {
         const getChats = async () => {
             const {data, error} = await getAllChatsByThemeId(Number(searchParams.get("topicId")));
             if (data) {
+
                 setChats(data)
             }
             if (error) throw error;
@@ -31,19 +48,92 @@ const ChatPage = () => {
         getChats()
     }, []);
 
-    const getMessages = async (chatId : number) => {
+
+    const addNewMessagesToBottom = useCallback(async(page : number, size : number) => {
         if (!id) throw new Error("chat id is not present.")
-        const {data, error} = await getAllMessagesByChatId(Number(chatId));
+        if (lastReadMessageId && user?.sub && chatMetadata && messages.length > 0) {
+            const {data, error} = await getNewPageOfMessagesAuthUser(currentChatId, page, size,  chatMetadata.last_read_message_id);
+            if (data) {
+                console.log("loaded new messages", data)
+                if (data.length === 0) {
+                    setHasMessages(false)
+                } else {
+                    setMessages([...messages, ...data])
+                }
+            }
+            if (error) throw error;
+        }
+    }, [chatMetadata, currentChatId, id, lastReadMessageId, messages, user?.sub]);
+
+
+    const scrollToBottom = () => {
+        const chatBottom = document.getElementById("chatBottom")
+        console.log(chatBottom)
+        chatBottom?.scrollIntoView({behavior: "smooth", block: 'nearest'});
+    }
+
+    const getMetadataAndLoadMessages = async  (chatId : number) => {
+        if (user?.sub) {
+            const chatMetadata = await getChatMetadata(chatId, encodeURIComponent(user.sub))
+            if (chatMetadata.data) {
+                const metadata : ChatMetadata = chatMetadata.data
+                setLastReadMessageId(metadata.last_read_message_id)
+                setUnreadMessagesCount(metadata.unread_messages_count)
+                setchatMetadata(metadata)
+
+                if (!metadata.last_read_message_id) {
+                    setHasMessages(false)
+                    getLatestOfChat()
+                    return
+                }
+
+                const {data, error} = await getMessagesByChatIdAndLastReadMessage(Number(chatId), 0, PAGE_SIZE,  metadata.last_read_message_id);
+                if (data) {
+                    setMessages(data)
+                    setTimeout(() => {
+                        const lastReadMsg = document.getElementById(`msgId-${metadata.last_read_message_id}`)
+                        lastReadMsg?.scrollIntoView({behavior: "smooth", block: 'end'});
+                    }, 1000)
+                }
+                if (error) throw error;
+
+            }
+            if (chatMetadata.error) throw chatMetadata.error
+        }
+    }
+
+    const nextMessagePageBottom = useCallback(() => {
+        setCurrentBottomChatPage(currentBottomChatPage + 1)
+    }, [currentBottomChatPage]);
+
+    useEffect(() => {
+        
+        console.log("currentChatPage",currentBottomChatPage)
+
+        addNewMessagesToBottom(currentBottomChatPage + 1, PAGE_SIZE)
+
+    }, [currentBottomChatPage]);
+
+    useEffect( () => {
+        if (isAuthenticated) {
+            getMetadataAndLoadMessages(Number(id))
+        } else {
+            console.log("not auth")
+            getLatestOfChat()
+        }
+        changeChat(Number(id))
+    }, []);
+
+    const getLatestOfChat = async () => {
+        const {data, error} = await getLatestMessagesOfChat(Number(id))
         if (data) {
             setMessages(data)
+            setTimeout(() => {
+                scrollToBottom()
+            }, 100)
         }
         if (error) throw error;
     }
-
-    useEffect(() => {
-        getMessages(Number(id))
-        changeChat(Number(id))
-    }, []);
 
     const changeChat = async (chatId : number) => {
         const {data, error} = await getChatById(chatId);
@@ -53,20 +143,17 @@ const ChatPage = () => {
         if (error) throw error;
     }
 
-
-
-
     const onChatChanged = async (chatId : number) => {
         if (chatId !== currentChatId) {
             setCurrentChatId(chatId)
             setTypingUsers([])
-            getMessages(chatId)
+            getMetadataAndLoadMessages(chatId)
             changeChat(chatId)
         }
     }
 
     return (
-        <ForumWrapper style={{maxWidth: "90vw", width: "100%"}}>
+        <ForumWrapper style={{maxWidth: "90vw", width: "100%", marginBottom: 200}}>
             <Flex gap={5} vertical style={{marginTop: "5vh"}}>
                 <Flex vertical={false} align={"center"} gap={30}>
 
@@ -88,7 +175,6 @@ const ChatPage = () => {
                         </Breadcrumb.Item>
                     </Breadcrumb>
                 </Flex>
-
                 {chats
                     ?
                     chats.map((chat) =>
@@ -97,7 +183,7 @@ const ChatPage = () => {
                               align={"center"} gap={20}
                               onClick={() => onChatChanged(Number(chat.id))}
                         >
-                            <WechatOutlined style={{fontSize: 30}}/>
+                            <Image preview={false} src={chat.picture} width={50} height={50}/>
                             <Flex vertical>
                                 <p>{chat.name}</p>
                                 <span>{chat.description}</span>
@@ -110,16 +196,19 @@ const ChatPage = () => {
             </Flex>
 
 
-            <StompSessionProvider
-                url={'http://localhost:8080/ws-endpoint'}
-            >
+            <StompSessionProvider url={'http://localhost:6060/ws-endpoint'}>
                 <ChatWindow typingUsers={typingUsers}
                             setTypingUsers={setTypingUsers}
                             chat={chat}
-                            setChat={setChat}
                             chatId={currentChatId}
                             setMessages={setMessages}
                             messages={messages}
+                            lastReadMessageId={lastReadMessageId}
+                            setLastReadMessageId={setLastReadMessageId}
+                            unreadMessagesCount={unreadMessagesCount}
+                            setUnreadMessagesCount={setUnreadMessagesCount}
+                            nextMessagePageBottom={nextMessagePageBottom}
+
                 />
             </StompSessionProvider>
 

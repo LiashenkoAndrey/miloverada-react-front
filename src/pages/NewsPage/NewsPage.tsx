@@ -64,7 +64,7 @@ const NewsPage = () => {
                     </Breadcrumb>
                 </Flex>
 
-                <h6 className={"newsData"}>{news?.created?.reduce((acc, num) => acc +=  "-" + String(num))}</h6>
+                <h6 className={"newsData"}>{news?.created}</h6>
 
                 <h1 className={"newsTitle"}>{news?.description}</h1>
                 <div style={{borderTop: "solid #c0c0bf 1px", margin: "20px 0"}}></div>

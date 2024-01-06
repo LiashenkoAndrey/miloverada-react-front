@@ -2,6 +2,6 @@
 
 export interface MessageDto {
     chatId : number
-    senderId : number,
-    text : string
+    senderId : string,
+    text : string,
 }

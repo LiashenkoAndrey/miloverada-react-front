@@ -10,7 +10,7 @@ interface Wrapper {
 const ForumWrapper : FC<Wrapper> = ({style, children, gap}) => {
     return (
         <Flex align={"flex-start"} justify={"center"}
-              style={{paddingTop: "15vh", minHeight: "100vh", backgroundColor: "#1F2232"}}>
+              style={{paddingTop: "15vh", minHeight: "100vh", backgroundColor: "var(--forum-primary-bg-color)"}}>
             <Flex wrap={"wrap"} style={style} gap={gap || 20} justify={"center"}>
                 {children}
             </Flex>
