@@ -1,0 +1,16 @@
+
+
+.addImg {
+    color: white;
+    background: none;
+    border: dashed rgba(255, 255, 255, 0.47) 1px;
+    transition: border 500ms;
+    border-radius: 5px;
+    width: 80px;
+    height: 80px;
+}
+
+.addImg:hover {
+    cursor: pointer;
+    border: dashed rgb(255, 255, 255) 1px;
+}

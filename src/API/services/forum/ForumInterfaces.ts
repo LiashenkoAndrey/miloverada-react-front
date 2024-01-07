@@ -3,11 +3,20 @@
 export interface Message {
     id? : number,
     text : string,
-    createdOn : Array<string>,
-    editedOn : Array<string>,
+    createdOn : string[],
+    editedOn : string[],
     sender : User
     repliedMessage : Message,
     messages : Array<Message>
+    imagesList : MessageImage[]
+}
+
+export interface MessageImage {
+    id : string,
+    imageId : string,
+    hashCode : string,
+    message_id : number,
+    lastLoaded : string
 }
 
 export interface ForumUserDto {
@@ -23,6 +32,11 @@ export interface Chat {
     picture : string,
     owner : User,
     totalMessagesAmount : number
+}
+
+
+export interface MessageImageDto {
+    base64Image : string
 }
 
 export interface ChatMetadata {

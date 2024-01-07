@@ -3,6 +3,7 @@ import {Empty, Flex} from "antd";
 import {Chat, Message} from "../../../API/services/forum/ForumInterfaces";
 import MessageListItem from "../../../pages/forum/Message/MessageListItem";
 import {useAuth0} from "@auth0/auth0-react";
+import MessagePopover from "../MessagePopover/MessagePopover";
 
 interface MessageListProps {
     messages: Array<Message>
@@ -98,20 +99,20 @@ const MessageList: FC<MessageListProps> = ({
         }
     }, [newSeenMessageId]);
 
+    const [msgPopVisible, setMsgPopVisible] = useState<boolean>(false)
+    const [msgPopY, setMsgPopY] = useState<number>(0)
+    const [msgPopX, setMsgPopX] = useState<number>(0)
 
-
-    // useEffect(() => {
-    //     setTimeout(() => {
-    //         scrollToBottom()
-    //     }, 500)
-    // }, []);
+    const onMessageRightClick = () => {
+        console.log("click")
+    }
 
     return (
         <Flex id={"msgWrapper"} className={"messagesWrapper"} vertical={true}>
             {messages.length > 0
                 ?
                 messages.map((msg) =>
-                    <MessageListItem observer={readMessagesObserver.current} key={"msg-" + msg.id}  message={msg}/>
+                    <MessageListItem onMessageRightClick={onMessageRightClick} observer={readMessagesObserver.current} key={"msg-" + msg.id} message={msg}/>
                 )
                 :
                 <Empty style={{marginTop: "5vh"}} description={"Поки немає обрговорень. Почніть першим)!"}/>
