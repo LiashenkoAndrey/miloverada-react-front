@@ -11,6 +11,25 @@ export interface Message {
     imagesList : MessageImage[]
 }
 
+
+export interface DeleteMessageDto {
+    messageId : number
+    chatId : number
+}
+
+export interface UpdateMessageDto {
+    id : number
+    text : string
+    chatId : number
+}
+
+
+export interface DeleteMessageImageDto {
+    messageId : number
+    imageId : string
+    chatId : number
+}
+
 export interface MessageImage {
     id : string,
     imageId : string,

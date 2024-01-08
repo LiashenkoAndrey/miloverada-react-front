@@ -1,6 +1,13 @@
-import React, {FC, useCallback, useEffect, useRef, useState} from 'react';
+import React, {CSSProperties, FC, useCallback, useEffect, useRef, useState} from 'react';
 import {Badge, Button, Flex} from "antd";
-import {Chat, LastReadMessageDto, Message, User} from "../../API/services/forum/ForumInterfaces";
+import {
+    Chat,
+    DeleteMessageDto, DeleteMessageImageDto,
+    ForumUserDto,
+    LastReadMessageDto,
+    Message, UpdateMessageDto,
+    User
+} from "../../API/services/forum/ForumInterfaces";
 import {useStompClient, useSubscription} from "react-stomp-hooks";
 import MessageList from "./MessageList/MessageList";
 import ChatInput from "./ChatInput/ChatInput";
@@ -44,6 +51,39 @@ const ChatWindow: FC<ChatProps> = ({
     const lastMessageObserver = useRef<IntersectionObserver>()
     const [isScrollDownButtonActive, setIsScrollDownButtonActive] = useState<boolean>(false)
     const [input, setInput] = useState<string>('');
+
+    const onUserDeletesMessage = (message : IMessage) => {
+        const deletedMessageDto : DeleteMessageDto = JSON.parse(message.body)
+        console.log("delete message event", deletedMessageDto)
+        setMessages(messages.filter((msg) => msg.id !== deletedMessageDto.messageId))
+    }
+
+    const onUserDeletesMessageImage = (message : IMessage) => {
+        const dto : DeleteMessageImageDto = JSON.parse(message.body)
+        console.log("delete message image event", dto)
+        let foundMessage : Message | undefined = messages.find((msg) => msg.id === dto.messageId)
+        if (foundMessage) {
+            let filtered = foundMessage.imagesList.filter((img) => img.imageId !== dto.imageId)
+            foundMessage.imagesList = filtered
+            messages[messages.indexOf(foundMessage)] = foundMessage
+            setMessages([...messages])
+        }
+    }
+
+    const onUserUpdatedMessage = (message : IMessage) => {
+        const dto : UpdateMessageDto = JSON.parse(message.body)
+        console.log("update message event", dto)
+        let foundMessage : Message | undefined = messages.find((msg) => msg.id === dto.id)
+        if (foundMessage) {
+            foundMessage.text = dto.text
+            messages[messages.indexOf(foundMessage)] = foundMessage
+            setMessages([...messages])
+        }
+    }
+
+    useSubscription(`/chat/` + chatId + "/deleteMessageEvent", onUserDeletesMessage)
+    useSubscription(`/chat/` + chatId + "/deleteMessageImageEvent", onUserDeletesMessageImage)
+    useSubscription(`/chat/` + chatId + "/updateMessageEvent", onUserUpdatedMessage)
 
     useEffect(() => {
         if (messages.length > 0) {
@@ -118,9 +158,16 @@ const ChatWindow: FC<ChatProps> = ({
         lastMessage?.scrollIntoView({behavior: "smooth", block: 'end'});
     }, [messages]);
 
+    const [editMessage, setEditMessage] = useState<Message>()
+
+    const onEditMessage = (message : Message) => {
+        setEditMessage(message)
+        setInput(message.text)
+    }
+
+
     return (
         <Flex vertical={true}>
-            {/*<Button onClick={() => nextMessagePageBottom()}>Next</Button>*/}
             <ChatHeader typingUsers={typingUsers}
                         chatId={chatId}
                         setTypingUsers={setTypingUsers}
@@ -131,10 +178,13 @@ const ChatWindow: FC<ChatProps> = ({
 
                     <MessageList setUnreadMessagesCount={setUnreadMessagesCount}
                                  unreadMessagesCount={unreadMessagesCount}
+                                 setMessages={setMessages}
                                  chat={chat}
                                  messages={messages}
                                  saveLastReadMessageId={saveLastReadMessageId}
                                  lastReadMessageId={lastReadMessageId}
+                                 onEditMessage={onEditMessage}
+                                 editMessage={editMessage}
                     />
                     <Flex style={{display: isScrollDownButtonActive ? "flex" : "none"}} onClick={toBottom} className={"unreadMessagesFloatButtonWrapper"}>
                         <Badge count={unreadMessagesCount} color={"#8f4c58"}>
@@ -146,6 +196,8 @@ const ChatWindow: FC<ChatProps> = ({
                            setInput={setInput}
                            stompClient={stompClient}
                            filterTypingUsers={filterTypingUsers}
+                           editMessage={editMessage}
+                           setEditMessage={setEditMessage}
                 />
             </Flex>
         </Flex>

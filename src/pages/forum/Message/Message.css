@@ -1,0 +1,7 @@
+
+
+
+.isEdit {
+    background-color: rgba(33, 27, 26, 0.34);
+    transition: background-color 300ms;
+}

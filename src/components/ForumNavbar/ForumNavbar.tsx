@@ -38,35 +38,35 @@ const ForumNavbar : FC<ForumNavbarProps> = (props) => {
     return (
         <Flex vertical gap={40} style={{width: 200, paddingTop: 70, paddingRight: 10}}>
 
-            <Flex vertical>
-                <Button ghost icon={<HomeOutlined />}>Головна</Button>
-                <Button ghost icon={<TagsOutlined />}>Теги</Button>
-                <Button ghost icon={<QuestionCircleOutlined />}>Питання</Button>
-                <Button ghost icon={<UserOutlined />}>Користувачі</Button>
+            <Flex vertical style={{ color: "black"}} gap={5}>
+                <Button icon={<HomeOutlined style={{color: "black"}} />}>Головна</Button>
+                <Button icon={<TagsOutlined />}>Теги</Button>
+                <Button icon={<QuestionCircleOutlined />}>Питання</Button>
+                <Button icon={<UserOutlined />}>Користувачі</Button>
             </Flex>
 
             {props.children}
 
 
             <Flex vertical>
-                <span style={{color: "white", fontSize: 20, marginBottom: 5}}>Профіль</span>
+                <span style={{color: "black", fontSize: 20, marginBottom: 5}}>Профіль</span>
 
                 {isAuthenticated
                     ?
                     <Flex gap={10} vertical>
                         <Flex gap={5} vertical={true}>
                             <Image width={110} src={user?.picture}/>
-                            <span style={{color: "white"}}>{user?.name}</span>
+                            <span style={{color: "black"}}>{user?.name}</span>
                             {/*<span>{user?.sub}</span>*/}
                         </Flex>
 
-                        <Flex vertical>
-                            <Button ghost icon={<SettingOutlined /> } >Налаштування</Button>
-                            <Button ghost icon={<LoginOutlined /> } onClick={onLogout}>Вихід</Button>
+                        <Flex gap={5} vertical>
+                            <Button icon={<SettingOutlined /> } >Налаштування</Button>
+                            <Button icon={<LoginOutlined /> } onClick={onLogout}>Вихід</Button>
                         </Flex>
                     </Flex>
                     :
-                    <Button ghost icon={<LoginOutlined /> } onClick={onLogin}>Вхід</Button>
+                    <Button  icon={<LoginOutlined /> } onClick={onLogin}>Вхід</Button>
                 }
             </Flex>
         </Flex>

@@ -3,7 +3,6 @@ import {Empty, Flex} from "antd";
 import {Chat, Message} from "../../../API/services/forum/ForumInterfaces";
 import MessageListItem from "../../../pages/forum/Message/MessageListItem";
 import {useAuth0} from "@auth0/auth0-react";
-import MessagePopover from "../MessagePopover/MessagePopover";
 
 interface MessageListProps {
     messages: Array<Message>
@@ -12,18 +11,23 @@ interface MessageListProps {
     setUnreadMessagesCount : React.Dispatch<React.SetStateAction<number | undefined>>
     saveLastReadMessageId(messageId: number): void
     lastReadMessageId? : number
+    setMessages :  React.Dispatch<React.SetStateAction<Message[]>>
+    onEditMessage : (message : Message) => void
+    editMessage? : Message
 }
 
 const MessageList: FC<MessageListProps> = ({
+                                               chat,
                                                messages,
                                                setUnreadMessagesCount,
                                                unreadMessagesCount,
                                                saveLastReadMessageId,
-    lastReadMessageId
+                                               setMessages,
+                                               lastReadMessageId,onEditMessage, editMessage
                                            }) => {
 
     const readMessagesObserver = useRef<IntersectionObserver>()
-    const {isAuthenticated, user} = useAuth0()
+    const {isAuthenticated} = useAuth0()
 
     const [newSeenMessageId, setNewSeenMessageId] = useState<number>()
     const [oldSeenMsgID, setOldSeenMsgID] = useState<number>()
@@ -99,12 +103,11 @@ const MessageList: FC<MessageListProps> = ({
         }
     }, [newSeenMessageId]);
 
-    const [msgPopVisible, setMsgPopVisible] = useState<boolean>(false)
-    const [msgPopY, setMsgPopY] = useState<number>(0)
-    const [msgPopX, setMsgPopX] = useState<number>(0)
+    const imageUpdateInputRef = useRef<HTMLInputElement | null>(null)
 
-    const onMessageRightClick = () => {
-        console.log("click")
+
+    const omMessageImageUpdate = () => {
+        imageUpdateInputRef.current?.click()
     }
 
     return (
@@ -112,7 +115,17 @@ const MessageList: FC<MessageListProps> = ({
             {messages.length > 0
                 ?
                 messages.map((msg) =>
-                    <MessageListItem onMessageRightClick={onMessageRightClick} observer={readMessagesObserver.current} key={"msg-" + msg.id} message={msg}/>
+                        <MessageListItem
+                            onEditMessage={onEditMessage}
+                            omMessageImageUpdate={omMessageImageUpdate}
+                            chat={chat}
+                            messages={messages}
+                            observer={readMessagesObserver.current}
+                            key={"msg-" + msg.id}
+                            setMessages={setMessages}
+                            message={msg}
+                            editMessage={editMessage}
+                        />
                 )
                 :
                 <Empty style={{marginTop: "5vh"}} description={"Поки немає обрговорень. Почніть першим)!"}/>

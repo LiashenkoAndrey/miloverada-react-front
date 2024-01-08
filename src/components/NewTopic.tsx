@@ -57,7 +57,7 @@ const NewTopic: FC<NewTopicProps> = ({isAuth, getTopics}) => {
 
     return isAuth ?
       <>
-          <Button onClick={showModal} ghost icon={<PlusCircleOutlined />}>Нова тема</Button>
+          <Button onClick={showModal}  icon={<PlusCircleOutlined />}>Нова тема</Button>
 
           <Modal title="Нова тема" open={isModalOpen}  onCancel={handleCancel} footer={false} >
               <Form

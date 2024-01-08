@@ -1,19 +1,16 @@
-import React, {FC, useCallback, useEffect, useRef, useState} from 'react';
-import {Button, Flex, Image, Input, Tooltip, Upload} from "antd";
-import {
-    CloseCircleOutlined,
-    FileAddOutlined,
-    FileImageOutlined,
-    GlobalOutlined, PlusOutlined,
-    RightOutlined
-} from "@ant-design/icons";
+import React, {FC, Ref, useCallback, useContext, useEffect, useRef, useState} from 'react';
+import {App, Button, Flex, Input, Tooltip} from "antd";
+import {FileAddOutlined, FileImageOutlined, GlobalOutlined, RightOutlined} from "@ant-design/icons";
 import {useAuth0} from "@auth0/auth0-react";
-import {ForumUserDto, MessageImageDto} from "../../../API/services/forum/ForumInterfaces";
+import {ForumUserDto, Message, UpdateMessageDto} from "../../../API/services/forum/ForumInterfaces";
 import {Client} from "@stomp/stompjs";
 import {MessageDto} from "../../../API/services/forum/MessageDto";
 import './ChatInput.css'
-import {RcFile} from "antd/es/upload";
 import ImageUpload from "../ImageUpload/ImageUpload";
+import EditMessage from "../EditMessage/EditMessage";
+import TextareaAutosize from 'react-textarea-autosize';
+import {AuthContext} from "../../../context/AuthContext";
+import {updateMessage} from "../../../API/services/forum/MessageService";
 
 interface ChatInputProps {
     stompClient? : Client
@@ -21,10 +18,14 @@ interface ChatInputProps {
     filterTypingUsers ( userId: string | undefined) : void
     input : string
     setInput :  React.Dispatch<React.SetStateAction<string>>
+    setEditMessage :  React.Dispatch<React.SetStateAction<Message | undefined>>
+    editMessage? : Message
 }
 
 
 const ChatInput: FC<ChatInputProps> = ({
+                                           setEditMessage,
+                                           editMessage,
                                            stompClient,
                                            chatId,
                                            filterTypingUsers, input, setInput
@@ -32,7 +33,8 @@ const ChatInput: FC<ChatInputProps> = ({
 
     const {isAuthenticated, user} = useAuth0()
     const [isTyping, setIsTyping] = useState<boolean>();
-
+    const {jwt} = useContext(AuthContext)
+    const {notification} = App.useApp();
     const onStopTyping = () => {
         notifyThatUserStoppedTyping()
         setIsTyping(false)
@@ -103,10 +105,35 @@ const ChatInput: FC<ChatInputProps> = ({
                 setFileList([])
                 setIsImageUploadActive(false)
                 setInput('')
-            } else console.error("stompClient is null")
+            } else console.error("stompClient or user id is null")
         } else console.error("validation error")
     }, [chatId, input, stompClient, user, fileList]);
 
+
+    const updateMsg = useCallback( async () => {
+        console.log("update", input)
+        if(stompClient && user?.sub && editMessage?.id && jwt) {
+
+            const messageDto : UpdateMessageDto  = {
+                id : editMessage.id,
+                text: input,
+                chatId: chatId,
+            }
+
+            console.log("edit msg", messageDto)
+
+            const {data, error} = await updateMessage(messageDto, jwt)
+            if (data) {
+                setEditMessage(undefined)
+                setInput('')
+            }
+            if (error) {
+                throw error
+                notification.error({message: "can't update message"})
+            }
+
+        } else console.error("Error update")
+    }, [input]);
 
     const notifyThatUserStoppedTyping = () => {
         if (isAuthenticated && stompClient)  {
@@ -136,8 +163,6 @@ const ChatInput: FC<ChatInputProps> = ({
     const [isImageUploadActive, setIsImageUploadActive] = useState<boolean>(false)
 
 
-
-
     const openImageUpload = () => {
         setIsImageUploadActive(true)
     }
@@ -149,6 +174,26 @@ const ChatInput: FC<ChatInputProps> = ({
         setFileList([])
     }
 
+    const [btnClass, setBtnClass] = useState<string>("")
+    const [btnText, setBtnText] = useState<string>("Відправити")
+    useEffect(() => {
+        if (editMessage) {
+            setBtnClass("editBtn")
+            setBtnText("Редагувати")
+        } else {
+            setBtnClass("sendBtn")
+            setBtnText("Відправити")
+        }
+    }, [editMessage]);
+
+
+    const isBtnsActive = useCallback(() => {
+        return !isAuthenticated || editMessage !== undefined
+    }, [editMessage, isAuthenticated]);
+
+
+    const inputRef = useRef<HTMLTextAreaElement | null>(null)
+
     return (
         <Flex vertical>
             <ImageUpload fileList={fileList}
@@ -156,17 +201,34 @@ const ChatInput: FC<ChatInputProps> = ({
                          isImageUploadActive={isImageUploadActive}
                          onImageUploadClose={onImageUploadClose}
             />
-            <Flex style={{alignSelf: "flex-end", width: "100%", padding: 3, backgroundColor: "rgba(255,255,255,0)"}}>
+            <EditMessage
+                inputRef={inputRef}
+                setInput={setInput}
+                editMessage={editMessage}
+                setEditMessage={setEditMessage}
+            />
+            <Flex style={{alignSelf: "flex-end", width: "100%", padding: 3, backgroundColor: "rgba(255,255,255,0.1)"}}>
 
                 <Tooltip title={isAuthenticated ? "" : "Спочатку авторизуйтеся"}>
-                    <Input disabled={!isAuthenticated} placeholder={"Ваше повідолення...."} value={input} onChange={handleEvent}/>
+                    <TextareaAutosize maxRows={10}
+                                      ref={inputRef}
+                                      style={{width: "100%", boxSizing: "border-box"}}
+                                      className={"input"}
+                                      maxLength={3000}
+                                      hidden={!isAuthenticated}
+                                      placeholder={"Ваше повідолення...."}
+                                      value={input}
+                                      onChange={handleEvent}
+                    />
                 </Tooltip>
-                <Flex style={{margin: "0 5px"}} gap={3}>
-                    <Button disabled={!isAuthenticated}  icon={<FileAddOutlined  style={{fontSize: 22}}  />}/>
-                    <Button onClick={openImageUpload} disabled={!isAuthenticated} icon={<FileImageOutlined style={{fontSize: 22}} />}/>
-                    <Button disabled={!isAuthenticated} icon={<GlobalOutlined style={{fontSize: 22}} />}/>
+                <Flex align={"flex-end"}>
+                    <Flex style={{margin: "0 5px"}} gap={3}>
+                        <Button className={"toolBtn"}  disabled={isBtnsActive()}  icon={<FileAddOutlined  style={{fontSize: 22}}  />}/>
+                        <Button className={"toolBtn"} onClick={openImageUpload} disabled={isBtnsActive()} icon={<FileImageOutlined style={{fontSize: 22}} />}/>
+                        <Button className={"toolBtn"} disabled={isBtnsActive()} icon={<GlobalOutlined style={{fontSize: 22}} />}/>
+                    </Flex>
+                    <Button disabled={!isAuthenticated} onClick={() => editMessage !== undefined ? updateMsg() : onSend()} type={"primary"} className={btnClass} icon={<RightOutlined />}>{btnText}</Button>
                 </Flex>
-                <Button disabled={!isAuthenticated} onClick={onSend} type={"primary"} icon={<RightOutlined />}>Відправити</Button>
             </Flex>
         </Flex>
 

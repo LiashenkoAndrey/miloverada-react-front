@@ -31,7 +31,7 @@ const AllForumTopicsPage = () => {
             <Flex style={{maxWidth: "80vw", width: "100%"}} gap={10} justify={"center"}>
                 <ForumNavbar>
                     <Flex vertical>
-                        <span style={{color: "white", fontSize: 20, marginBottom: 5}}>Теми</span>
+                        <span style={{color: "black", fontSize: 20, marginBottom: 5}}>Теми</span>
                         <NewTopic getTopics={getTopics} isAuth={isAuthenticated}/>
                     </Flex>
                 </ForumNavbar>

@@ -4,9 +4,10 @@ import {
     getAllChatsByThemeId,
     getChatById,
     getChatMetadata,
-    getMessagesByChatIdAndLastReadMessage, getNewPageOfMessagesAuthUser
+    getMessagesByChatIdAndLastReadMessage,
+    getNewPageOfMessagesAuthUser
 } from "../../../API/services/forum/ChatService";
-import {LeftOutlined, WechatOutlined} from "@ant-design/icons";
+import {LeftOutlined} from "@ant-design/icons";
 import {Chat, ChatMetadata, Message, User} from "../../../API/services/forum/ForumInterfaces";
 import './ChatPage.css'
 import {useNavigate, useParams, useSearchParams} from "react-router-dom";
@@ -158,24 +159,25 @@ const ChatPage = () => {
                 <Flex vertical={false} align={"center"} gap={30}>
 
                     <Button onClick={() => nav(-1)}
-                            style={{maxWidth: 150, color: "white"}}
+                            style={{maxWidth: 150, color: "black"}}
                             icon={<LeftOutlined/>}
                             type={"text"}>
                         Назад
                     </Button>
 
-                    <Breadcrumb style={{color: "white"}}>
+                    <Breadcrumb style={{color: "black"}}>
                         <Breadcrumb.Item>
                             <Button onClick={() => nav("/")}
                                     type={"text"}
                                     size={"small"}
-                                    style={{color: "white"}}>
+                                    style={{color: "black"}}>
                                 Головна
                             </Button>
                         </Breadcrumb.Item>
                     </Breadcrumb>
                 </Flex>
-                {chats
+
+                {chats.length > 0
                     ?
                     chats.map((chat) =>
                         <Flex className={"chatBarItem"}
