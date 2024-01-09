@@ -14,7 +14,7 @@ interface NewTopicProps {
 const NewTopic: FC<NewTopicProps> = ({isAuth, getTopics}) => {
 
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const { message, notification, modal } = App.useApp();
+    const { notification } = App.useApp();
     const {jwt} = useContext(AuthContext)
     const showModal = () => {
         setIsModalOpen(true);

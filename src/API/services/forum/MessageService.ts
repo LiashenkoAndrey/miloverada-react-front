@@ -1,6 +1,6 @@
 import {callAndGetResult} from "../ExternalApiService";
 import {apiServerUrl} from "../../Constants";
-import {Message, UpdateMessageDto} from "./ForumInterfaces";
+import {UpdateMessageDto} from "./ForumInterfaces";
 
 export const getLatestMessages = () => {
     const config = {

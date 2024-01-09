@@ -1,8 +1,6 @@
 import React from 'react';
 import './Header.css'
 import {Flex} from "antd";
-// @ts-ignore
-import icon from '../../assets/icon.png'
 import {useNavigate} from "react-router-dom";
 
 const Header = () => {

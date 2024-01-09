@@ -1,14 +1,11 @@
 import React, {useEffect, useState} from 'react';
 import './MainPage.css'
-import {Button, Flex} from "antd";
-import {getAllNews, getNewsById} from "../../API/services/NewsService";
+import {Flex} from "antd";
+import {getAllNews} from "../../API/services/NewsService";
 import NewsList from "../../components/NewsList/NewsList";
 import RedButton from "./RedButton";
-import {useFetching} from "../../API/hooks/useFetching";
 import NewsListLoader from "../../components/NewsList/NewsListLoader";
 import {useNavigate} from "react-router-dom";
-
-
 
 
 const MainPage = () => {

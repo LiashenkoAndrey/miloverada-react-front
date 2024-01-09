@@ -1,11 +1,12 @@
-import React, {CSSProperties, FC, useCallback, useContext, useEffect, useRef, useState} from 'react';
-import {App, Badge, Button, Flex} from "antd";
+import React, {FC, useCallback, useContext, useEffect, useRef, useState} from 'react';
+import {App, Badge, Flex} from "antd";
 import {
     Chat,
-    DeleteMessageDto, DeleteMessageImageDto,
-    ForumUserDto,
+    DeleteMessageDto,
+    DeleteMessageImageDto,
     LastReadMessageDto,
-    Message, UpdateMessageDto,
+    Message,
+    UpdateMessageDto,
     User
 } from "../../API/services/forum/ForumInterfaces";
 import {useStompClient, useSubscription} from "react-stomp-hooks";
