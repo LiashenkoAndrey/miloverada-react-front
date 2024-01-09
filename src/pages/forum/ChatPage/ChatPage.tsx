@@ -155,8 +155,8 @@ const ChatPage = () => {
 
     return (
         <Flex className={"chatPageWrapper"} align={"flex-start"} justify={"center"}>
-            <Flex wrap={"wrap"}  gap={20} justify={"center"}>
-                <Flex style={{display: "none"}} justify={"flex-start"} className={"chatsWrapper"} gap={5} vertical>
+            <Flex className={"chatWrapper"}  gap={20} justify={"center"}>
+                <Flex justify={"flex-start"} className={"chatsWrapper"} vertical>
                     <Flex  justify={"center"} vertical={false} align={"center"} gap={30}>
 
                         <Button onClick={() => nav(-1)}

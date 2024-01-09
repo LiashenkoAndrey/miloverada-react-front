@@ -1,16 +1,23 @@
 
 @media (max-width: 600px) {
     .chatHeader {
-        height: 10vh;
+        height: fit-content;
         width: 100% !important;
+    }
+
+    .chatName {
+        font-size: 20px!important;
+    }
+    .chatDescription {
+        font-size: 18px!important;
     }
 }
 
 .chatHeader {
-    padding: 3px 10px;
+    padding: 2px 10px;
     border-radius: 5px;
     background-color: var(--chat-header-bg-color);
-    width: 50vw;
+    width: 100%;
 }
 
 .chatName {
@@ -27,7 +34,7 @@
 }
 
 .chatPicture {
-    border-radius: 20px;
+    border-radius: 15px;
     padding: 5px;
 }
 

@@ -1,9 +1,11 @@
 import React, {FC} from 'react';
-import {Flex, Image, Skeleton} from "antd";
+import {Button, Flex, Image, Skeleton} from "antd";
 import {Chat, ForumUserDto, User} from "../../../API/services/forum/ForumInterfaces";
 import classes from './ChatHeader.module.css'
 import {useSubscription} from "react-stomp-hooks";
 import {IMessage} from "@stomp/stompjs/src/i-message";
+import {LeftOutlined} from "@ant-design/icons";
+import {useNavigate} from "react-router-dom";
 
 interface ChatHeaderProps {
     chat? : Chat,
@@ -21,7 +23,7 @@ const ChatHeader: FC<ChatHeaderProps> = ({
                                              filterTypingUsers
                                          }) => {
 
-
+    const nav = useNavigate()
     const onUsersStartTyping = (message : IMessage) => {
         console.log("start typing", message)
         const userDto : ForumUserDto = JSON.parse( message.body)
@@ -38,16 +40,24 @@ const ChatHeader: FC<ChatHeaderProps> = ({
 
     return chat
         ?
-        (<Flex vertical className={classes.chatHeader} gap={5}>
+        (<Flex vertical className={classes.chatHeader} >
+            <Button onClick={() => nav(-1)}
+                    style={{maxWidth: 100, color: "black", padding: 0}}
+                    icon={<LeftOutlined/>}
+                    type={"text"}>
+                Назад
+            </Button>
             <Flex justify={"space-between"}>
+
+
                 <Flex gap={20} align={"center"}>
                     <span className={classes.chatName}>{chat.name}</span>
                     <span className={classes.chatDescription}>{chat.description}</span>
                 </Flex>
                 <Image preview={false}
                        className={"nonSelect " + classes.chatPicture}
-                       width={50}
-                       height={50}
+                       width={40}
+                       height={40}
                        src={chat.picture}
                 />
             </Flex>

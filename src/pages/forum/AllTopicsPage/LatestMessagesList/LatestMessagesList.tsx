@@ -24,7 +24,7 @@ const LatestMessagesList : FC = () => {
     return (
         <Flex vertical>
             <h3 style={{color: "var(--forum-primary-title-color)"}}>Нові повідомлення</h3>
-            <Flex className={"messagesWrapper"} style={{maxWidth: 270, maxHeight: "70vh"}} vertical={true}>
+            <Flex className={"messagesWrapper"} vertical={true}>
                 {latestMessages.length > 0
                     ?
                     latestMessages.map((msg) =>

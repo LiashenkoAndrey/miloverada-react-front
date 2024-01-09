@@ -250,7 +250,7 @@ const ChatInput: FC<ChatInputProps> = ({
                         <Button className={"toolBtn"} onClick={openImageUpload} disabled={isBtnsActive()} icon={<FileImageOutlined style={{fontSize: 22}} />}/>
                         <Button className={"toolBtn"} disabled={isBtnsActive()} icon={<GlobalOutlined style={{fontSize: 22}} />}/>
                     </Flex>
-                    <Button disabled={!isAuthenticated} onClick={() => editMessage !== undefined ? updateMsg() : onSend()} type={"primary"} className={btnClass} icon={<RightOutlined />}>{btnText}</Button>
+                    <Button style={{border: "none"}} disabled={!isAuthenticated} onClick={() => editMessage !== undefined ? updateMsg() : onSend()} type={"primary"} className={btnClass} icon={<RightOutlined />}>{btnText}</Button>
                 </Flex>
             </Flex>
         </Flex>

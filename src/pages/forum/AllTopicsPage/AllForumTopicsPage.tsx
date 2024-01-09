@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {Flex} from "antd";
+import {Col, Flex, Statistic} from "antd";
 import {Topic} from "../../../API/services/forum/ForumInterfaces";
 import {getAllTopics} from "../../../API/services/forum/TopicService";
 import LatestMessagesList from "./LatestMessagesList/LatestMessagesList";
@@ -28,7 +28,7 @@ const AllForumTopicsPage = () => {
 
     return (
         <Flex wrap={"wrap"} align={"flex-start"} justify={"center"}
-              style={{paddingTop: "5vh", minHeight: "100vh", backgroundColor: "var(--forum-primary-bg-color)"}}>
+              style={{paddingTop: "5vh", minHeight: "100vh", backgroundColor: "var(--forum-primary-bg-color)", paddingBottom: "15vh"}}>
             <Flex wrap={"wrap"} className={classes.pageWrapper} gap={10} justify={"center"}>
                 <ForumNavbar>
                     <Flex vertical>
@@ -43,7 +43,12 @@ const AllForumTopicsPage = () => {
                     </Flex>
                 </Flex>
 
-                <LatestMessagesList />
+                <Flex vertical>
+
+                    <LatestMessagesList />
+
+                    <Statistic style={{padding : 15}} title="Активних користувачів" value={112893} />
+                </Flex>
             </Flex>
         </Flex>
     );

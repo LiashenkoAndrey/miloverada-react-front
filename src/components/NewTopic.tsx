@@ -97,7 +97,7 @@ const NewTopic: FC<NewTopicProps> = ({isAuth, getTopics}) => {
       </>
         :
         <Tooltip title="Вам потрібно авторизуватися" placement="topLeft">
-            <Button disabled={isAuth} onClick={showModal} ghost icon={<PlusCircleOutlined/>}>Нова тема</Button>
+            <Button disabled={isAuth} onClick={showModal} icon={<PlusCircleOutlined/>}>Нова тема</Button>
         </Tooltip>
 };
 

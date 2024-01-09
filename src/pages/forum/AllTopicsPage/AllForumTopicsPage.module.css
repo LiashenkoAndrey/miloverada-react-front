@@ -10,41 +10,53 @@
 }
 
 .pageWrapper {
-    padding: 20px 0;
     max-width: 800vw;
     width: 100%;
 }
 
-.TopicsList {
-    width: inherit;
-}
 
 .chat {
-    width: fit-content;
+    width: 100%;
     user-select: none;
     transition: background-color 100ms;
     cursor: pointer;
     padding: 5px 10px;
-    background-color: var(--forum-secondary-bg-color);
+    background-color: #D9D1CA;
     border: solid rgba(92, 71, 66, 0.15) 3px ;
 }
 
 .topic {
-    width: fit-content;
+    width: 100%;
     padding: 5px;
     border-top-right-radius: 8px;
     border-top-left-radius: 8px;
-    background-color: var(--forum-secondary-bg-color);
+    background-color: #D0CECB;
+}
+
+@media (min-width: 600px) {
+    .pageWrapper {
+        padding-top: 15vh;
+    }
+}
+
+.TopicsList {
+    width: 100%;
+    max-width: 55vw;
 }
 
 @media (max-width: 600px) {
+
+
+
+
     .pageWrapper {
+        padding-top: 5vh;
         max-width: 95vw;
     }
 
     .TopicsList {
-        padding: 10px;
-        width: 100%;
+        max-width: inherit;
+        padding: 0;
     }
     .topic {
         width: 100%;

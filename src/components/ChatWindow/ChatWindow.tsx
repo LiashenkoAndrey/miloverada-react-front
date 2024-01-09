@@ -208,7 +208,7 @@ const ChatWindow: FC<ChatProps> = ({
     }
 
     return (
-        <Flex className={chat_classes.chatWindow} vertical={true}>
+        <Flex className={chat_classes.chatWindow} justify={"center"} vertical={true}>
             <ChatHeader typingUsers={typingUsers}
                         chatId={chatId}
                         setTypingUsers={setTypingUsers}
@@ -216,7 +216,6 @@ const ChatWindow: FC<ChatProps> = ({
                         filterTypingUsers={filterTypingUsers}
             />
             <Flex vertical={true} className={chat_classes.chat} justify={"space-between"}>
-
                     <MessageList setUnreadMessagesCount={setUnreadMessagesCount}
                                  unreadMessagesCount={unreadMessagesCount}
                                  chat={chat}

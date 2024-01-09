@@ -2,8 +2,8 @@
 
 @media (max-width: 600px) {
     .chat {
-        height: 90vh !important;
-        width: 100% !important;
+        height: 86vh !important;
+        width: 100vw !important;
     }
 
     .chatWindow {
@@ -16,10 +16,18 @@
     max-width: 50vw;
 }
 
+
+@media (min-width: 600px) {
+    .chatWindow {
+        width: 100% !important;
+        max-width: inherit;
+    }
+
+}
+
 .chat {
     position: relative;
-    width: 50vw;
-    height: 700px;
+    height: 86vh;
     background-color: var(--chat-bg-color);
     /*background-image: url("https://wallpapercave.com/wp/wp9875549.jpg");*/
     /*background-image: url("https://i.pinimg.com/736x/67/37/ec/6737ecdb57c1381079cede4a35b1a5d4.jpg");*/

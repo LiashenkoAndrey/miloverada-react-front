@@ -11,11 +11,6 @@ const Footer = () => {
         <Flex className={"footerWrapper"} justify={"flex-start"} align={"center"} style={{display: pathname.includes("chat") ? "none" : "flex"}} >
             <Flex wrap={"wrap"}  className={"footerBody"}>
                 <h1 className={"footerTitle"}>Милівська сільська територіальна громада</h1>
-                {pathname.includes("chat") ?
-                    <span>ok</span>
-                    :
-                    <span>no {pathname}</span>
-                }
                 <Flex vertical={true} wrap={"wrap"} gap={20}>
                     <Flex wrap={"wrap"} gap={5}>
                         <Button>Новини</Button>
