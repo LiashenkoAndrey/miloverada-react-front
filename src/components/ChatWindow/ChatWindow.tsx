@@ -18,6 +18,7 @@ import {useAuth0} from "@auth0/auth0-react";
 import {DownOutlined} from "@ant-design/icons";
 import {deleteMessageById} from "../../API/services/forum/MessageService";
 import {AuthContext} from "../../context/AuthContext";
+import chat_classes from './ChatWindow.module.css'
 
 interface ChatProps {
     chat? : Chat
@@ -207,14 +208,14 @@ const ChatWindow: FC<ChatProps> = ({
     }
 
     return (
-        <Flex vertical={true}>
+        <Flex className={chat_classes.chatWindow} vertical={true}>
             <ChatHeader typingUsers={typingUsers}
                         chatId={chatId}
                         setTypingUsers={setTypingUsers}
                         chat={chat}
                         filterTypingUsers={filterTypingUsers}
             />
-            <Flex vertical={true} className={"chat"} justify={"space-between"}>
+            <Flex vertical={true} className={chat_classes.chat} justify={"space-between"}>
 
                     <MessageList setUnreadMessagesCount={setUnreadMessagesCount}
                                  unreadMessagesCount={unreadMessagesCount}

@@ -2,9 +2,24 @@
 
 
 .newsPage {
+    max-width: 60vw;
     margin-top: 10vh;
     color: #343434;
     font-family: 'Source Serif 4', serif;
+}
+
+
+@media (max-width: 600px) {
+    .newsPage {
+        margin-top: 15vh;
+        padding: 15px;
+        max-width: 95vw;
+    }
+
+    .newsTitle {
+        font-size: 26px!important;
+    }
+
 }
 
 
