@@ -6,4 +6,5 @@ export interface MessageDto {
     senderId : string,
     text : string,
     imagesDtoList : MessageImageDto[]
+    replyToMessageId? : number
 }

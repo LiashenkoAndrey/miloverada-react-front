@@ -1,5 +1,5 @@
-import React, {CSSProperties, FC, useCallback, useEffect, useRef, useState} from 'react';
-import {Badge, Button, Flex} from "antd";
+import React, {CSSProperties, FC, useCallback, useContext, useEffect, useRef, useState} from 'react';
+import {App, Badge, Button, Flex} from "antd";
 import {
     Chat,
     DeleteMessageDto, DeleteMessageImageDto,
@@ -15,6 +15,8 @@ import ChatHeader from "./ChatHeader/ChatHeader";
 import {IMessage} from "@stomp/stompjs/src/i-message";
 import {useAuth0} from "@auth0/auth0-react";
 import {DownOutlined} from "@ant-design/icons";
+import {deleteMessageById} from "../../API/services/forum/MessageService";
+import {AuthContext} from "../../context/AuthContext";
 
 interface ChatProps {
     chat? : Chat
@@ -51,6 +53,8 @@ const ChatWindow: FC<ChatProps> = ({
     const lastMessageObserver = useRef<IntersectionObserver>()
     const [isScrollDownButtonActive, setIsScrollDownButtonActive] = useState<boolean>(false)
     const [input, setInput] = useState<string>('');
+    const {jwt} = useContext(AuthContext)
+    const {notification} = App.useApp();
 
     const onUserDeletesMessage = (message : IMessage) => {
         const deletedMessageDto : DeleteMessageDto = JSON.parse(message.body)
@@ -155,16 +159,51 @@ const ChatWindow: FC<ChatProps> = ({
 
     const toBottom = useCallback(() => {
         const lastMessage = document.getElementById("msgId-" + messages[messages.length-1].id)
-        lastMessage?.scrollIntoView({behavior: "smooth", block: 'end'});
+        lastMessage?.scrollIntoView({behavior: "smooth", block: 'nearest'});
     }, [messages]);
 
     const [editMessage, setEditMessage] = useState<Message>()
+    const [replyMessage, setReplyMessage] = useState<Message>()
 
-    const onEditMessage = (message : Message) => {
+    const onEditMessage = useCallback((message : Message) => {
+        if (replyMessage) setReplyMessage(undefined)
         setEditMessage(message)
         setInput(message.text)
+    }, [replyMessage]);
+
+    const onReplyMessage = useCallback((message : Message) => {
+        if (editMessage) setEditMessage(undefined)
+        setReplyMessage(message)
+    }, [editMessage]);
+
+    const notifyThatMessageWasDeleted = (messageId : number) => {
+        if (stompClient && chat?.id) {
+            const body : DeleteMessageDto = {
+                messageId : messageId,
+                chatId : chat?.id
+            }
+
+            stompClient.publish({
+                destination : "/app/userMessage/wasDeleted",
+                body : JSON.stringify(body)
+            })
+        } else notification.error({message : "can't notify that deleted message"})
     }
 
+    const onDeleteMessage = async (messageId : number) => {
+        setEditMessage(undefined)
+        setReplyMessage(undefined)
+        if (jwt) {
+            const {error} = await deleteMessageById(messageId, jwt)
+            if (error) {
+                notification.error({message: "can't delete message"})
+            } else {
+                setMessages(messages.filter((msg) => msg.id !== messageId))
+                notifyThatMessageWasDeleted(messageId)
+                notification.success({message: "Видалено успішно"})
+            }
+        }
+    }
 
     return (
         <Flex vertical={true}>
@@ -178,13 +217,15 @@ const ChatWindow: FC<ChatProps> = ({
 
                     <MessageList setUnreadMessagesCount={setUnreadMessagesCount}
                                  unreadMessagesCount={unreadMessagesCount}
-                                 setMessages={setMessages}
                                  chat={chat}
                                  messages={messages}
                                  saveLastReadMessageId={saveLastReadMessageId}
                                  lastReadMessageId={lastReadMessageId}
                                  onEditMessage={onEditMessage}
                                  editMessage={editMessage}
+                                 onReplyMessage={onReplyMessage}
+                                 replyMessage={replyMessage}
+                                 onDeleteMessage={onDeleteMessage}
                     />
                     <Flex style={{display: isScrollDownButtonActive ? "flex" : "none"}} onClick={toBottom} className={"unreadMessagesFloatButtonWrapper"}>
                         <Badge count={unreadMessagesCount} color={"#8f4c58"}>
@@ -198,6 +239,8 @@ const ChatWindow: FC<ChatProps> = ({
                            filterTypingUsers={filterTypingUsers}
                            editMessage={editMessage}
                            setEditMessage={setEditMessage}
+                           replyMessage={replyMessage}
+                           setReplyMessage={setReplyMessage}
                 />
             </Flex>
         </Flex>

@@ -1,7 +1,11 @@
 
 
 
-.isEdit {
+.isHighlighted {
     background-color: rgba(33, 27, 26, 0.34);
-    transition: background-color 300ms;
+    transition: background-color 400ms;
+}
+
+.stopHighlight {
+    background-color: rgba(0, 0, 0, 0)!important;
 }

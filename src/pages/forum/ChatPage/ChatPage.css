@@ -52,6 +52,19 @@
 
 }
 
+.repliedMessage {
+    cursor: pointer;
+    background-color: #00000030;
+    border-left: #282A3E solid;
+    padding: 5px;
+    width: 100%;
+    transition: background-color 300ms;
+}
+
+.repliedMessage:hover {
+    background-color: rgba(0, 0, 0, 0.3);
+}
+
 .senderName {
     font-size: 15px;
     font-weight: 300;

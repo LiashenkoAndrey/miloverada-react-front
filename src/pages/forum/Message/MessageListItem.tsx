@@ -1,10 +1,7 @@
-import React, {FC, useCallback, useContext, useEffect, useRef} from 'react';
-import {App, Dropdown, Flex, Image, MenuProps} from "antd";
-import {Chat, DeleteMessageDto, Message} from "../../../API/services/forum/ForumInterfaces";
+import React, {FC, useCallback, useEffect, useRef} from 'react';
+import {Dropdown, Flex, Image, MenuProps} from "antd";
+import {Chat, Message} from "../../../API/services/forum/ForumInterfaces";
 import {useAuth0} from "@auth0/auth0-react";
-import {deleteMessageById} from "../../../API/services/forum/MessageService";
-import {AuthContext} from "../../../context/AuthContext";
-import {useStompClient} from "react-stomp-hooks";
 import {toTime} from "../../../API/Util";
 import MessageImages from "./MessageImages/MessageImages";
 import './Message.css'
@@ -12,12 +9,12 @@ import './Message.css'
 interface MessageProps {
     message : Message
     observer? : IntersectionObserver
-    setMessages :  React.Dispatch<React.SetStateAction<Message[]>>
-    messages: Array<Message>
     chat?: Chat,
-    omMessageImageUpdate : Function
     onEditMessage : (message : Message) => void
     editMessage? : Message
+    onReplyMessage : (message : Message) => void
+    replyMessage? : Message
+    onDeleteMessage : (messageId : number) => void
 }
 
 
@@ -25,15 +22,15 @@ const MessageListItem: FC<MessageProps> = ({
                                                message,
                                                chat,
                                                observer,
-                                               setMessages,
-                                               messages,
-                                               onEditMessage, editMessage
+                                               onEditMessage,
+                                               editMessage,
+                                               replyMessage,
+                                               onReplyMessage,
+                                               onDeleteMessage
                                            }) => {
-    const messageRef = useRef(null)
+    const messageRef = useRef<HTMLDivElement>(null)
     const {isAuthenticated} = useAuth0()
-    const {jwt, setJwt} = useContext(AuthContext)
-    const {notification} = App.useApp();
-    const stompClient = useStompClient()
+
 
     useEffect(() => {
         if (isAuthenticated) {
@@ -65,55 +62,22 @@ const MessageListItem: FC<MessageProps> = ({
     ];
 
     async function doAction(action : string, messageId : number) {
-        if (jwt) {
-            switch (action) {
-                case 'reply':
-                    break
-                case 'edit':
-                    console.log("edit msg", messageId)
-                    onEditMessage(message)
-                    // updateMessage()
-                    break
-                case 'delete':
-                    console.log("delete msg", messageId)
-                    const {error} = await deleteMessageById(messageId, jwt)
-                    if (error) {
-                        notification.error({message: "can't delete message"})
-                    } else {
-                        setMessages(messages.filter((msg) => msg.id !== messageId))
-                        notifyThatMessageWasDeleted(messageId)
-                        notification.success({message: "Видалено успішно"})
-                    }
-                    break
-            }
+        switch (action) {
+            case 'reply':
+                console.log("reply msg", messageId)
+                onReplyMessage(message)
+                break
+            case 'edit':
+                console.log("edit msg", messageId)
+                onEditMessage(message)
+                break
+            case 'delete':
+                console.log("delete msg", messageId)
+                onDeleteMessage(messageId)
+                break
         }
     }
-    // todo add update message feature
-    // const updateMsg = async (messageId : number, jwt : string) => {
-    //     const {error} = await updateMessage(jwt)
-    //     if (error) {
-    //         notification.error({message: "can't update message"})
-    //     } else {
-    //         setMessages(messages.filter((msg) => msg.id !== messageId))
-    //         notifyThatMessageWasDeleted(messageId)
-    //         notification.success({message: "Видалено успішно"})
-    //     }
-    // }
 
-
-    const notifyThatMessageWasDeleted = (messageId : number) => {
-        if (stompClient && chat?.id) {
-            const body : DeleteMessageDto = {
-                messageId : messageId,
-                chatId : chat?.id
-            }
-
-            stompClient.publish({
-                destination : "/app/userMessage/wasDeleted",
-                body : JSON.stringify(body)
-            })
-        } else notification.error({message : "can't notify that deleted message"})
-    }
 
     const onSelectAction: MenuProps['onClick'] = ({key})   => {
         console.log("action", key)
@@ -121,16 +85,20 @@ const MessageListItem: FC<MessageProps> = ({
         doAction(arr[0], Number(arr[1]))
     }
 
-    const isEdit = useCallback(() => {
+    const isHighlighted = useCallback(() => {
         if (editMessage !== undefined) {
-            if (editMessage.id === message.id) return "isEdit"
+            if (editMessage.id === message.id) return "isHighlighted"
+        }
+        if (replyMessage !== undefined) {
+            if (replyMessage.id === message.id) return "isHighlighted";
         }
         return ""
-    }, [editMessage, message.id]);
+    }, [editMessage, message.id, replyMessage]);
+
 
     
     return (
-        <div style={{width: "100%", paddingLeft: 5}} className={isEdit()}>
+        <div style={{width: "100%", paddingLeft: 5}} className={isHighlighted()} id={"msgWrapper-" + message.id}>
             <Dropdown disabled={!isAuthenticated}
                       menu={{items : messageMenuItems, onClick : onSelectAction}}
                       trigger={['contextMenu']}
@@ -164,7 +132,31 @@ const MessageListItem: FC<MessageProps> = ({
                         </span>
                         </Flex>
                         <Flex vertical style={{marginTop: 3}}>
-                            <span style={{fontWeight: "bold", display: "block"}}>{message.id}</span>
+                            <span style={{fontWeight: "bold", display: "none"}}>{message.id}</span>
+
+                            {message.repliedMessage &&
+                                <Flex onClick={() => {
+                                    console.log("msgWrapper-" + message.repliedMessage.id)
+                                    let msg = document.getElementById("msgWrapper-" + message.repliedMessage.id)
+                                    console.log(message)
+                                    if (msg) {
+                                        console.log(msg)
+                                        msg.classList.add("isHighlighted")
+                                        setTimeout(() => {
+                                            msg?.classList.add("stopHighlight")
+
+                                        }, 1200)
+
+                                        setTimeout(() => {
+                                          msg?.classList.remove("stopHighlight","isHighlighted")
+                                        }, 1600)
+                                        msg.scrollIntoView({behavior: "smooth", inline: "start", block: "nearest"})
+                                    }
+                                }} className={"repliedMessage"} vertical>
+                                    <span>{message.repliedMessage.text}</span>
+                                </Flex>
+                            }
+
                             <MessageImages
                                 message={message}
                                 chat={chat}

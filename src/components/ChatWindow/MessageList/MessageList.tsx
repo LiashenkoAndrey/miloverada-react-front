@@ -11,9 +11,11 @@ interface MessageListProps {
     setUnreadMessagesCount : React.Dispatch<React.SetStateAction<number | undefined>>
     saveLastReadMessageId(messageId: number): void
     lastReadMessageId? : number
-    setMessages :  React.Dispatch<React.SetStateAction<Message[]>>
     onEditMessage : (message : Message) => void
     editMessage? : Message
+    onReplyMessage : (message : Message) => void
+    replyMessage? : Message
+    onDeleteMessage : (messageId : number) => void
 }
 
 const MessageList: FC<MessageListProps> = ({
@@ -22,8 +24,12 @@ const MessageList: FC<MessageListProps> = ({
                                                setUnreadMessagesCount,
                                                unreadMessagesCount,
                                                saveLastReadMessageId,
-                                               setMessages,
-                                               lastReadMessageId,onEditMessage, editMessage
+                                               lastReadMessageId,
+                                               onEditMessage,
+                                               editMessage,
+                                               onReplyMessage,
+                                               replyMessage,
+                                               onDeleteMessage
                                            }) => {
 
     const readMessagesObserver = useRef<IntersectionObserver>()
@@ -103,12 +109,6 @@ const MessageList: FC<MessageListProps> = ({
         }
     }, [newSeenMessageId]);
 
-    const imageUpdateInputRef = useRef<HTMLInputElement | null>(null)
-
-
-    const omMessageImageUpdate = () => {
-        imageUpdateInputRef.current?.click()
-    }
 
     return (
         <Flex id={"msgWrapper"} className={"messagesWrapper"} vertical={true}>
@@ -116,13 +116,13 @@ const MessageList: FC<MessageListProps> = ({
                 ?
                 messages.map((msg) =>
                         <MessageListItem
+                            onDeleteMessage={onDeleteMessage}
                             onEditMessage={onEditMessage}
-                            omMessageImageUpdate={omMessageImageUpdate}
+                            replyMessage={replyMessage}
+                            onReplyMessage={onReplyMessage}
                             chat={chat}
-                            messages={messages}
                             observer={readMessagesObserver.current}
                             key={"msg-" + msg.id}
-                            setMessages={setMessages}
                             message={msg}
                             editMessage={editMessage}
                         />

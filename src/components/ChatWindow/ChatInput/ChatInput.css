@@ -30,6 +30,16 @@
     background-color: #05a100 !important;
 }
 
+.replyBtn {
+    cursor: pointer;
+    background-color: #989a00;
+    transition: background-color 400ms!important;
+}
+
+.replyBtn:hover {
+    background-color: #a3a800 !important;
+}
+
 .toolBtn {
     border: none;
 }

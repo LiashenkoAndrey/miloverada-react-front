@@ -11,6 +11,7 @@ import EditMessage from "../EditMessage/EditMessage";
 import TextareaAutosize from 'react-textarea-autosize';
 import {AuthContext} from "../../../context/AuthContext";
 import {updateMessage} from "../../../API/services/forum/MessageService";
+import ReplyToMessage from "../ReplyToMessage/ReplyToMessage";
 
 interface ChatInputProps {
     stompClient? : Client
@@ -20,6 +21,8 @@ interface ChatInputProps {
     setInput :  React.Dispatch<React.SetStateAction<string>>
     setEditMessage :  React.Dispatch<React.SetStateAction<Message | undefined>>
     editMessage? : Message
+    setReplyMessage : React.Dispatch<React.SetStateAction<Message | undefined>>
+    replyMessage? : Message
 }
 
 
@@ -28,7 +31,11 @@ const ChatInput: FC<ChatInputProps> = ({
                                            editMessage,
                                            stompClient,
                                            chatId,
-                                           filterTypingUsers, input, setInput
+                                           filterTypingUsers,
+                                           input,
+                                           setInput,
+                                           replyMessage,
+                                           setReplyMessage
                                        }) => {
 
     const {isAuthenticated, user} = useAuth0()
@@ -88,7 +95,8 @@ const ChatInput: FC<ChatInputProps> = ({
                         return {
                             base64Image : file
                         }
-                    })
+                    }),
+                    replyToMessageId: replyMessage?.id
                 }
                 const body = JSON.stringify(messageDto)
 
@@ -100,6 +108,7 @@ const ChatInput: FC<ChatInputProps> = ({
                         'content-type': 'application/json'
                     }}
                 )
+                setEditMessage(undefined)
                 filterTypingUsers(user?.sub)
                 onStopTyping()
                 setFileList([])
@@ -176,15 +185,22 @@ const ChatInput: FC<ChatInputProps> = ({
 
     const [btnClass, setBtnClass] = useState<string>("")
     const [btnText, setBtnText] = useState<string>("Відправити")
+
     useEffect(() => {
-        if (editMessage) {
+        if (editMessage !== undefined) {
             setBtnClass("editBtn")
             setBtnText("Редагувати")
-        } else {
-            setBtnClass("sendBtn")
-            setBtnText("Відправити")
+            return;
         }
-    }, [editMessage]);
+        if (replyMessage !== undefined) {
+            setBtnClass("replyBtn")
+            setBtnText("Відповісти")
+            return
+        }
+        setBtnClass("sendBtn")
+        setBtnText("Відправити")
+
+    }, [editMessage, replyMessage]);
 
 
     const isBtnsActive = useCallback(() => {
@@ -207,6 +223,13 @@ const ChatInput: FC<ChatInputProps> = ({
                 editMessage={editMessage}
                 setEditMessage={setEditMessage}
             />
+            <ReplyToMessage
+                inputRef={inputRef}
+                setFileList={setFileList}
+                replyMessage={replyMessage}
+                setReplyMessage={setReplyMessage}
+            />
+
             <Flex style={{alignSelf: "flex-end", width: "100%", padding: 3, backgroundColor: "rgba(255,255,255,0.1)"}}>
 
                 <Tooltip title={isAuthenticated ? "" : "Спочатку авторизуйтеся"}>
