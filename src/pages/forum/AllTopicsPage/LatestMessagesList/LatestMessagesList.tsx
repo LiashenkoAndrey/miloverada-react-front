@@ -3,7 +3,7 @@ import {Empty, Flex, Image} from "antd";
 import {toTime} from "../../../../API/Util";
 import {Message} from "../../../../API/services/forum/ForumInterfaces";
 import {getLatestMessages} from "../../../../API/services/forum/MessageService";
-
+import './LatestMessages.css'
 
 const LatestMessagesList : FC = () => {
 
@@ -24,7 +24,7 @@ const LatestMessagesList : FC = () => {
     return (
         <Flex vertical>
             <h3 style={{color: "var(--forum-primary-title-color)"}}>Нові повідомлення</h3>
-            <Flex className={"messagesWrapper"} vertical={true}>
+            <Flex className={"latestMessagesWrapper"} vertical={true}>
                 {latestMessages.length > 0
                     ?
                     latestMessages.map((msg) =>

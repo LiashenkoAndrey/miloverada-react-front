@@ -1,0 +1,15 @@
+
+
+.latestMessagesWrapper {
+    max-height: 600px;
+    max-width: 200px;
+    overflow-x: hidden;
+    height: inherit;
+    scrollbar-width: thin;          /* "auto" or "thin" */
+    scrollbar-color: rgba(108, 108, 108, 0.62) rgba(255, 165, 0, 0);   /* scroll thumb and track */
+    padding: 8px;
+    align-self: flex-start;
+    overflow-y: scroll;
+    width: 100%;
+
+}
