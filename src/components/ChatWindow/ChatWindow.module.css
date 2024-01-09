@@ -1,0 +1,30 @@
+
+
+@media (max-width: 600px) {
+    .chat {
+        height: 90vh !important;
+        width: 100% !important;
+    }
+
+    .chatWindow {
+        max-width: 100% !important;
+    }
+}
+
+.chatWindow {
+    height: 100vh;
+    max-width: 50vw;
+}
+
+.chat {
+    position: relative;
+    width: 50vw;
+    height: 700px;
+    background-color: var(--chat-bg-color);
+    /*background-image: url("https://wallpapercave.com/wp/wp9875549.jpg");*/
+    /*background-image: url("https://i.pinimg.com/736x/67/37/ec/6737ecdb57c1381079cede4a35b1a5d4.jpg");*/
+    /*background-image: url("https://wallpapers.com/images/hd/whatsapp-chat-background-fb34cc4b2hg9lmix.jpg");*/
+    /*background-position: center;*/
+    /*background-repeat: no-repeat;*/
+    /*background-size: cover;*/
+}

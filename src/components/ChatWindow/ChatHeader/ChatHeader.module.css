@@ -1,4 +1,10 @@
 
+@media (max-width: 600px) {
+    .chatHeader {
+        height: 10vh;
+        width: 100% !important;
+    }
+}
 
 .chatHeader {
     padding: 3px 10px;

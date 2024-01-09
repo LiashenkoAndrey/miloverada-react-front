@@ -9,7 +9,18 @@
     background-color: #C1C1D7;
 }
 
+.pageWrapper {
+    padding: 20px 0;
+    max-width: 800vw;
+    width: 100%;
+}
+
+.TopicsList {
+    width: inherit;
+}
+
 .chat {
+    width: fit-content;
     user-select: none;
     transition: background-color 100ms;
     cursor: pointer;
@@ -19,8 +30,27 @@
 }
 
 .topic {
+    width: fit-content;
     padding: 5px;
     border-top-right-radius: 8px;
     border-top-left-radius: 8px;
     background-color: var(--forum-secondary-bg-color);
+}
+
+@media (max-width: 600px) {
+    .pageWrapper {
+        max-width: 95vw;
+    }
+
+    .TopicsList {
+        padding: 10px;
+        width: 100%;
+    }
+    .topic {
+        width: 100%;
+    }
+
+    .chat {
+        width: 100%;
+    }
 }

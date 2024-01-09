@@ -154,67 +154,70 @@ const ChatPage = () => {
     }
 
     return (
-        <ForumWrapper style={{maxWidth: "90vw", width: "100%", marginBottom: 200}}>
-            <Flex gap={5} vertical style={{marginTop: "5vh"}}>
-                <Flex vertical={false} align={"center"} gap={30}>
+        <Flex className={"chatPageWrapper"} align={"flex-start"} justify={"center"}>
+            <Flex wrap={"wrap"}  gap={20} justify={"center"}>
+                <Flex style={{display: "none"}} justify={"flex-start"} className={"chatsWrapper"} gap={5} vertical>
+                    <Flex  justify={"center"} vertical={false} align={"center"} gap={30}>
 
-                    <Button onClick={() => nav(-1)}
-                            style={{maxWidth: 150, color: "black"}}
-                            icon={<LeftOutlined/>}
-                            type={"text"}>
-                        Назад
-                    </Button>
+                        <Button onClick={() => nav(-1)}
+                                style={{maxWidth: 150, color: "black"}}
+                                icon={<LeftOutlined/>}
+                                type={"text"}>
+                            Назад
+                        </Button>
 
-                    <Breadcrumb style={{color: "black"}}>
-                        <Breadcrumb.Item>
-                            <Button onClick={() => nav("/")}
-                                    type={"text"}
-                                    size={"small"}
-                                    style={{color: "black"}}>
-                                Головна
-                            </Button>
-                        </Breadcrumb.Item>
-                    </Breadcrumb>
+                        <Breadcrumb style={{color: "black"}}>
+                            <Breadcrumb.Item>
+                                <Button onClick={() => nav("/")}
+                                        type={"text"}
+                                        size={"small"}
+                                        style={{color: "black"}}>
+                                    Головна
+                                </Button>
+                            </Breadcrumb.Item>
+                        </Breadcrumb>
+                    </Flex>
+
+                    {chats.length > 0
+                        ?
+                        chats.map((chat) =>
+                            <Flex className={"chatBarItem"}
+                                  key={"chat-" + chat.id}
+                                  align={"center"} gap={20}
+                                  onClick={() => onChatChanged(Number(chat.id))}
+                            >
+                                <Image preview={false} src={chat.picture} width={50} height={50}/>
+                                <Flex vertical>
+                                    <p>{chat.name}</p>
+                                    <span>{chat.description}</span>
+                                </Flex>
+                            </Flex>
+                        )
+                        :
+                        <Skeleton/>
+                    }
                 </Flex>
 
-                {chats.length > 0
-                    ?
-                    chats.map((chat) =>
-                        <Flex className={"chatBarItem"}
-                              key={"chat-" + chat.id}
-                              align={"center"} gap={20}
-                              onClick={() => onChatChanged(Number(chat.id))}
-                        >
-                            <Image preview={false} src={chat.picture} width={50} height={50}/>
-                            <Flex vertical>
-                                <p>{chat.name}</p>
-                                <span>{chat.description}</span>
-                            </Flex>
-                        </Flex>
-                    )
-                    :
-                    <Skeleton/>
-                }
+
+                <StompSessionProvider url={'http://localhost:6060/ws-endpoint'}>
+                    <ChatWindow typingUsers={typingUsers}
+                                setTypingUsers={setTypingUsers}
+                                chat={chat}
+                                chatId={currentChatId}
+                                setMessages={setMessages}
+                                messages={messages}
+                                lastReadMessageId={lastReadMessageId}
+                                setLastReadMessageId={setLastReadMessageId}
+                                unreadMessagesCount={unreadMessagesCount}
+                                setUnreadMessagesCount={setUnreadMessagesCount}
+                                nextMessagePageBottom={nextMessagePageBottom}
+
+                    />
+                </StompSessionProvider>
             </Flex>
+        </Flex>
 
 
-            <StompSessionProvider url={'http://localhost:6060/ws-endpoint'}>
-                <ChatWindow typingUsers={typingUsers}
-                            setTypingUsers={setTypingUsers}
-                            chat={chat}
-                            chatId={currentChatId}
-                            setMessages={setMessages}
-                            messages={messages}
-                            lastReadMessageId={lastReadMessageId}
-                            setLastReadMessageId={setLastReadMessageId}
-                            unreadMessagesCount={unreadMessagesCount}
-                            setUnreadMessagesCount={setUnreadMessagesCount}
-                            nextMessagePageBottom={nextMessagePageBottom}
-
-                />
-            </StompSessionProvider>
-
-        </ForumWrapper>
     );
 };
 

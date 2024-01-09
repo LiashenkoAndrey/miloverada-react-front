@@ -2,20 +2,28 @@ import React from 'react';
 import './Footer.css'
 import {Button, Flex} from "antd";
 import './Footer.css'
+import {useLocation} from "react-router-dom";
 const Footer = () => {
-    return (
-        <Flex justify={"flex-start"} align={"center"} style={{backgroundColor: "#232235FF", padding: "30px 0"}}>
-            <Flex  className={"footerBody"}>
-                <h1 className={"footerTitle"}>Милівська сільська територіальна громада</h1>
 
-                <Flex vertical={true} gap={20}>
-                    <Flex gap={5}>
+    const { pathname } = useLocation();
+
+    return (
+        <Flex className={"footerWrapper"} justify={"flex-start"} align={"center"} style={{display: pathname.includes("chat") ? "none" : "flex"}} >
+            <Flex wrap={"wrap"}  className={"footerBody"}>
+                <h1 className={"footerTitle"}>Милівська сільська територіальна громада</h1>
+                {pathname.includes("chat") ?
+                    <span>ok</span>
+                    :
+                    <span>no {pathname}</span>
+                }
+                <Flex vertical={true} wrap={"wrap"} gap={20}>
+                    <Flex wrap={"wrap"} gap={5}>
                         <Button>Новини</Button>
                         <Button>Документи</Button>
                         <Button>Пошук</Button>
                     </Flex>
 
-                    <Flex gap={5}>
+                    <Flex wrap={"wrap"} gap={5}>
                         <Button>ЦНАП</Button>
                         <Button>Військова адміністрація</Button>
                         <Button>Фдміністрація</Button>

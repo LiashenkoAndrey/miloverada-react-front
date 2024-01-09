@@ -7,6 +7,7 @@ import TopicsList from "./TopicsList/TopicsList";
 import {useAuth0} from "@auth0/auth0-react";
 import NewTopic from "../../../components/NewTopic";
 import ForumNavbar from "../../../components/ForumNavbar/ForumNavbar";
+import classes from './AllForumTopicsPage.module.css'
 
 const AllForumTopicsPage = () => {
     const [topics, setTopics] = useState<Array<Topic>>([]);
@@ -26,16 +27,16 @@ const AllForumTopicsPage = () => {
 
 
     return (
-        <Flex align={"flex-start"} justify={"center"}
-              style={{paddingTop: "16vh", minHeight: "100vh", backgroundColor: "var(--forum-primary-bg-color)"}}>
-            <Flex style={{maxWidth: "80vw", width: "100%"}} gap={10} justify={"center"}>
+        <Flex wrap={"wrap"} align={"flex-start"} justify={"center"}
+              style={{paddingTop: "5vh", minHeight: "100vh", backgroundColor: "var(--forum-primary-bg-color)"}}>
+            <Flex wrap={"wrap"} className={classes.pageWrapper} gap={10} justify={"center"}>
                 <ForumNavbar>
                     <Flex vertical>
                         <span style={{color: "black", fontSize: 20, marginBottom: 5}}>Теми</span>
                         <NewTopic getTopics={getTopics} isAuth={isAuthenticated}/>
                     </Flex>
                 </ForumNavbar>
-                <Flex vertical style={{width: "inherit", maxWidth: "40vw"}}>
+                <Flex className={classes.TopicsList} vertical>
                     <h1 style={{color: "var(--forum-primary-title-color)", marginTop: 0}}>Форум</h1>
                     <Flex gap={13} vertical>
                         <TopicsList  topics={topics}/>
