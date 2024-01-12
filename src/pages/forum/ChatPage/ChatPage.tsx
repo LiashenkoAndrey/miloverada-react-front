@@ -199,7 +199,7 @@ const ChatPage = () => {
                 </Flex>
 
 
-                <StompSessionProvider url={'https://v2.miloverada.gov.ua:8443/ws-endpoint'}>
+                <StompSessionProvider url={'http://localhost:6060/ws-endpoint'}>
                     <ChatWindow typingUsers={typingUsers}
                                 setTypingUsers={setTypingUsers}
                                 chat={chat}

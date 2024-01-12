@@ -117,8 +117,16 @@ const ChatWindow: FC<ChatProps> = ({
     }, [messages]);
 
     const onChatMessagesSubscribe = (message: IMessage) => {
-        const data = JSON.parse(message.body)
-        // console.log("new message", data)
+        const data : Message = JSON.parse(message.body)
+
+        console.log("my message, ", data.sender.id === user?.sub)
+        if (data.sender.id === user?.sub) {
+            setTimeout(() => {
+                const lastMessage = document.getElementById("msgId-" + messages[messages.length-1].id)
+                lastMessage?.scrollIntoView({behavior: "smooth", block: 'center'});
+            }, 5)
+        }
+
         setInput('')
         let msg = messages === undefined ? [] : messages;
         if (chat !== undefined) {
