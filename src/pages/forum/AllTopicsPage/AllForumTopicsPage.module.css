@@ -39,25 +39,37 @@
     }
 }
 
+.infoBar {
+    order: 3;
+}
+
 .TopicsList {
+    order: 2;
     width: 100%;
     max-width: 55vw;
 }
 
 @media (max-width: 600px) {
 
-
-
+    .infoBar {
+        order: 2;
+    }
 
     .pageWrapper {
+        margin-top: 70px;
+        display: grid!important;
         padding-top: 5vh;
         max-width: 95vw;
     }
 
+
     .TopicsList {
+        order: 0!important;
         max-width: inherit;
         padding: 0;
     }
+
+
     .topic {
         width: 100%;
     }

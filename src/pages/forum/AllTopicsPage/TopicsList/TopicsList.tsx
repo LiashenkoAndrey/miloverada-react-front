@@ -27,13 +27,7 @@ const TopicsList: FC<TopicsListProps> = ({topics}) => {
                             <span className={"topicName"} onClick={() => nav("/topic/" + topic.id)}>
                                 {topic.name}:
                             </span>
-                            <span style={{
-                                fontSize: 16,
-                                fontWeight: 700,
-                                color: "#282A3E"
-                            }}>
-                                {topic.description}
-                            </span>
+
                         </Flex>
 
                         <ChatsList chats={topic.chats} topicId={topic.id}/>

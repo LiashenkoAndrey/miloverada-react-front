@@ -16,6 +16,15 @@ export const newUser = (user : NewUserDto, accessToken : string) => {
 }
 
 
+export const getActiveUsersAmount = () => {
+    const config = {
+        url: `${apiServerUrl}/api/forum/activeUsers`,
+        method: "GET",
+    }
+    return callAndGetResult(config)
+}
+
+
 export const userIsRegistered = (userId : string, accessToken : string) => {
     const config = {
         url: `${apiServerUrl}/api/protected/user/isRegistered/id/${encodeURIComponent(userId)}`,

@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {Col, Flex, Statistic} from "antd";
+import {Col, Flex, Skeleton, Statistic} from "antd";
 import {Topic} from "../../../API/services/forum/ForumInterfaces";
 import {getAllTopics} from "../../../API/services/forum/TopicService";
 import LatestMessagesList from "./LatestMessagesList/LatestMessagesList";
@@ -8,9 +8,11 @@ import {useAuth0} from "@auth0/auth0-react";
 import NewTopic from "../../../components/NewTopic";
 import ForumNavbar from "../../../components/ForumNavbar/ForumNavbar";
 import classes from './AllForumTopicsPage.module.css'
+import {getActiveUsersAmount} from "../../../API/services/forum/UserService";
 
 const AllForumTopicsPage = () => {
     const [topics, setTopics] = useState<Array<Topic>>([]);
+    const [activeUsersAmount, setActiveUsersAmount] = useState<number>()
     const {isAuthenticated } = useAuth0()
 
     const getTopics = async () => {
@@ -21,8 +23,17 @@ const AllForumTopicsPage = () => {
         if (error) throw error;
     }
 
+    const getUsersAmount = async () => {
+        const {data, error} = await getActiveUsersAmount();
+        if (data) {
+            setActiveUsersAmount(data)
+        }
+        if (error) throw error;
+    }
+
     useEffect(() => {
         getTopics()
+        getUsersAmount()
     }, []);
 
 
@@ -43,11 +54,16 @@ const AllForumTopicsPage = () => {
                     </Flex>
                 </Flex>
 
-                <Flex vertical>
+                <Flex className={classes.infoBar} vertical>
 
                     <LatestMessagesList />
 
-                    <Statistic style={{padding : 15}} title="Активних користувачів" value={112893} />
+                    {activeUsersAmount
+                        ?
+                        <Statistic style={{padding : 15}} title="Активних користувачів" value={activeUsersAmount} />
+                        :
+                        <Skeleton active/>
+                    }
                 </Flex>
             </Flex>
         </Flex>

@@ -34,7 +34,6 @@ const ChatsList: FC<ChatsListProps> = ({chats, topicId}) => {
                             <Image src={chat.picture} preview={false} width={50} height={50}></Image>
                             {/*<WechatOutlined style={{fontSize: 30}}/>*/}
                             <h4>{chat.name}</h4>
-                            <h4>{chat.description}</h4>
                         </Flex>
 
                         <Flex gap={15}>
@@ -44,7 +43,6 @@ const ChatsList: FC<ChatsListProps> = ({chats, topicId}) => {
                             <Flex gap={5}>
                                 <Image style={{borderRadius: 20}} preview={false} width={30} height={30}
                                        src={chat.owner.avatar}></Image>
-                                <span>{chat.owner.name}</span>
                             </Flex>
                         </Flex>
                     </Flex>

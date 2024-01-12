@@ -4,7 +4,7 @@ import {Chat, Message} from "../../../API/services/forum/ForumInterfaces";
 import {useAuth0} from "@auth0/auth0-react";
 import {toTime} from "../../../API/Util";
 import MessageImages from "./MessageImages/MessageImages";
-import './Message.css'
+import  classes from  './Message.module.css'
 
 interface MessageProps {
     message : Message
@@ -104,7 +104,7 @@ const MessageListItem: FC<MessageProps> = ({
                       trigger={['contextMenu']}
             >
                 <Flex ref={messageRef}
-                      className={"message"}
+                      className={classes.message}
                       id={"msgId-" + message.id}
                       gap={8}
                 >
@@ -112,7 +112,7 @@ const MessageListItem: FC<MessageProps> = ({
                         <Image
                             preview={false}
                             style={{cursor: "pointer"}}
-                            className={"messageImg nonSelect"}
+                            className={classes.messageImg}
                             width={35}
                             height={35}
                             src={message.sender.avatar}
@@ -126,8 +126,8 @@ const MessageListItem: FC<MessageProps> = ({
                               align={"center"}
                               justify={"space-between"}
                         >
-                            <span className={"senderName"}>{message.sender.name}</span>
-                            <span className={"messageDate"} style={{margin: 0, alignSelf: "flex-end"}}>
+                            <span className={classes.senderName}>{message.sender.firstName}</span>
+                            <span className={classes.messageDate} style={{margin: 0, alignSelf: "flex-end"}}>
                             {toTime(message.createdOn)}
                         </span>
                         </Flex>
@@ -161,7 +161,7 @@ const MessageListItem: FC<MessageProps> = ({
                                 message={message}
                                 chat={chat}
                             />
-                            <pre className={"messageText"} style={{margin: 0, alignSelf: "flex-end"}}>
+                            <pre className={classes.messageText} style={{margin: 0, alignSelf: "flex-end"}}>
                             {message.text}
                             </pre>
                         </Flex>

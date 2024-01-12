@@ -1,4 +1,4 @@
-import React, {FC} from 'react';
+import React, {FC, useState} from 'react';
 import {Button, Flex, Image, Skeleton} from "antd";
 import {Chat, ForumUserDto, User} from "../../../API/services/forum/ForumInterfaces";
 import classes from './ChatHeader.module.css'
@@ -6,6 +6,7 @@ import {useSubscription} from "react-stomp-hooks";
 import {IMessage} from "@stomp/stompjs/src/i-message";
 import {LeftOutlined} from "@ant-design/icons";
 import {useNavigate} from "react-router-dom";
+import ChatSettings from "../../ChatSettings/ChatSettings";
 
 interface ChatHeaderProps {
     chat? : Chat,
@@ -23,11 +24,12 @@ const ChatHeader: FC<ChatHeaderProps> = ({
                                              filterTypingUsers
                                          }) => {
 
+    const [isSettingsActive, setIsSettingsActive] = useState<boolean>(false)
     const nav = useNavigate()
     const onUsersStartTyping = (message : IMessage) => {
         console.log("start typing", message)
         const userDto : ForumUserDto = JSON.parse( message.body)
-        setTypingUsers([{name: userDto.name, id: userDto.id},...typingUsers])
+        setTypingUsers([{firstName: userDto.name, id: userDto.id},...typingUsers])
     }
 
     const onUsersStopTyping = (message : IMessage) => {
@@ -52,9 +54,9 @@ const ChatHeader: FC<ChatHeaderProps> = ({
 
                 <Flex gap={20} align={"center"}>
                     <span className={classes.chatName}>{chat.name}</span>
-                    <span className={classes.chatDescription}>{chat.description}</span>
                 </Flex>
                 <Image preview={false}
+                       onClick={() => setIsSettingsActive(true)}
                        className={"nonSelect " + classes.chatPicture}
                        width={40}
                        height={40}
@@ -74,7 +76,7 @@ const ChatHeader: FC<ChatHeaderProps> = ({
                                 {typingUsers.length > 0
                                     ?
                                     typingUsers.map((user) =>
-                                        <span key={"typingUser-" + user.id}>{user.name} пише...</span>
+                                        <span key={"typingUser-" + user.id}>{user.firstName} пише...</span>
                                     )
                                     : <></>
                                 }
@@ -86,6 +88,10 @@ const ChatHeader: FC<ChatHeaderProps> = ({
                 </Flex>
                 <span>{chat.totalMessagesAmount} повідомлень</span>
             </Flex>
+
+            {isSettingsActive &&
+                <ChatSettings chat={chat}  setIsSettingsActive={setIsSettingsActive} />
+            }
         </Flex>)
         :
         (<Skeleton style={{height: 50}} active/>)

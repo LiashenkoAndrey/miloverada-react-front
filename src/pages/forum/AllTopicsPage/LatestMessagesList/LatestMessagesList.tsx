@@ -3,7 +3,7 @@ import {Empty, Flex, Image} from "antd";
 import {toTime} from "../../../../API/Util";
 import {Message} from "../../../../API/services/forum/ForumInterfaces";
 import {getLatestMessages} from "../../../../API/services/forum/MessageService";
-import './LatestMessages.css'
+import classes from './LatestMessages.module.css'
 
 const LatestMessagesList : FC = () => {
 
@@ -22,13 +22,13 @@ const LatestMessagesList : FC = () => {
 
 
     return (
-        <Flex vertical>
+        <Flex className={classes.latestMessagesWrapper} vertical>
             <h3 style={{color: "var(--forum-primary-title-color)"}}>Нові повідомлення</h3>
-            <Flex className={"latestMessagesWrapper"} vertical={true}>
+            <Flex className={classes.latestMessages} vertical={true}>
                 {latestMessages.length > 0
                     ?
                     latestMessages.map((msg) =>
-                        <Flex className={"message"}
+                        <Flex className={classes.message}
                               key={"msg-"+msg.id}
                               gap={8}
                         >
@@ -37,7 +37,7 @@ const LatestMessagesList : FC = () => {
                             </div>
                             <Flex vertical={true}>
                                 <Flex style={{position: "relative"}} className={"nonSelect"} gap={5} align={"center"} justify={"space-between"}>
-                                    <span className={"senderName"}>{msg.sender.name}</span>
+                                    <span className={"senderName"}>{msg.sender.firstName}</span>
                                     <span className={"messageDate"} style={{margin: 0, alignSelf: "flex-end"}} >{toTime(msg.createdOn)}</span>
                                 </Flex>
                                 <div style={{marginTop: 3}}>
