@@ -1,0 +1,36 @@
+
+
+.ChatSettings {
+    padding: 10px;
+    z-index: 10;
+    left: 0;
+    top: -2px;
+    height: fit-content;
+    width: inherit;
+    background-color: #A5978B;
+    border: solid #645650 3px;
+    position: absolute;
+}
+
+.chatPicture {
+    object-fit: cover;
+    cursor: pointer;
+    border-radius: 15px;
+    padding: 5px;
+}
+
+.chatDescription {
+    font-size: 20px;
+    font-weight: 900;
+    color: var(--forum-primary-title-color);
+}
+
+.userLink {
+    cursor: pointer;
+    color: #5252f1;
+    transition: color 300ms;
+}
+
+.userLink:hover {
+    color: #2b2bf8;
+}

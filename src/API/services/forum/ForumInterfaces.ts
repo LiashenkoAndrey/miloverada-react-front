@@ -51,6 +51,7 @@ export interface Chat {
     picture : string,
     owner : User,
     totalMessagesAmount : number
+    createdOn : string[]
 }
 
 
@@ -80,7 +81,8 @@ export interface NewChat {
 
 export interface User {
     id? : string,
-    name? : string,
+    firstName? : string,
+    lastName? : string,
     avatar? : string
 }
 

@@ -3,6 +3,7 @@ import {Empty, Flex} from "antd";
 import {Chat, Message} from "../../../API/services/forum/ForumInterfaces";
 import MessageListItem from "../../../pages/forum/Message/MessageListItem";
 import {useAuth0} from "@auth0/auth0-react";
+import classes from './MessageList.module.css'
 
 interface MessageListProps {
     messages: Array<Message>
@@ -111,7 +112,7 @@ const MessageList: FC<MessageListProps> = ({
 
 
     return (
-        <Flex id={"msgWrapper"} className={"messagesWrapper"} vertical={true}>
+        <Flex id={"msgWrapper"} className={classes.messagesWrapper} vertical={true}>
             {messages.length > 0
                 ?
                 messages.map((msg) =>

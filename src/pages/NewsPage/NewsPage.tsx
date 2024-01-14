@@ -68,8 +68,8 @@ const NewsPage = () => {
 
     return (
         <Flex justify={"center"}>
-            <Flex vertical={true} justify={"center"}  className={"newsPage"} style={{maxWidth: "60vw"}}>
-                <Flex vertical={false} align={"center"}  gap={30} style={{marginBottom: 20}}>
+            <Flex vertical={true} justify={"center"}  className={"newsPage"} >
+                <Flex vertical={false} align={"center"}  gap={5} style={{marginBottom: 20}}>
                     <Button onClick={() => nav(-1)} style={{maxWidth: 150}} icon={<LeftOutlined />} type={"text"}>Назад</Button>
                     <Breadcrumb>
                         <Breadcrumb.Item><Button onClick={() => nav("/")} type={"text"} size={"small"}>Головна</Button> </Breadcrumb.Item>
@@ -108,7 +108,7 @@ const NewsPage = () => {
                 <Flex justify={"space-between"}>
                     <Button size={"large"} style={{fontSize: 18, height:"fit-content"}}>Новини громади</Button>
 
-                    <Flex gap={10}>
+                    <Flex wrap={"wrap"} gap={10}>
                         <ShareAltOutlined style={{fontSize: 40, cursor: "pointer"}} />
                         <TwitterOutlined style={{fontSize: 40, cursor: "pointer"}} />
                         <InstagramFilled style={{fontSize: 40, cursor: "pointer"}} />

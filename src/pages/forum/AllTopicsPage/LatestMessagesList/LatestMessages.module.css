@@ -1,0 +1,40 @@
+
+
+.latestMessages {
+    max-height: 600px;
+    max-width: 200px;
+    overflow-x: hidden;
+    height: inherit;
+    scrollbar-width: thin;          /* "auto" or "thin" */
+    scrollbar-color: rgba(108, 108, 108, 0.62) rgba(255, 165, 0, 0);   /* scroll thumb and track */
+    padding: 8px;
+    align-self: flex-start;
+    overflow-y: scroll;
+    width: 100%;
+}
+
+
+
+
+@media (max-width: 600px) {
+
+    .latestMessagesWrapper {
+        width: 80vw;
+    }
+
+    .latestMessages {
+        max-width: inherit;
+    }
+
+}
+
+.message {
+    transition: display 1s;
+    width: fit-content;
+    padding: 0 10px 10px 10px;
+    color: #FFF;
+    border-radius: 2px;
+    margin: 5px 3em 5px 0;
+    background-color: var(--message-bg-color);
+    font-family: 'Libre Baskerville', serif;
+}

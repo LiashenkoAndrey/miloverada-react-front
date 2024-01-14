@@ -17,7 +17,7 @@ const NewChatModal : FC<NewChatModalProps> = ({topicId}) => {
     const pictureUrl = useInput()
     const {  notification } = App.useApp();
     const {user, isAuthenticated} = useAuth0()
-    const {jwt, setJwt} = useContext(AuthContext)
+    const {jwt} = useContext(AuthContext)
 
     const showModal = () => {
         setIsModalOpen(true);

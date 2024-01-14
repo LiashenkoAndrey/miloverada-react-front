@@ -1,7 +1,6 @@
-import React, {useCallback, useContext, useEffect} from 'react';
-import ForumWrapper from "../components/ForumWrapper/ForumWrapper";
+import React, {useContext, useEffect} from 'react';
 import {LoadingOutlined} from "@ant-design/icons";
-import {useNavigate, useParams, useSearchParams} from "react-router-dom";
+import {useNavigate, useSearchParams} from "react-router-dom";
 import {useAuth0} from "@auth0/auth0-react";
 import {Button, Flex} from "antd";
 import {AuthContext} from "../context/AuthContext";
@@ -10,9 +9,9 @@ import {NewUserDto} from "../API/services/forum/ForumInterfaces";
 
 const IsRegisteredCheckPage = () => {
 
-    const [searchParams, setSearchParams] = useSearchParams();
+    const [searchParams, ] = useSearchParams();
     const {user, isAuthenticated} = useAuth0()
-    const {jwt, setJwt} = useContext(AuthContext)
+    const {jwt,} = useContext(AuthContext)
     const nav = useNavigate()
 
 

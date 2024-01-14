@@ -9,7 +9,7 @@ import {
     UserOutlined
 } from "@ant-design/icons";
 import {useAuth0} from "@auth0/auth0-react";
-
+import './ForumNavbar.css'
 interface ForumNavbarProps {
     children?: React.ReactNode;
 }
@@ -35,8 +35,10 @@ const ForumNavbar : FC<ForumNavbarProps> = (props) => {
         });
     }
 
+
+
     return (
-        <Flex vertical gap={40} style={{width: 200, paddingTop: 70, paddingRight: 10}}>
+        <Flex className={"ForumNavbarWrapper"} vertical gap={40}>
 
             <Flex vertical style={{ color: "black"}} gap={5}>
                 <Button icon={<HomeOutlined style={{color: "black"}} />}>Головна</Button>

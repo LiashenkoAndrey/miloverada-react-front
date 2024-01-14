@@ -9,18 +9,72 @@
     background-color: #C1C1D7;
 }
 
+.pageWrapper {
+    max-width: 800vw;
+    width: 100%;
+}
+
+
 .chat {
+    width: 100%;
     user-select: none;
     transition: background-color 100ms;
     cursor: pointer;
     padding: 5px 10px;
-    background-color: var(--forum-secondary-bg-color);
+    background-color: #D9D1CA;
     border: solid rgba(92, 71, 66, 0.15) 3px ;
 }
 
 .topic {
+    width: 100%;
     padding: 5px;
     border-top-right-radius: 8px;
     border-top-left-radius: 8px;
-    background-color: var(--forum-secondary-bg-color);
+    background-color: #D0CECB;
+}
+
+@media (min-width: 600px) {
+    .pageWrapper {
+        padding-top: 15vh;
+    }
+}
+
+.infoBar {
+    order: 3;
+}
+
+.TopicsList {
+    order: 2;
+    width: 100%;
+    max-width: 55vw;
+}
+
+@media (max-width: 600px) {
+
+    .infoBar {
+        order: 2;
+    }
+
+    .pageWrapper {
+        margin-top: 70px;
+        display: grid!important;
+        padding-top: 5vh;
+        max-width: 95vw;
+    }
+
+
+    .TopicsList {
+        order: 0!important;
+        max-width: inherit;
+        padding: 0;
+    }
+
+
+    .topic {
+        width: 100%;
+    }
+
+    .chat {
+        width: 100%;
+    }
 }

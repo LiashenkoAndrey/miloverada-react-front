@@ -1,0 +1,56 @@
+
+
+
+.isHighlighted {
+    background-color: rgba(33, 27, 26, 0.34);
+    transition: background-color 400ms;
+}
+
+.stopHighlight {
+    background-color: rgba(0, 0, 0, 0)!important;
+}
+
+@media (max-width: 600px) {
+    .message {
+        max-width: 82vw;
+    }
+}
+
+.message {
+    transition: display 1s;
+    width: fit-content;
+    padding: 0 10px 10px 10px;
+    color: #FFF;
+    border-radius: 2px;
+    margin: 5px 3em 5px 0;
+    background-color: var(--message-bg-color);
+    font-family: 'Libre Baskerville', serif;
+}
+
+.messageImg {
+    min-width: 35px;
+    border-radius: 5px;
+}
+
+.messageText {
+    white-space: pre-wrap;
+    color: #FFF;
+    font-weight: 400;
+    margin-top: 3px;
+    font-family: 'Source Serif 4', serif;
+}
+
+.messageDate {
+    position: relative;
+    top: -2px;
+    color: rgba(189, 189, 189, 0.94);
+    font-size: 12px;
+    font-weight: 400;
+    font-family: serif;
+}
+
+
+.senderName {
+    font-size: 15px;
+    font-weight: 300;
+}

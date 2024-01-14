@@ -1,22 +1,7 @@
 
 
 
-.message {
-    transition: display 1s;
-    width: fit-content;
-    padding: 0 10px 10px 10px;
-    color: #FFF;
-    border-radius: 2px;
-    margin: 5px 3em 5px 0;
-    /*background-color: #46304A;*/
-    background-color: var(--message-bg-color);
-    font-family: 'Libre Baskerville', serif;
-}
 
-.messageImg {
-    min-width: 35px;
-    border-radius: 5px;
-}
 
 .loadNewMessagesHandler {
     height: 4px;
@@ -25,32 +10,8 @@
     top: 0px;
 }
 
-.messagesWrapper {
-    scrollbar-width: thin;          /* "auto" or "thin" */
-    scrollbar-color: rgba(108, 108, 108, 0.62) rgba(255, 165, 0, 0);   /* scroll thumb and track */
-    padding: 8px;
-    align-self: flex-start;
-    overflow-y: scroll;
-    width: 100%;
-
-}
 
 
-.messagesWrapper::-webkit-scrollbar-thumb {
-    background-color: rgba(108, 108, 108, 0.62);    /* color of the scroll thumb */
-}
-
-.messagesWrapper::-webkit-scrollbar-track {
-    background: rgba(255, 165, 0, 0);        /* color of the tracking area */
-}
-
-.messagesWrapper::-webkit-scrollbar {
-    width: 8px;               /* width of the entire scrollbar */
-}
-
-.user {
-
-}
 
 .repliedMessage {
     cursor: pointer;
@@ -65,27 +26,7 @@
     background-color: rgba(0, 0, 0, 0.3);
 }
 
-.senderName {
-    font-size: 15px;
-    font-weight: 300;
-}
 
-.messageText {
-    white-space: pre-wrap;
-    color: #FFF;
-    font-weight: 400;
-    margin-top: 3px;
-    font-family: 'Source Serif 4', serif;
-}
-
-.messageDate {
-    position: relative;
-    top: -2px;
-    color: rgba(189, 189, 189, 0.94);
-    font-size: 12px;
-    font-weight: 400;
-    font-family: serif;
-}
 
 
 .chatBarItem {
@@ -140,8 +81,46 @@
 
 }
 
+.chatPageWrapper {
+    min-height: 100vh;
+
+    background-color: var(--forum-primary-bg-color);
+}
 
 
+@media (min-width: 600px) {
+
+    .chatWrapper {
+        display: flex;
+        max-width: 70vw;
+        width: 100%;
+    }
+}
+
+@media (max-width: 600px) {
+
+    .chatPageWrapper {
+        padding-top: 0;
+    }
+
+    .chatsWrapper {
+        display: none;
+        /*padding: 5px;*/
+        /*margin-top: 10px!important;*/
+        /*width: 100vw!important;*/
+    }
+
+    .chatBarItem {
+        max-width: inherit;
+        width: 100% !important;
+    }
+}
+
+
+.chatsWrapper {
+    margin-top: 5vh;
+    max-width: 300px;
+}
 
 .unreadMessagesFloatButton:active {
     background: radial-gradient(circle, #C4BBAF 0%, #8D5B4C 100%);
@@ -152,15 +131,3 @@
     transform: translate(-45%, -66%) !important;
 }
 
-.chat {
-    position: relative;
-    width: 50vw;
-    height: 700px;
-    background-color: var(--chat-bg-color);
-    /*background-image: url("https://wallpapercave.com/wp/wp9875549.jpg");*/
-    /*background-image: url("https://i.pinimg.com/736x/67/37/ec/6737ecdb57c1381079cede4a35b1a5d4.jpg");*/
-    /*background-image: url("https://wallpapers.com/images/hd/whatsapp-chat-background-fb34cc4b2hg9lmix.jpg");*/
-    /*background-position: center;*/
-    /*background-repeat: no-repeat;*/
-    /*background-size: cover;*/
-}

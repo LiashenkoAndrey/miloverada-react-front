@@ -1,5 +1,5 @@
-import React, {FC, Ref, useCallback, useContext, useEffect, useRef, useState} from 'react';
-import {App, Button, Flex, Input, Tooltip} from "antd";
+import React, {FC, useCallback, useContext, useEffect, useRef, useState} from 'react';
+import {App, Button, Flex, Tooltip} from "antd";
 import {FileAddOutlined, FileImageOutlined, GlobalOutlined, RightOutlined} from "@ant-design/icons";
 import {useAuth0} from "@auth0/auth0-react";
 import {ForumUserDto, Message, UpdateMessageDto} from "../../../API/services/forum/ForumInterfaces";
@@ -250,7 +250,7 @@ const ChatInput: FC<ChatInputProps> = ({
                         <Button className={"toolBtn"} onClick={openImageUpload} disabled={isBtnsActive()} icon={<FileImageOutlined style={{fontSize: 22}} />}/>
                         <Button className={"toolBtn"} disabled={isBtnsActive()} icon={<GlobalOutlined style={{fontSize: 22}} />}/>
                     </Flex>
-                    <Button disabled={!isAuthenticated} onClick={() => editMessage !== undefined ? updateMsg() : onSend()} type={"primary"} className={btnClass} icon={<RightOutlined />}>{btnText}</Button>
+                    <Button style={{border: "none"}} disabled={!isAuthenticated} onClick={() => editMessage !== undefined ? updateMsg() : onSend()} type={"primary"} className={btnClass} icon={<RightOutlined />}>{btnText}</Button>
                 </Flex>
             </Flex>
         </Flex>

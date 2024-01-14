@@ -1,0 +1,16 @@
+
+
+.ForumNavbarWrapper {
+    width: 200px;
+    padding-top: 70px;
+    padding-right: 10px;
+    order: 1;
+}
+
+
+
+@media (max-width: 600px) {
+    .ForumNavbarWrapper {
+        order: 3;
+    }
+}

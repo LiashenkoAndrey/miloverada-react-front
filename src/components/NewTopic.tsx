@@ -14,7 +14,7 @@ interface NewTopicProps {
 const NewTopic: FC<NewTopicProps> = ({isAuth, getTopics}) => {
 
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const { message, notification, modal } = App.useApp();
+    const { notification } = App.useApp();
     const {jwt} = useContext(AuthContext)
     const showModal = () => {
         setIsModalOpen(true);
@@ -97,7 +97,7 @@ const NewTopic: FC<NewTopicProps> = ({isAuth, getTopics}) => {
       </>
         :
         <Tooltip title="Вам потрібно авторизуватися" placement="topLeft">
-            <Button disabled={isAuth} onClick={showModal} ghost icon={<PlusCircleOutlined/>}>Нова тема</Button>
+            <Button disabled={isAuth} onClick={showModal} icon={<PlusCircleOutlined/>}>Нова тема</Button>
         </Tooltip>
 };
 
