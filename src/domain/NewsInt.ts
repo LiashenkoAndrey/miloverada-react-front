@@ -9,4 +9,5 @@ export interface INews {
     main_text? : string,
     newsType? : string
     style? : React.CSSProperties | undefined
+    views : number
 }

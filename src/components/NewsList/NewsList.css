@@ -59,11 +59,20 @@
 }
 
 .wideNewsCard div:first-of-type,
-.wideNewsCard div:last-of-type
+.wideNewsCard div:nth-of-type(6)
 {
     max-width: 580px;
     max-height: 355px;
     position: relative;
+}
+
+.wideNewsCard div:first-of-type .views .eye ,
+.wideNewsCard div:nth-of-type(6) .views .eye {
+    color: white!important;
+}
+
+.wideNewsCard {
+
 }
 
 .wideNewsCard div:first-of-type img,

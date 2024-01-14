@@ -35,3 +35,11 @@ export const getLatestNews = (pageSize: number) => {
     }
     return callAndGetResult(config)
 }
+
+export const incrementNewsViews = (id : number) => {
+    const config = {
+        url: `${apiServerUrl}/api/news/${id}/incrementViews`,
+        method: "POST"
+    }
+    return callAndGetResult(config)
+}

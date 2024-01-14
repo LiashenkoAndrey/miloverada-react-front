@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {useNavigate, useParams} from "react-router-dom";
-import {getLatestNews, getNewsById, getSimilarNews} from "../../API/services/NewsService";
+import {getLatestNews, getNewsById, getSimilarNews, incrementNewsViews} from "../../API/services/NewsService";
 import {Breadcrumb, Button, Col, Flex, Image, Row, Skeleton} from "antd";
 import {INews} from "../../domain/NewsInt";
 import {getImageUrl} from "../../API/services/ImageService";
@@ -15,39 +15,52 @@ const NewsPage = () => {
     const [additionalNews, setAdditionalNewsNews] = useState()
     const nav = useNavigate();
 
-    useEffect(() => {
-        const getNews = async () => {
-            const {data, error} = await getNewsById(Number(id))
-            if (data) {
-                setNews(data)
-            } else throw error
-        }
+    const getNews = async () => {
+        const {data, error} = await getNewsById(Number(id))
+        if (data) {
+            setNews(data)
+        } else throw error
+    }
 
-        const getSimilarOrLatest = async () => {
-            const {data, error} = await getSimilarNews(Number(id))
-            if (data) {
-                console.log(data, data.length)
-                if (data.length > 0) {
-                    setAdditionalNewsNews(data)
-                } else {
-                    await getLatest()
-                }
-            }
-            if (error) throw error
-        }
-
-        const getLatest = async () => {
-            console.log("LAtest!")
-            const {data, error} = await getLatestNews(3)
-            if (data) {
-                console.log(data, "latest")
+    const getSimilarOrLatest = async () => {
+        const {data, error} = await getSimilarNews(Number(id))
+        if (data) {
+            console.log(data, data.length)
+            if (data.length > 0) {
                 setAdditionalNewsNews(data)
-            } else throw error
+            } else {
+                await getLatest()
+            }
         }
+        if (error) throw error
+    }
+
+    const getLatest = async () => {
+        console.log("LAtest!")
+        const {data, error} = await getLatestNews(3)
+        if (data) {
+            console.log(data, "latest")
+            setAdditionalNewsNews(data)
+        } else throw error
+    }
+
+    const incrementViews = async (id : number) => {
+        const {data, error} = await incrementNewsViews(id);
+        if (data) {
+            console.log("increment ok")
+        } else throw error
+    }
+
+    useEffect(() => {
+        getNews()
 
         if (id !== undefined) {
             getNews();
             getSimilarOrLatest()
+
+            setTimeout(() => {
+                incrementViews(Number(id))
+            }, 5000)
         } else {
             console.log("id is null")
         }
@@ -88,7 +101,9 @@ const NewsPage = () => {
                     :
                     <Skeleton active/>
                 }
+                <span style={{display: "block"}} className={"newsPageViews"}>{news?.views} переглядів</span>
                 <div style={{borderTop: "solid #c0c0bf 1px", margin: "20px 0"}}></div>
+
 
                 <Flex justify={"space-between"}>
                     <Button size={"large"} style={{fontSize: 18, height:"fit-content"}}>Новини громади</Button>

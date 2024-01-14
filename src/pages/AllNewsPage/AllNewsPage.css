@@ -12,6 +12,7 @@
 }
 
 .AllNewsList .newsCard {
+    position: relative;
     box-shadow: none;
     font-family: 'Source Serif 4', serif;
     background-color: #FFF;

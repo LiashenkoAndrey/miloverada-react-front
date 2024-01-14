@@ -8,7 +8,7 @@ import {INews} from "../../domain/NewsInt";
 
 const AllNewsPage = () => {
 
-    const [news, setNews] = useState([])
+    const [news, setNews] = useState<INews[]>([])
 
 
     useEffect(() => {
@@ -29,10 +29,7 @@ const AllNewsPage = () => {
                     ?
                     <Flex className={"NewsWrapper"}>
                         <NewsCard style={{maxHeight: 730, maxWidth:570}}
-                                  description={(news[0] as INews).description}
-                                  image_id={(news[0] as INews).image_id}
-                                  id={(news[0] as INews).id}
-                                  newsType={(news[0] as INews).newsType}
+                                  news={news[0]}
                         />
                         <NewsList name={"AllNewsList"} newsList={news.slice(1)}/>
                     </Flex>

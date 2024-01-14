@@ -32,10 +32,10 @@ const MainPage = () => {
             <div className={"mainImg"}></div>
             <Flex vertical={true} className={"content"}>
                 <Flex vertical={true} align={"center"} style={{backgroundColor: "#fff", paddingBottom: 70}}>
-                    <h1 style={{fontSize: "3.0517578125em"}}>A Societal Mission</h1>
+                    <h1 style={{fontSize: "3.0517578125em"}}>Вітаємо!</h1>
 
                     <p style={{maxWidth: "70vw", fontSize: "1.953125em", fontWeight: 300, textAlign: "center"}}>
-                        Stanford was founded almost 150 years ago on a bedrock of societal purpose. Our mission is to contribute to the world by educating students for lives of leadership and contribution with integrity; advancing fundamental knowledge and cultivating creativity; leading in pioneering research for effective clinical therapies; and accelerating solutions and amplifying their impact.
+                        Вітаємо на офіційному сайті Милівської сільської територіальної громади, тут ви можете дізнаться останні новини, завантижити документи, поспілкуватся на форумі та багато іншого...
                     </p>
 
                     <RedButton text={"Читати далі"}/>
