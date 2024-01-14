@@ -7,6 +7,7 @@ import RedButton from "./RedButton";
 import {useFetching} from "../../API/hooks/useFetching";
 import NewsListLoader from "../../components/NewsList/NewsListLoader";
 import {useNavigate} from "react-router-dom";
+import BannersList from "../../components/BannersList/BannersList";
 
 
 
@@ -40,6 +41,8 @@ const MainPage = () => {
 
                     <RedButton text={"Читати далі"}/>
                 </Flex>
+
+                <BannersList/>
 
                 <Flex vertical={true} align={"center"} style={{backgroundColor: "#f4f4f4", paddingTop: 30}}>
                     <h1 style={{fontSize: "3.0517578125em", marginBottom: 0}}>Новини громади</h1>

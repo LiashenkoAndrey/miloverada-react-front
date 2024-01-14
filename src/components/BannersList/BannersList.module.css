@@ -1,0 +1,56 @@
+
+.bannersList {
+    padding-bottom: 50px;
+}
+.banner {
+    background-color: rgb(244, 244, 244);
+    position: relative;
+    border: rgba(88, 87, 84, 0.11) solid 1px;
+    border-radius: 5px;
+    padding: 10px;
+    font-weight: 300;
+    font-size: 1.953125em;
+    max-width: 400px;
+}
+
+.bannerTime {
+    position: absolute;
+    top: 0;
+    right: 10px;
+    font-size: 14px;
+    font-weight: 00;
+}
+
+.bannerBtn {
+    color: black;
+    background-color: #cde0f6;
+    width: fit-content;
+    padding: 5px 15px;
+    border-radius: 5px;
+    font-size: 18px;
+
+    cursor: pointer;
+    transition: background-image 2s;
+}
+
+.bannerBtn:hover {
+    color: white;
+    background-image: linear-gradient(
+            45deg,
+            hsl(240deg 100% 20%) 0%,
+            hsl(289deg 100% 21%) 11%,
+            hsl(315deg 100% 27%) 22%,
+            hsl(329deg 100% 36%) 33%,
+            hsl(337deg 100% 43%) 44%,
+            hsl(357deg 91% 59%) 56%,
+            hsl(17deg 100% 59%) 67%,
+            hsl(34deg 100% 53%) 78%,
+            hsl(45deg 100% 50%) 89%,
+            hsl(55deg 100% 50%) 100%
+    );
+}
+
+
+.textBannerBtn {
+
+}
