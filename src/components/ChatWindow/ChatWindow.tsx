@@ -61,13 +61,11 @@ const ChatWindow: FC<ChatProps> = ({
 
     const onUserDeletesMessage = (message : IMessage) => {
         const deletedMessageDto : DeleteMessageDto = JSON.parse(message.body)
-        console.log("delete message event", deletedMessageDto)
         setMessages(messages.filter((msg) => msg.id !== deletedMessageDto.messageId))
     }
 
     const onUserDeletesMessageImage = (message : IMessage) => {
         const dto : DeleteMessageImageDto = JSON.parse(message.body)
-        console.log("delete message image event", dto)
         let foundMessage : Message | undefined = messages.find((msg) => msg.id === dto.messageId)
         if (foundMessage) {
             let filtered = foundMessage.imagesList.filter((img) => img.imageId !== dto.imageId)
@@ -79,7 +77,6 @@ const ChatWindow: FC<ChatProps> = ({
 
     const onUserUpdatedMessage = (message : IMessage) => {
         const dto : UpdateMessageDto = JSON.parse(message.body)
-        console.log("update message event", dto)
         let foundMessage : Message | undefined = messages.find((msg) => msg.id === dto.id)
         if (foundMessage) {
             foundMessage.text = dto.text
@@ -123,12 +120,6 @@ const ChatWindow: FC<ChatProps> = ({
         return userId === user?.sub
     }
 
-    useEffect(() => {
-        if (isNeedScrollToBottom) {
-            scrollToBottom()
-        }
-    }, [isNeedScrollToBottom]);
-
     function scrollToBottom() {
         setTimeout(() => {
             const lastMessage = document.getElementById("msgId-" + messages[messages.length-1].id)
@@ -139,7 +130,7 @@ const ChatWindow: FC<ChatProps> = ({
     const onChatMessagesSubscribe = (message: IMessage) => {
         const data : Message = JSON.parse(message.body)
 
-        if (isMyMessage(data.sender.id)) {
+        if (isMyMessage(data.sender.id) || isNeedScrollToBottom) {
             scrollToBottom()
         }
 
