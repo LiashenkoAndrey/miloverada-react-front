@@ -7,13 +7,13 @@
     }
 
     .chatWindow {
-        max-width: 100% !important;
+        width: 100%;
     }
 }
 
 .chatWindow {
+    overflow-y: hidden;
     height: 100vh;
-    max-width: 50vw;
 }
 
 
@@ -26,6 +26,7 @@
 }
 
 .chat {
+
     position: relative;
     height: 86vh;
     background-color: var(--chat-bg-color);

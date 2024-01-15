@@ -216,14 +216,15 @@ const ChatWindow: FC<ChatProps> = ({
     }
 
     return (
-        <Flex className={chat_classes.chatWindow} justify={"center"} vertical={true}>
+        <Flex className={chat_classes.chatWindow} justify={"space-between"} vertical={true}>
             <ChatHeader typingUsers={typingUsers}
                         chatId={chatId}
                         setTypingUsers={setTypingUsers}
                         chat={chat}
                         filterTypingUsers={filterTypingUsers}
             />
-            <Flex vertical={true} className={chat_classes.chat} justify={"space-between"}>
+            <Flex style={{backgroundColor: "black", flexGrow: 1, overflowY: "hidden"}}>
+                <Flex vertical={true} className={chat_classes.chat} justify={"space-between"}>
                     <MessageList setUnreadMessagesCount={setUnreadMessagesCount}
                                  unreadMessagesCount={unreadMessagesCount}
                                  chat={chat}
@@ -241,17 +242,18 @@ const ChatWindow: FC<ChatProps> = ({
                             <DownOutlined className={"unreadMessagesFloatButton"} />
                         </Badge>
                     </Flex>
-                <ChatInput chatId={chatId}
-                           input={input}
-                           setInput={setInput}
-                           stompClient={stompClient}
-                           filterTypingUsers={filterTypingUsers}
-                           editMessage={editMessage}
-                           setEditMessage={setEditMessage}
-                           replyMessage={replyMessage}
-                           setReplyMessage={setReplyMessage}
-                />
+                </Flex>
             </Flex>
+            <ChatInput chatId={chatId}
+                       input={input}
+                       setInput={setInput}
+                       stompClient={stompClient}
+                       filterTypingUsers={filterTypingUsers}
+                       editMessage={editMessage}
+                       setEditMessage={setEditMessage}
+                       replyMessage={replyMessage}
+                       setReplyMessage={setReplyMessage}
+            />
         </Flex>
     );
 };
