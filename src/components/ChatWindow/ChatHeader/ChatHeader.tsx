@@ -27,7 +27,6 @@ const ChatHeader: FC<ChatHeaderProps> = ({
     const [isSettingsActive, setIsSettingsActive] = useState<boolean>(false)
     const nav = useNavigate()
     const onUsersStartTyping = (message : IMessage) => {
-        console.log("start typing", message)
         const userDto : ForumUserDto = JSON.parse( message.body)
         setTypingUsers([{firstName: userDto.name, id: userDto.id},...typingUsers])
     }

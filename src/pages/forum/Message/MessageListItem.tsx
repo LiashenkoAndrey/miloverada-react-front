@@ -36,8 +36,6 @@ const MessageListItem: FC<MessageProps> = ({
         if (isAuthenticated) {
             if (observer && messageRef.current) {
                 observer.observe(messageRef.current)
-            } else {
-                console.log("one is null", observer, messageRef.current)
             }
         }
     }, [messageRef]);

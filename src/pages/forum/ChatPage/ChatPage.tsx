@@ -68,7 +68,6 @@ const ChatPage = () => {
 
     const scrollToBottom = () => {
         const chatBottom = document.getElementById("chatBottom")
-        console.log(chatBottom)
         chatBottom?.scrollIntoView({behavior: "smooth", block: 'nearest'});
     }
 
@@ -107,11 +106,8 @@ const ChatPage = () => {
     }, [currentBottomChatPage]);
 
     useEffect(() => {
-        
         console.log("currentChatPage",currentBottomChatPage)
-
         addNewMessagesToBottom(currentBottomChatPage + 1, PAGE_SIZE)
-
     }, [currentBottomChatPage]);
 
     useEffect( () => {

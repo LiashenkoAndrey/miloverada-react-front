@@ -1,6 +1,8 @@
 import {callAndGetResult} from "../ExternalApiService";
 import {apiServerUrl} from "../../Constants";
 import {UpdateMessageDto} from "./ForumInterfaces";
+import {Client} from "@stomp/stompjs";
+import {MessageDto} from "./MessageDto";
 
 export const getLatestMessages = () => {
     const config = {
@@ -16,6 +18,18 @@ export const getLatestMessagesOfChat = (chatId : number) => {
         method: "GET"
     }
     return callAndGetResult(config)
+}
+
+
+export const publishNewMessage = (client :  Client, messageDto : MessageDto) => {
+    const body = JSON.stringify(messageDto)
+    client.publish({
+        destination: '/app/userMessage/new',
+        body: body,
+        headers: {
+            'content-type': 'application/json'
+        }}
+    )
 }
 
 export const deleteMessageById = (id : number, token : string) => {

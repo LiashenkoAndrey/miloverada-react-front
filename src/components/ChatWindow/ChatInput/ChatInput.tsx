@@ -10,8 +10,9 @@ import ImageUpload from "../ImageUpload/ImageUpload";
 import EditMessage from "../EditMessage/EditMessage";
 import TextareaAutosize from 'react-textarea-autosize';
 import {AuthContext} from "../../../context/AuthContext";
-import {updateMessage} from "../../../API/services/forum/MessageService";
+import {publishNewMessage, updateMessage} from "../../../API/services/forum/MessageService";
 import ReplyToMessage from "../ReplyToMessage/ReplyToMessage";
+import {fileToDto} from "../../../API/services/ImageService";
 
 interface ChatInputProps {
     stompClient? : Client
@@ -42,6 +43,10 @@ const ChatInput: FC<ChatInputProps> = ({
     const [isTyping, setIsTyping] = useState<boolean>();
     const {jwt} = useContext(AuthContext)
     const {notification} = App.useApp();
+    const [fileList, setFileList] = useState<string[]>([]);
+    const [isImageUploadActive, setIsImageUploadActive] = useState<boolean>(false)
+
+
     const onStopTyping = () => {
         notifyThatUserStoppedTyping()
         setIsTyping(false)
@@ -81,7 +86,6 @@ const ChatInput: FC<ChatInputProps> = ({
         }
     }, [input]);
 
-    const [fileList, setFileList] = useState<string[]>([]);
 
     const onSend = useCallback(async () => {
         if (input !== '' && input.length < 3000) {
@@ -91,23 +95,12 @@ const ChatInput: FC<ChatInputProps> = ({
                     senderId : user.sub,
                     text: input,
                     chatId: chatId,
-                    imagesDtoList : fileList.map((file) => {
-                        return {
-                            base64Image : file
-                        }
-                    }),
+                    imagesDtoList : fileToDto(fileList),
                     replyToMessageId: replyMessage?.id
                 }
-                const body = JSON.stringify(messageDto)
 
-                console.log("new msg", messageDto)
-                stompClient.publish({
-                    destination: '/app/userMessage/new',
-                    body: body,
-                    headers: {
-                        'content-type': 'application/json'
-                    }}
-                )
+                publishNewMessage(stompClient, messageDto)
+
                 setEditMessage(undefined)
                 filterTypingUsers(user?.sub)
                 onStopTyping()
@@ -120,16 +113,13 @@ const ChatInput: FC<ChatInputProps> = ({
 
 
     const updateMsg = useCallback( async () => {
-        console.log("update", input)
-        if(stompClient && user?.sub && editMessage?.id && jwt) {
 
+        if(stompClient && user?.sub && editMessage?.id && jwt) {
             const messageDto : UpdateMessageDto  = {
                 id : editMessage.id,
                 text: input,
                 chatId: chatId,
             }
-
-            console.log("edit msg", messageDto)
 
             const {data, error} = await updateMessage(messageDto, jwt)
             if (data) {
@@ -137,10 +127,9 @@ const ChatInput: FC<ChatInputProps> = ({
                 setInput('')
             }
             if (error) {
-                throw error
                 notification.error({message: "can't update message"})
+                throw error
             }
-
         } else console.error("Error update")
     }, [input]);
 
@@ -153,7 +142,11 @@ const ChatInput: FC<ChatInputProps> = ({
                     'content-type': 'application/json'
                 }}
             )
-        } else console.info("notifyThatUserStoppedTyping: stompClient is undefined or not auth", stompClient !== undefined, isAuthenticated)
+        } else console.info(
+            "notifyThatUserStoppedTyping: stompClient is undefined or not auth",
+            stompClient !== undefined,
+            isAuthenticated
+        )
     }
 
     const notifyThatUserStartedTyping = () => {
@@ -165,18 +158,17 @@ const ChatInput: FC<ChatInputProps> = ({
                     'content-type': 'application/json'
                 }}
             )
-        } console.info("notifyThatUserStartedTyping: stompClient is undefined or not auth", stompClient !== undefined, isAuthenticated)
+        } console.info(
+            "notifyThatUserStartedTyping: stompClient is undefined or not auth",
+            stompClient !== undefined,
+            isAuthenticated
+        )
     }
-
-
-    const [isImageUploadActive, setIsImageUploadActive] = useState<boolean>(false)
 
 
     const openImageUpload = () => {
         setIsImageUploadActive(true)
     }
-
-
 
     const onImageUploadClose = () => {
         setIsImageUploadActive(false)
