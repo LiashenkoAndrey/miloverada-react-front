@@ -11,7 +11,6 @@ import {LeftOutlined} from "@ant-design/icons";
 import {Chat, ChatMetadata, Message, User} from "../../../API/services/forum/ForumInterfaces";
 import './ChatPage.css'
 import {useNavigate, useParams, useSearchParams} from "react-router-dom";
-import ForumWrapper from "../../../components/ForumWrapper/ForumWrapper";
 import ChatWindow from "../../../components/ChatWindow/ChatWindow";
 import {StompSessionProvider} from "react-stomp-hooks";
 import {useAuth0} from "@auth0/auth0-react";

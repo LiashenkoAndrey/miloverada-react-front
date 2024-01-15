@@ -87,7 +87,9 @@
     background-color: var(--forum-primary-bg-color);
 }
 
-
+.chatWrapper {
+    width: 100%;
+}
 @media (min-width: 600px) {
 
     .chatWrapper {
@@ -104,6 +106,7 @@
     }
 
     .chatsWrapper {
+
         display: none;
         /*padding: 5px;*/
         /*margin-top: 10px!important;*/
