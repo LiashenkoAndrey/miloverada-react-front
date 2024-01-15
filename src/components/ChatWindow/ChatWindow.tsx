@@ -57,6 +57,7 @@ const ChatWindow: FC<ChatProps> = ({
     const [input, setInput] = useState<string>('');
     const {jwt} = useContext(AuthContext)
     const {notification} = App.useApp();
+    const [isNeedScrollToBottom, setIsNeedScrollToBottom] = useState<boolean>(false)
 
     const onUserDeletesMessage = (message : IMessage) => {
         const deletedMessageDto : DeleteMessageDto = JSON.parse(message.body)
@@ -100,7 +101,9 @@ const ChatWindow: FC<ChatProps> = ({
                     console.log("isIntersecting, load...")
                     nextMessagePageBottom()
                     setIsScrollDownButtonActive(false)
+                    setIsNeedScrollToBottom(true)
                 } else {
+                    setIsNeedScrollToBottom(false)
                     setIsScrollDownButtonActive(true)
                 }
             }
@@ -116,15 +119,28 @@ const ChatWindow: FC<ChatProps> = ({
         }
     }, [messages]);
 
+    function isMyMessage(userId : string | undefined) {
+        return userId === user?.sub
+    }
+
+    useEffect(() => {
+        if (isNeedScrollToBottom) {
+            scrollToBottom()
+        }
+    }, [isNeedScrollToBottom]);
+
+    function scrollToBottom() {
+        setTimeout(() => {
+            const lastMessage = document.getElementById("msgId-" + messages[messages.length-1].id)
+            lastMessage?.scrollIntoView({behavior: "smooth", block: 'center'});
+        }, 5)
+    }
+
     const onChatMessagesSubscribe = (message: IMessage) => {
         const data : Message = JSON.parse(message.body)
 
-        console.log("my message, ", data.sender.id === user?.sub)
-        if (data.sender.id === user?.sub) {
-            setTimeout(() => {
-                const lastMessage = document.getElementById("msgId-" + messages[messages.length-1].id)
-                lastMessage?.scrollIntoView({behavior: "smooth", block: 'center'});
-            }, 5)
+        if (isMyMessage(data.sender.id)) {
+            scrollToBottom()
         }
 
         setInput('')
@@ -137,7 +153,6 @@ const ChatWindow: FC<ChatProps> = ({
 
     const saveLastReadMessageId = (messageId : number) => {
         if (user?.sub && stompClient) {
-            // console.log("save", messageId, lastReadMessageId)
             setLastReadMessageId(messageId)
             const dto : LastReadMessageDto = {
                 chatId: chatId,
@@ -145,7 +160,6 @@ const ChatWindow: FC<ChatProps> = ({
                 messageId : messageId
             }
 
-            // console.log("update or save last read message", dto)
             stompClient.publish({
                 destination: '/app/userMessage/lastReadId/update', body: JSON.stringify(dto),
                 headers: {
@@ -153,7 +167,6 @@ const ChatWindow: FC<ChatProps> = ({
                 }}
             )
         } else {
-            console.log(user?.sub, stompClient)
             throw new Error("saveLastReadMessageId error")
         }
     }
