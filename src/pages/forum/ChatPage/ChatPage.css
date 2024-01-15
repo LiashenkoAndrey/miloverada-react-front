@@ -82,7 +82,6 @@
 }
 
 .chatPageWrapper {
-    min-height: 100vh;
 
     background-color: var(--forum-primary-bg-color);
 }
