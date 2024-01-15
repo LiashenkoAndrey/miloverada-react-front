@@ -2,9 +2,10 @@
 
 @media (max-width: 600px) {
 
-    /*html, body {*/
-    /*    overflow-y: hidden;*/
-    /*}*/
+    html, body {
+        overflow-y: hidden;
+        height: 90vh!important;
+    }
 
     .chat {
         width: 100vw !important;
