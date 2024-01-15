@@ -7,7 +7,6 @@
     }
 
     .chat {
-        height: 86vh !important;
         width: 100vw !important;
     }
 
@@ -31,9 +30,8 @@
 }
 
 .chat {
-
+        max-height: 400px;
     position: relative;
-    height: 86vh;
     background-color: var(--chat-bg-color);
     /*background-image: url("https://wallpapercave.com/wp/wp9875549.jpg");*/
     /*background-image: url("https://i.pinimg.com/736x/67/37/ec/6737ecdb57c1381079cede4a35b1a5d4.jpg");*/

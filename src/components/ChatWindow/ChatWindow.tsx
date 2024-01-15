@@ -223,7 +223,7 @@ const ChatWindow: FC<ChatProps> = ({
                         chat={chat}
                         filterTypingUsers={filterTypingUsers}
             />
-            <Flex style={{backgroundColor: "black", flexGrow: 1, overflowY: "hidden"}}>
+            <Flex style={{backgroundColor: "black", overflowY: "hidden"}}>
                 <Flex vertical={true} className={chat_classes.chat} justify={"space-between"}>
                     <MessageList setUnreadMessagesCount={setUnreadMessagesCount}
                                  unreadMessagesCount={unreadMessagesCount}
