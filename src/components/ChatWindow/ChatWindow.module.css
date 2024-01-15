@@ -11,12 +11,13 @@
     }
 
     .chatWindow {
-        height: 92vh;
+        height: 94vh!important;
         width: 100%;
     }
 }
 
 .chatWindow {
+    height: 100vh;
     overflow-y: hidden;
 }
 
