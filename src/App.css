@@ -28,7 +28,7 @@
 }
 
 html, body {
-    height: 90vh;
+    height: 100%;
     overflow-x: hidden;
     font-family: 'Roboto', serif;
     box-sizing: border-box;
