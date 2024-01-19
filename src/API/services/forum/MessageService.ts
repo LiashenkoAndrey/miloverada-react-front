@@ -20,6 +20,14 @@ export const getLatestMessagesOfChat = (chatId : number) => {
     return callAndGetResult(config)
 }
 
+export const getPreviousMessagesOfChat = (chatId : number, fromMessageId : number) => {
+    const config = {
+        url: `${apiServerUrl}/api/forum/chat/${chatId}/messages/previous?fromMessageId=${fromMessageId}`,
+        method: "GET"
+    }
+    return callAndGetResult(config)
+}
+
 
 export const publishNewMessage = (client :  Client, messageDto : MessageDto) => {
     const body = JSON.stringify(messageDto)

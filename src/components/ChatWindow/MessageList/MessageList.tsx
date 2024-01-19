@@ -5,6 +5,8 @@ import MessageListItem from "../../../pages/forum/Message/MessageListItem";
 import {useAuth0} from "@auth0/auth0-react";
 import classes from './MessageList.module.css'
 import {useTypedSelector} from "../../../hooks/useTypedSelector";
+import {compose} from "redux";
+import {useActions} from "../../../hooks/useActions";
 
 interface MessageListProps {
     chat?: Chat,
@@ -34,7 +36,7 @@ const MessageList: FC<MessageListProps> = ({
 
     const readMessagesObserver = useRef<IntersectionObserver>()
     const {isAuthenticated} = useAuth0()
-    const {messages} = useTypedSelector(state => state.chat)
+    const {messages, chatId, hasPreviousMessages} = useTypedSelector(state => state.chat)
     const [newSeenMessageId, setNewSeenMessageId] = useState<number>()
     const [oldSeenMsgID, setOldSeenMsgID] = useState<number>()
 
@@ -109,6 +111,42 @@ const MessageList: FC<MessageListProps> = ({
         }
     }, [newSeenMessageId]);
 
+    const {fetchPreviousMessages} = useActions()
+
+
+
+
+    const intersectionCallback : IntersectionObserverCallback = (entries, observer) => {
+        console.log("intersectionCallback".toUpperCase())
+        const element = entries[0]
+        if (element.isIntersecting) {
+            fetchPreviousMessages(chatId, messages)
+            observer.unobserve(element.target)
+        }
+    };
+
+    const loadPreviousMessagesObserver = new IntersectionObserver(intersectionCallback);
+    const [loadTopTriggerMessageId, setLoadTopTriggerMessageId] = useState<number>(5)
+
+    useEffect(() => {
+        if (hasPreviousMessages) {
+            console.log(messages, "update!")
+            setTimeout(() => {
+                if (messages.length > 0) {
+                    console.log("observerTargetMessage index" ,Math.round((messages.length / 2) / 2), messages)
+                    const observerTargetMessage = messages[Math.round((messages.length / 2) / 2)].id;
+                    let target = document.getElementById("msgId-" + observerTargetMessage)
+                    console.log("target", target)
+                    if (target) {
+                        loadPreviousMessagesObserver.observe(target)
+                    }
+                }
+            }, 300)
+        }
+
+        return () => loadPreviousMessagesObserver.disconnect()
+    }, [messages]);
+
 
     return (
         <Flex id={"msgWrapper"} className={classes.messagesWrapper} vertical={true}>
@@ -116,6 +154,8 @@ const MessageList: FC<MessageListProps> = ({
                 ?
                 messages.map((msg) =>
                         <MessageListItem
+                            loadPreviousMessagesObserver={loadPreviousMessagesObserver}
+                            loadTopTriggerMessageId={loadTopTriggerMessageId}
                             onDeleteMessage={onDeleteMessage}
                             onEditMessage={onEditMessage}
                             replyMessage={replyMessage}

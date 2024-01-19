@@ -31,7 +31,6 @@ interface ChatProps {
     setLastReadMessageId :  React.Dispatch<React.SetStateAction<number | undefined>>
     unreadMessagesCount? : number
     setUnreadMessagesCount : React.Dispatch<React.SetStateAction<number | undefined>>
-    nextMessagePageBottom : () => void
 
 }
 
@@ -44,7 +43,6 @@ const ChatWindow: FC<ChatProps> = ({
                                        setLastReadMessageId,
                                        unreadMessagesCount,
                                        setUnreadMessagesCount,
-    nextMessagePageBottom
                                    }) => {
 
     const {messages} = useTypedSelector(state => state.chat)
@@ -96,7 +94,6 @@ const ChatWindow: FC<ChatProps> = ({
             const callBack: IntersectionObserverCallback = (entries, observer) => {
                 if (entries[0].isIntersecting) {
                     console.log("isIntersecting, load...")
-                    nextMessagePageBottom()
                     setIsScrollDownButtonActive(false)
                     setIsNeedScrollToBottom(true)
                 } else {

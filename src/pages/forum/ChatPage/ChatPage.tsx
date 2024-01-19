@@ -23,8 +23,8 @@ const ChatPage = () => {
 
     const [chats, setChats] = useState<Array<Chat>>([])
 
-    const {messages} = useTypedSelector(state => state.chat)
-    const {setMsg} = useActions()
+    const {messages, chatId} = useTypedSelector(state => state.chat)
+    const {setMsg, fetchPreviousMessages, setChatId, setHasPreviousMessages} = useActions()
 
     const {id} = useParams()
     const [searchParams] = useSearchParams();
@@ -37,11 +37,16 @@ const ChatPage = () => {
 
     const [chatMetadata, setchatMetadata] = useState<ChatMetadata>()
     const [lastReadMessageId, setLastReadMessageId] = useState<number>()
-    const [currentBottomChatPage, setCurrentBottomChatPage] = useState<number>(0)
     const [hasMessages, setHasMessages] = useState<boolean>(true)
     const PAGE_SIZE = 5
 
     useEffect(() => {
+        setHasPreviousMessages(true)
+    }, []);
+
+    useEffect(() => {
+        setChatId(Number(id))
+
         const getChats = async () => {
             const {data, error} = await getAllChatsByThemeId(Number(searchParams.get("topicId")));
             if (data) {
@@ -106,14 +111,7 @@ const ChatPage = () => {
         }
     }
 
-    const nextMessagePageBottom = useCallback(() => {
-        setCurrentBottomChatPage(currentBottomChatPage + 1)
-    }, [currentBottomChatPage]);
 
-    useEffect(() => {
-        console.log("currentChatPage",currentBottomChatPage)
-        addNewMessagesToBottom(currentBottomChatPage + 1, PAGE_SIZE)
-    }, [currentBottomChatPage]);
 
     useEffect( () => {
         if (isAuthenticated) {
@@ -151,6 +149,15 @@ const ChatPage = () => {
             getMetadataAndLoadMessages(chatId)
             changeChat(chatId)
         }
+    }
+
+    const loadPreviousMsg = async () => {
+        console.log("fetchPreviousMessages invoke")
+        fetchPreviousMessages(Number(id), messages)
+    }
+
+    const showState = async () => {
+        console.log("state:", messages.length, chatId)
     }
 
     return (
@@ -196,7 +203,8 @@ const ChatPage = () => {
                         :
                         <Skeleton/>
                     }
-                    <Button>load top</Button>
+                    <Button onClick={loadPreviousMsg}>load top</Button>
+                    <Button onClick={showState}>state</Button>
                 </Flex>
 
 
@@ -209,7 +217,6 @@ const ChatPage = () => {
                                 setLastReadMessageId={setLastReadMessageId}
                                 unreadMessagesCount={unreadMessagesCount}
                                 setUnreadMessagesCount={setUnreadMessagesCount}
-                                nextMessagePageBottom={nextMessagePageBottom}
 
                     />
                 </StompSessionProvider>

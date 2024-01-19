@@ -5,8 +5,11 @@ import {useAuth0} from "@auth0/auth0-react";
 import {toTime} from "../../../API/Util";
 import MessageImages from "./MessageImages/MessageImages";
 import classes from './Message.module.css'
+import {useTypedSelector} from "../../../hooks/useTypedSelector";
 
 interface MessageProps {
+    loadPreviousMessagesObserver : IntersectionObserver | undefined
+    loadTopTriggerMessageId : number | undefined
     message: Message
     observer?: IntersectionObserver
     chat?: Chat,
@@ -19,6 +22,7 @@ interface MessageProps {
 
 
 const MessageListItem: FC<MessageProps> = ({
+                                               loadPreviousMessagesObserver,
                                                message,
                                                chat,
                                                observer,
@@ -30,8 +34,7 @@ const MessageListItem: FC<MessageProps> = ({
                                            }) => {
     const messageRef = useRef<HTMLDivElement>(null)
     const {isAuthenticated} = useAuth0()
-
-
+    const {messages} = useTypedSelector(state => state.chat)
     useEffect(() => {
         if (isAuthenticated) {
             if (observer && messageRef.current) {
@@ -39,6 +42,7 @@ const MessageListItem: FC<MessageProps> = ({
             }
         }
     }, [messageRef]);
+
 
 
     const messageMenuItems: MenuProps['items'] = [
@@ -70,7 +74,6 @@ const MessageListItem: FC<MessageProps> = ({
                 break
         }
     }
-
 
     const onSelectAction: MenuProps['onClick'] = ({key}) => {
         let arr = key.split("-")
@@ -144,7 +147,7 @@ const MessageListItem: FC<MessageProps> = ({
                         </span>
                         </Flex>
                         <Flex vertical style={{marginTop: 3}}>
-                            <span style={{fontWeight: "bold", display: "none"}}>{message.id}</span>
+                            <span style={{fontWeight: "bold"}}>{message.id}</span>
 
                             {message.repliedMessage &&
                                 <Flex onClick={onRepliedMessageLinkClick} className={"repliedMessage"} vertical>

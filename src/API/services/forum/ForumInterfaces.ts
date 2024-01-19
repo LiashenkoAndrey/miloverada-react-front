@@ -1,7 +1,7 @@
 
 
 export interface Message {
-    id? : number,
+    id : number,
     text : string,
     createdOn : string[],
     editedOn : string[],
