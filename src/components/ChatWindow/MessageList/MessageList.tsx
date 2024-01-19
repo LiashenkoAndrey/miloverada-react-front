@@ -7,6 +7,7 @@ import classes from './MessageList.module.css'
 import {useTypedSelector} from "../../../hooks/useTypedSelector";
 import {compose} from "redux";
 import {useActions} from "../../../hooks/useActions";
+import {observeMessage} from "../../../API/services/forum/MessageService";
 
 interface MessageListProps {
     chat?: Chat,
@@ -39,6 +40,7 @@ const MessageList: FC<MessageListProps> = ({
     const {messages, chatId, hasPreviousMessages} = useTypedSelector(state => state.chat)
     const [newSeenMessageId, setNewSeenMessageId] = useState<number>()
     const [oldSeenMsgID, setOldSeenMsgID] = useState<number>()
+    const {fetchPreviousMessages} = useActions()
 
     useEffect(() => {
         if (newSeenMessageId === undefined) {
@@ -111,13 +113,8 @@ const MessageList: FC<MessageListProps> = ({
         }
     }, [newSeenMessageId]);
 
-    const {fetchPreviousMessages} = useActions()
-
-
-
 
     const intersectionCallback : IntersectionObserverCallback = (entries, observer) => {
-        console.log("intersectionCallback".toUpperCase())
         const element = entries[0]
         if (element.isIntersecting) {
             fetchPreviousMessages(chatId, messages)
@@ -126,21 +123,11 @@ const MessageList: FC<MessageListProps> = ({
     };
 
     const loadPreviousMessagesObserver = new IntersectionObserver(intersectionCallback);
-    const [loadTopTriggerMessageId, setLoadTopTriggerMessageId] = useState<number>(5)
 
     useEffect(() => {
         if (hasPreviousMessages) {
-            console.log(messages, "update!")
             setTimeout(() => {
-                if (messages.length > 0) {
-                    console.log("observerTargetMessage index" ,Math.round((messages.length / 2) / 2), messages)
-                    const observerTargetMessage = messages[Math.round((messages.length / 2) / 2)].id;
-                    let target = document.getElementById("msgId-" + observerTargetMessage)
-                    console.log("target", target)
-                    if (target) {
-                        loadPreviousMessagesObserver.observe(target)
-                    }
-                }
+                observeMessage(loadPreviousMessagesObserver, messages)
             }, 300)
         }
 
@@ -154,8 +141,6 @@ const MessageList: FC<MessageListProps> = ({
                 ?
                 messages.map((msg) =>
                         <MessageListItem
-                            loadPreviousMessagesObserver={loadPreviousMessagesObserver}
-                            loadTopTriggerMessageId={loadTopTriggerMessageId}
                             onDeleteMessage={onDeleteMessage}
                             onEditMessage={onEditMessage}
                             replyMessage={replyMessage}

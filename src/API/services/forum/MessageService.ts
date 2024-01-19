@@ -1,6 +1,6 @@
 import {callAndGetResult} from "../ExternalApiService";
 import {apiServerUrl} from "../../Constants";
-import {UpdateMessageDto} from "./ForumInterfaces";
+import {Message, UpdateMessageDto} from "./ForumInterfaces";
 import {Client} from "@stomp/stompjs";
 import {MessageDto} from "./MessageDto";
 
@@ -40,6 +40,8 @@ export const publishNewMessage = (client :  Client, messageDto : MessageDto) => 
     )
 }
 
+
+
 export const deleteMessageById = (id : number, token : string) => {
     const config = {
         url: `${apiServerUrl}/api/protected/forum/message/${id}/delete`,
@@ -61,4 +63,14 @@ export const updateMessage = (message : UpdateMessageDto, token : string) => {
         }
     }
     return callAndGetResult(config)
+}
+
+export const observeMessage = (observer: IntersectionObserver, messages : Message[]) => {
+    if (messages.length > 0) {
+        const observerTargetMessage = messages[Math.round((messages.length / 2) / 2)].id;
+        let target = document.getElementById("msgId-" + observerTargetMessage)
+        if (target) {
+            observer.observe(target)
+        }
+    }
 }

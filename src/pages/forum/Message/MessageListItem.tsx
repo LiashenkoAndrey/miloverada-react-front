@@ -8,8 +8,6 @@ import classes from './Message.module.css'
 import {useTypedSelector} from "../../../hooks/useTypedSelector";
 
 interface MessageProps {
-    loadPreviousMessagesObserver : IntersectionObserver | undefined
-    loadTopTriggerMessageId : number | undefined
     message: Message
     observer?: IntersectionObserver
     chat?: Chat,
@@ -22,7 +20,6 @@ interface MessageProps {
 
 
 const MessageListItem: FC<MessageProps> = ({
-                                               loadPreviousMessagesObserver,
                                                message,
                                                chat,
                                                observer,
@@ -34,7 +31,6 @@ const MessageListItem: FC<MessageProps> = ({
                                            }) => {
     const messageRef = useRef<HTMLDivElement>(null)
     const {isAuthenticated} = useAuth0()
-    const {messages} = useTypedSelector(state => state.chat)
     useEffect(() => {
         if (isAuthenticated) {
             if (observer && messageRef.current) {
@@ -42,7 +38,6 @@ const MessageListItem: FC<MessageProps> = ({
             }
         }
     }, [messageRef]);
-
 
 
     const messageMenuItems: MenuProps['items'] = [
