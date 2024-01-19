@@ -4,9 +4,9 @@ import {Chat, Message} from "../../../API/services/forum/ForumInterfaces";
 import MessageListItem from "../../../pages/forum/Message/MessageListItem";
 import {useAuth0} from "@auth0/auth0-react";
 import classes from './MessageList.module.css'
+import {useTypedSelector} from "../../../hooks/useTypedSelector";
 
 interface MessageListProps {
-    messages: Array<Message>
     chat?: Chat,
     unreadMessagesCount? : number
     setUnreadMessagesCount : React.Dispatch<React.SetStateAction<number | undefined>>
@@ -21,7 +21,6 @@ interface MessageListProps {
 
 const MessageList: FC<MessageListProps> = ({
                                                chat,
-                                               messages,
                                                setUnreadMessagesCount,
                                                unreadMessagesCount,
                                                saveLastReadMessageId,
@@ -35,7 +34,7 @@ const MessageList: FC<MessageListProps> = ({
 
     const readMessagesObserver = useRef<IntersectionObserver>()
     const {isAuthenticated} = useAuth0()
-
+    const {messages} = useTypedSelector(state => state.chat)
     const [newSeenMessageId, setNewSeenMessageId] = useState<number>()
     const [oldSeenMsgID, setOldSeenMsgID] = useState<number>()
 

@@ -19,11 +19,11 @@ import {DownOutlined} from "@ant-design/icons";
 import {deleteMessageById} from "../../API/services/forum/MessageService";
 import {AuthContext} from "../../context/AuthContext";
 import chat_classes from './ChatWindow.module.css'
+import {useActions} from "../../hooks/useActions";
+import {useTypedSelector} from "../../hooks/useTypedSelector";
 
 interface ChatProps {
     chat? : Chat
-    messages : Array<Message>,
-    setMessages :  React.Dispatch<React.SetStateAction<Message[]>>,
     chatId : number,
     typingUsers : Array<User>,
     setTypingUsers : React.Dispatch<React.SetStateAction<User[]>>,
@@ -36,8 +36,6 @@ interface ChatProps {
 }
 
 const ChatWindow: FC<ChatProps> = ({
-                                       messages,
-                                       setMessages,
                                        chatId,
                                        chat,
                                        typingUsers,
@@ -49,6 +47,8 @@ const ChatWindow: FC<ChatProps> = ({
     nextMessagePageBottom
                                    }) => {
 
+    const {messages} = useTypedSelector(state => state.chat)
+    const {setMsg} = useActions()
 
     const stompClient = useStompClient()
     const {user} = useAuth0()
@@ -61,7 +61,7 @@ const ChatWindow: FC<ChatProps> = ({
 
     const onUserDeletesMessage = (message : IMessage) => {
         const deletedMessageDto : DeleteMessageDto = JSON.parse(message.body)
-        setMessages(messages.filter((msg) => msg.id !== deletedMessageDto.messageId))
+        setMsg(messages.filter((msg) => msg.id !== deletedMessageDto.messageId))
     }
 
     const onUserDeletesMessageImage = (message : IMessage) => {
@@ -71,7 +71,7 @@ const ChatWindow: FC<ChatProps> = ({
             let filtered = foundMessage.imagesList.filter((img) => img.imageId !== dto.imageId)
             foundMessage.imagesList = filtered
             messages[messages.indexOf(foundMessage)] = foundMessage
-            setMessages([...messages])
+            setMsg([...messages])
         }
     }
 
@@ -81,7 +81,7 @@ const ChatWindow: FC<ChatProps> = ({
         if (foundMessage) {
             foundMessage.text = dto.text
             messages[messages.indexOf(foundMessage)] = foundMessage
-            setMessages([...messages])
+            setMsg([...messages])
         }
     }
 
@@ -139,7 +139,7 @@ const ChatWindow: FC<ChatProps> = ({
         if (chat !== undefined) {
             chat.totalMessagesAmount  = chat?.totalMessagesAmount + 1;
         }
-        setMessages([...msg, data])
+        setMsg([...msg, data])
     }
 
     const saveLastReadMessageId = (messageId : number) => {
@@ -212,7 +212,7 @@ const ChatWindow: FC<ChatProps> = ({
             if (error) {
                 notification.error({message: "can't delete message"})
             } else {
-                setMessages(messages.filter((msg) => msg.id !== messageId))
+                setMsg(messages.filter((msg) => msg.id !== messageId))
                 notifyThatMessageWasDeleted(messageId)
                 notification.success({message: "Видалено успішно"})
             }
@@ -232,7 +232,6 @@ const ChatWindow: FC<ChatProps> = ({
                     <MessageList setUnreadMessagesCount={setUnreadMessagesCount}
                                  unreadMessagesCount={unreadMessagesCount}
                                  chat={chat}
-                                 messages={messages}
                                  saveLastReadMessageId={saveLastReadMessageId}
                                  lastReadMessageId={lastReadMessageId}
                                  onEditMessage={onEditMessage}

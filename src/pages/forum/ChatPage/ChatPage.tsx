@@ -8,19 +8,24 @@ import {
     getNewPageOfMessagesAuthUser
 } from "../../../API/services/forum/ChatService";
 import {LeftOutlined} from "@ant-design/icons";
-import {Chat, ChatMetadata, Message, User} from "../../../API/services/forum/ForumInterfaces";
+import {Chat, ChatMetadata, User} from "../../../API/services/forum/ForumInterfaces";
 import './ChatPage.css'
 import {useNavigate, useParams, useSearchParams} from "react-router-dom";
 import ChatWindow from "../../../components/ChatWindow/ChatWindow";
 import {StompSessionProvider} from "react-stomp-hooks";
 import {useAuth0} from "@auth0/auth0-react";
 import {getLatestMessagesOfChat} from "../../../API/services/forum/MessageService";
+import {useTypedSelector} from "../../../hooks/useTypedSelector";
+import {useActions} from "../../../hooks/useActions";
 
 
 const ChatPage = () => {
 
     const [chats, setChats] = useState<Array<Chat>>([])
-    const [messages, setMessages] = useState<Array<Message>>([])
+
+    const {messages} = useTypedSelector(state => state.chat)
+    const {setMsg} = useActions()
+
     const {id} = useParams()
     const [searchParams] = useSearchParams();
     const nav = useNavigate()
@@ -58,7 +63,7 @@ const ChatPage = () => {
                 if (data.length === 0) {
                     setHasMessages(false)
                 } else {
-                    setMessages([...messages, ...data])
+                    setMsg([...messages, ...data])
                 }
             }
             if (error) throw error;
@@ -88,7 +93,7 @@ const ChatPage = () => {
 
                 const {data, error} = await getMessagesByChatIdAndLastReadMessage(Number(chatId), 0, PAGE_SIZE,  metadata.last_read_message_id);
                 if (data) {
-                    setMessages(data)
+                    setMsg(data)
                     setTimeout(() => {
                         const lastReadMsg = document.getElementById(`msgId-${metadata.last_read_message_id}`)
                         lastReadMsg?.scrollIntoView({behavior: "smooth", block: 'end'});
@@ -123,7 +128,7 @@ const ChatPage = () => {
     const getLatestOfChat = async () => {
         const {data, error} = await getLatestMessagesOfChat(Number(id))
         if (data) {
-            setMessages(data)
+            setMsg(data)
             setTimeout(() => {
                 scrollToBottom()
             }, 100)
@@ -191,16 +196,15 @@ const ChatPage = () => {
                         :
                         <Skeleton/>
                     }
+                    <Button>load top</Button>
                 </Flex>
 
 
-                <StompSessionProvider url={'https://v2.miloverada.gov.ua:8443/ws-endpoint'}>
+                <StompSessionProvider url={'http://localhost:6060/ws-endpoint'}>
                     <ChatWindow typingUsers={typingUsers}
                                 setTypingUsers={setTypingUsers}
                                 chat={chat}
                                 chatId={currentChatId}
-                                setMessages={setMessages}
-                                messages={messages}
                                 lastReadMessageId={lastReadMessageId}
                                 setLastReadMessageId={setLastReadMessageId}
                                 unreadMessagesCount={unreadMessagesCount}
