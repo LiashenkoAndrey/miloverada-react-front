@@ -1,23 +1,20 @@
-import React, {FC, useCallback, useEffect, useRef, useState} from 'react';
+import React, {FC, useEffect, useRef, useState} from 'react';
 import {Empty, Flex} from "antd";
 import {Chat, Message} from "../../../API/services/forum/ForumInterfaces";
 import MessageListItem from "../../../pages/forum/Message/MessageListItem";
 import {useAuth0} from "@auth0/auth0-react";
 import classes from './MessageList.module.css'
 import {useTypedSelector} from "../../../hooks/useTypedSelector";
-import {compose} from "redux";
 import {useActions} from "../../../hooks/useActions";
 import {
+    getIndexOfMessage,
     observeNextMessagesLoadingTrigger,
     observePreviousMessagesLoadingTrigger
 } from "../../../API/services/forum/MessageService";
 
 interface MessageListProps {
     chat?: Chat,
-    unreadMessagesCount? : number
-    setUnreadMessagesCount : React.Dispatch<React.SetStateAction<number | undefined>>
     saveLastReadMessageId(messageId: number): void
-    lastReadMessageId? : number
     onEditMessage : (message : Message) => void
     editMessage? : Message
     onReplyMessage : (message : Message) => void
@@ -27,10 +24,7 @@ interface MessageListProps {
 
 const MessageList: FC<MessageListProps> = ({
                                                chat,
-                                               setUnreadMessagesCount,
-                                               unreadMessagesCount,
                                                saveLastReadMessageId,
-                                               lastReadMessageId,
                                                onEditMessage,
                                                editMessage,
                                                onReplyMessage,
@@ -38,12 +32,11 @@ const MessageList: FC<MessageListProps> = ({
                                                onDeleteMessage
                                            }) => {
 
-    const readMessagesObserver = useRef<IntersectionObserver>()
     const {isAuthenticated} = useAuth0()
-    const {messages, chatId, hasPreviousMessages, hasNextMessages, isScrolling} = useTypedSelector(state => state.chat)
+    const {messages, chatId, hasPreviousMessages, hasNextMessages, unreadMessagesCount, lastReadMessageId} = useTypedSelector(state => state.chat)
     const [newSeenMessageId, setNewSeenMessageId] = useState<number>()
     const [oldSeenMsgID, setOldSeenMsgID] = useState<number>()
-    const {fetchPreviousMessages, fetchNextMessages} = useActions()
+    const {fetchPreviousMessages, fetchNextMessages, setUnreadMessagesCount, setLastReadMessageId} = useActions()
 
     useEffect(() => {
         if (newSeenMessageId === undefined) {
@@ -57,10 +50,9 @@ const MessageList: FC<MessageListProps> = ({
         }
     }, [oldSeenMsgID]);
 
-    const callBack: IntersectionObserverCallback = (entries, observer) => {
+    const onNewMessageSeen: IntersectionObserverCallback = (entries, observer) => {
         const element = entries[0]
         if (element.isIntersecting) {
-            console.log("isIntersecting", element)
             const elemId = element.target.getAttribute("id");
             if (elemId) {
                 const messageId = Number(elemId.split("-")[1])
@@ -72,48 +64,37 @@ const MessageList: FC<MessageListProps> = ({
             observer.unobserve(element.target)
         }
     }
+    const readMessagesObserver = new IntersectionObserver(onNewMessageSeen)
 
-    useEffect(() => {
-        if (isAuthenticated) {
-            readMessagesObserver.current = new IntersectionObserver(callBack)
-        }
-    }, []);
 
-    const decrementCount = useCallback(() => {
+
+    const decrementCount = () => {
         if (unreadMessagesCount) {
-            console.log("decrement count")
-            setUnreadMessagesCount(unreadMessagesCount - 1)
+            // console.log("decrement start, lastReadMessageId=", lastReadMessageId, ", newSeenMessageId=", newSeenMessageId)
+            const lastReadMessageIdIndex = getIndexOfMessage(lastReadMessageId)
+            const newLastReadMessageIdIndex = getIndexOfMessage(newSeenMessageId)
+            const difference = newLastReadMessageIdIndex - lastReadMessageIdIndex;
+            // console.log("decrement", lastReadMessageIdIndex, newLastReadMessageIdIndex, "diff=", difference, ", count=",unreadMessagesCount,", res=", unreadMessagesCount - difference )
+            // console.log("unreadMessagesCount ", unreadMessagesCount, unreadMessagesCount - difference)
+            setUnreadMessagesCount(unreadMessagesCount - difference)
         } else console.log("ERROR CANT DECREMENT")
-    }, [setUnreadMessagesCount, unreadMessagesCount]);
-    
+    }
+
+
+
     useEffect(() => {
-        if (isAuthenticated) {
-
-            if (newSeenMessageId) {
-                if (lastReadMessageId) {
-                    if (newSeenMessageId > lastReadMessageId) {
-                        decrementCount()
-                        const delayFunc = setTimeout(() => {
-                            // console.log("last seen message is", newSeenMessageId)
-                            saveLastReadMessageId(newSeenMessageId)
-
-                        }, 1500)
-                        return () => clearTimeout(delayFunc)
-                    } else {
-                        // console.log("one of contition is false: ", user?.sub, "stompClient", (newSeenMessageId > lastReadMessageId))
-                    }
-                } else {
-                    decrementCount()
-                    const delayFunc = setTimeout(() => {
-                        // console.log("last seen message is", newSeenMessageId)
-                        saveLastReadMessageId(newSeenMessageId)
-
-                    }, 1500)
-                    return () => clearTimeout(delayFunc)
-                }
-            } else {
-                // console.log("newSeenMessageId is passed to save, but it is undefined!")
+        if (isAuthenticated && newSeenMessageId) {
+            if (lastReadMessageId) {
+                if (newSeenMessageId <= lastReadMessageId) return;
             }
+
+            decrementCount()
+            setLastReadMessageId(newSeenMessageId)
+            const delayFunc = setTimeout(() => {
+                console.log("last seen message is", newSeenMessageId)
+                saveLastReadMessageId(newSeenMessageId)
+            }, 1500)
+            return () => clearTimeout(delayFunc)
         }
     }, [newSeenMessageId]);
 
@@ -128,9 +109,7 @@ const MessageList: FC<MessageListProps> = ({
 
     const loadNextMessagesObserverCallback : IntersectionObserverCallback = (entries, observer) => {
         const element = entries[0]
-        console.log(element.isIntersecting)
         if (element.isIntersecting) {
-            console.log("load next")
             fetchNextMessages(chatId, messages)
             observer.unobserve(element.target)
         }
@@ -170,7 +149,7 @@ const MessageList: FC<MessageListProps> = ({
                             replyMessage={replyMessage}
                             onReplyMessage={onReplyMessage}
                             chat={chat}
-                            observer={readMessagesObserver.current}
+                            observer={readMessagesObserver}
                             key={"msg-" + msg.id}
                             message={msg}
                             editMessage={editMessage}

@@ -9,7 +9,7 @@ import {useTypedSelector} from "../../../hooks/useTypedSelector";
 
 interface MessageProps {
     message: Message
-    observer?: IntersectionObserver
+    observer: IntersectionObserver
     chat?: Chat,
     onEditMessage: (message: Message) => void
     editMessage?: Message
@@ -31,13 +31,17 @@ const MessageListItem: FC<MessageProps> = ({
                                            }) => {
     const messageRef = useRef<HTMLDivElement>(null)
     const {isAuthenticated} = useAuth0()
+    const {lastReadMessageId, messages} = useTypedSelector(state => state.chat)
     useEffect(() => {
+        console.log(isAuthenticated)
         if (isAuthenticated) {
-            if (observer && messageRef.current) {
+            console.log(observer)
+            if (observer && messageRef.current && message.id > lastReadMessageId ) {
                 observer.observe(messageRef.current)
+                return () => observer.disconnect()
             }
         }
-    }, [messageRef]);
+    }, [isAuthenticated]);
 
 
     const messageMenuItems: MenuProps['items'] = [
@@ -108,7 +112,7 @@ const MessageListItem: FC<MessageProps> = ({
     }
 
     return (
-        <div style={{width: "100%", paddingLeft: 5}} className={isHighlighted()} id={"msgWrapper-" + message.id}>
+        <div style={{width: "100%", paddingLeft: 5}} data-index={messages.indexOf(message)} className={isHighlighted()} id={"msgWrapper-" + message.id}>
             <Dropdown disabled={!isAuthenticated}
                       menu={{items: messageMenuItems, onClick: onSelectAction}}
                       trigger={['contextMenu']}

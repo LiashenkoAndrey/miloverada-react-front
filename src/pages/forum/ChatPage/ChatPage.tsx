@@ -24,7 +24,7 @@ const ChatPage = () => {
     const [chats, setChats] = useState<Array<Chat>>([])
 
     const {messages, chatId} = useTypedSelector(state => state.chat)
-    const {setMsg, fetchPreviousMessages, setChatId, setHasPreviousMessages, setHasNextMessages, setIsScrolling} = useActions()
+    const {setMsg, fetchPreviousMessages, setChatId, setHasPreviousMessages, setHasNextMessages, setUnreadMessagesCount, setLastReadMessageId} = useActions()
     const {id} = useParams()
     const [searchParams] = useSearchParams();
     const nav = useNavigate()
@@ -32,9 +32,6 @@ const ChatPage = () => {
     const [chat, setChat] = useState<Chat>();
     const [typingUsers, setTypingUsers] = useState<Array<User>>([]);
     const {user, isAuthenticated} = useAuth0()
-    const [unreadMessagesCount, setUnreadMessagesCount] = useState<number>()
-
-    const [lastReadMessageId, setLastReadMessageId] = useState<number>()
 
 
     useEffect(() => {
@@ -61,11 +58,11 @@ const ChatPage = () => {
         chatBottom?.scrollIntoView({behavior: "smooth", block: 'nearest'});
     }
 
-    const getMetadataAndLoadMessages = async  (chatId : number) => {
+    const getMetadataAndLoadMessages = async (chatId: number) => {
         if (user?.sub) {
             const chatMetadata = await getChatMetadata(chatId, encodeURIComponent(user.sub))
             if (chatMetadata.data) {
-                const metadata : ChatMetadata = chatMetadata.data
+                const metadata: ChatMetadata = chatMetadata.data
                 if (metadata.last_read_message_id) {
                     setHasNextMessages(true)
                 }
@@ -78,7 +75,7 @@ const ChatPage = () => {
                     return
                 }
 
-                const {data, error} = await getMessagesByChatIdAndLastReadMessage(Number(chatId), 0, MESSAGE_LOAD_PORTION_SIZE*2,  metadata.last_read_message_id);
+                const {data, error} = await getMessagesByChatIdAndLastReadMessage(Number(chatId), 0, MESSAGE_LOAD_PORTION_SIZE * 2, metadata.last_read_message_id);
                 if (data) {
                     setMsg(data)
 
@@ -86,7 +83,7 @@ const ChatPage = () => {
                         const lastReadMsg = document.getElementById(`msgId-${metadata.last_read_message_id}`)
                         console.log("scrtoll to", lastReadMsg)
                         lastReadMsg?.scrollIntoView({behavior: "auto", block: 'end'});
-                    },  100)
+                    }, 100)
 
                 }
                 if (error) throw error;
@@ -97,8 +94,7 @@ const ChatPage = () => {
     }
 
 
-
-    useEffect( () => {
+    useEffect(() => {
         if (isAuthenticated) {
             getMetadataAndLoadMessages(Number(id))
         } else {
@@ -119,7 +115,7 @@ const ChatPage = () => {
         if (error) throw error;
     }
 
-    const changeChat = async (chatId : number) => {
+    const changeChat = async (chatId: number) => {
         const {data, error} = await getChatById(chatId);
         if (data) {
             setChat(data)
@@ -127,7 +123,7 @@ const ChatPage = () => {
         if (error) throw error;
     }
 
-    const onChatChanged = async (chatId : number) => {
+    const onChatChanged = async (chatId: number) => {
         if (chatId !== currentChatId) {
             setCurrentChatId(chatId)
             setTypingUsers([])
@@ -147,9 +143,9 @@ const ChatPage = () => {
 
     return (
         <Flex className={"chatPageWrapper"} align={"flex-start"} justify={"center"}>
-            <Flex className={"chatWrapper"}  gap={20} justify={"center"}>
+            <Flex className={"chatWrapper"} gap={20} justify={"center"}>
                 <Flex justify={"flex-start"} className={"chatsWrapper"} vertical>
-                    <Flex  justify={"center"} vertical={false} align={"center"} gap={30}>
+                    <Flex justify={"center"} vertical={false} align={"center"} gap={30}>
 
                         <Button onClick={() => nav(-1)}
                                 style={{maxWidth: 150, color: "black"}}
@@ -198,10 +194,6 @@ const ChatPage = () => {
                                 setTypingUsers={setTypingUsers}
                                 chat={chat}
                                 chatId={currentChatId}
-                                lastReadMessageId={lastReadMessageId}
-                                setLastReadMessageId={setLastReadMessageId}
-                                unreadMessagesCount={unreadMessagesCount}
-                                setUnreadMessagesCount={setUnreadMessagesCount}
 
                     />
                 </StompSessionProvider>

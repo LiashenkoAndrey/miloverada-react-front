@@ -27,26 +27,17 @@ interface ChatProps {
     chatId : number,
     typingUsers : Array<User>,
     setTypingUsers : React.Dispatch<React.SetStateAction<User[]>>,
-    lastReadMessageId? : number
-    setLastReadMessageId :  React.Dispatch<React.SetStateAction<number | undefined>>
-    unreadMessagesCount? : number
-    setUnreadMessagesCount : React.Dispatch<React.SetStateAction<number | undefined>>
-
 }
 
 const ChatWindow: FC<ChatProps> = ({
                                        chatId,
                                        chat,
                                        typingUsers,
-                                       setTypingUsers,
-                                       lastReadMessageId,
-                                       setLastReadMessageId,
-                                       unreadMessagesCount,
-                                       setUnreadMessagesCount,
+                                       setTypingUsers
                                    }) => {
 
-    const {messages} = useTypedSelector(state => state.chat)
-    const {setMsg} = useActions()
+    const {messages, unreadMessagesCount} = useTypedSelector(state => state.chat)
+    const {setMsg, setLastReadMessageId, setUnreadMessagesCount} = useActions()
 
     const stompClient = useStompClient()
     const {user} = useAuth0()
@@ -91,8 +82,11 @@ const ChatWindow: FC<ChatProps> = ({
         if (messages.length > 0) {
             const lastMessage = document.getElementById("msgId-" + messages[messages.length-1].id)
 
-            const callBack: IntersectionObserverCallback = (entries, observer) => {
+            const scrollInBottomCallback: IntersectionObserverCallback = (entries) => {
                 if (entries[0].isIntersecting) {
+                    setUnreadMessagesCount(0)
+                    saveLastReadMessageId(messages[messages.length-1].id)
+
                     setIsScrollDownButtonActive(false)
                     setIsNeedScrollToBottom(true)
                 } else {
@@ -101,7 +95,7 @@ const ChatWindow: FC<ChatProps> = ({
                 }
             }
             if (lastMessage) {
-                const observer = new IntersectionObserver(callBack)
+                const observer = new IntersectionObserver(scrollInBottomCallback)
                 observer.observe(lastMessage)
 
                 if (lastMessageObserver.current) {
@@ -139,8 +133,9 @@ const ChatWindow: FC<ChatProps> = ({
     }
 
     const saveLastReadMessageId = (messageId : number) => {
+        console.log("saveLastReadMessageId", messageId)
         if (user?.sub && stompClient !== undefined) {
-            setLastReadMessageId(messageId)
+            console.log("saveLastReadMessageId ok")
             const dto : LastReadMessageDto = {
                 chatId: chatId,
                 userId : user.sub,
@@ -153,8 +148,6 @@ const ChatWindow: FC<ChatProps> = ({
                     'content-type': 'application/json'
                 }}
             )
-        } else {
-            throw new Error("saveLastReadMessageId error")
         }
     }
 
@@ -225,11 +218,9 @@ const ChatWindow: FC<ChatProps> = ({
             />
             <Flex style={{backgroundColor: "black", overflowY: "hidden"}}>
                 <Flex vertical={true} className={chat_classes.chat} justify={"space-between"}>
-                    <MessageList setUnreadMessagesCount={setUnreadMessagesCount}
-                                 unreadMessagesCount={unreadMessagesCount}
+                    <MessageList
                                  chat={chat}
                                  saveLastReadMessageId={saveLastReadMessageId}
-                                 lastReadMessageId={lastReadMessageId}
                                  onEditMessage={onEditMessage}
                                  editMessage={editMessage}
                                  onReplyMessage={onReplyMessage}

@@ -6,7 +6,8 @@ const initState: ChatState = {
     chatId: -1,
     hasPreviousMessages: true,
     hasNextMessages: false,
-    isScrolling : true
+    lastReadMessageId : -1,
+    unreadMessagesCount : -1
 }
 
 export const chatReducer = (state = initState, action: ChatAction): ChatState => {
@@ -23,8 +24,10 @@ export const chatReducer = (state = initState, action: ChatAction): ChatState =>
             return {...state, hasNextMessages: action.payload}
         case ChatActionTypes.FETCH_NEXT_MESSAGES:
             return {...state, messages: action.payload}
-        case ChatActionTypes.SET_IS_SCROLLING:
-            return {...state, isScrolling: action.payload}
+        case ChatActionTypes.SET_LAST_READ_MESSAGE_ID:
+            return {...state, lastReadMessageId: action.payload}
+        case ChatActionTypes.SET_IS_UNREAD_MESSAGES_COUNT:
+            return {...state, unreadMessagesCount: action.payload}
         default :
             return state
     }

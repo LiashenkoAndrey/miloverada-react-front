@@ -5,7 +5,8 @@ export interface ChatState {
     chatId: number
     hasPreviousMessages: boolean
     hasNextMessages: boolean
-    isScrolling : boolean
+    unreadMessagesCount : number
+    lastReadMessageId : number
 }
 
 export enum ChatActionTypes {
@@ -15,17 +16,24 @@ export enum ChatActionTypes {
     SET_CHAT_ID = "SET_CHAT_ID",
     SET_HAS_PREVIOUS_MESSAGES = "SET_HAS_PREVIOUS_MESSAGES",
     SET_HAS_NEXT_MESSAGES = "SET_HAS_NEXT_MESSAGES",
-    SET_IS_SCROLLING = "SET_IS_SCROLLING"
+    SET_IS_UNREAD_MESSAGES_COUNT = "SET_IS_UNREAD_MESSAGES_COUNT",
+    SET_LAST_READ_MESSAGE_ID = "SET_LAST_READ_MESSAGE_ID"
 }
 
-interface SetIsScrollingAction {
-    type: ChatActionTypes.SET_IS_SCROLLING
-    payload: boolean
-}
 
 interface SetMessagesAction {
     type: ChatActionTypes.SET_MESSAGES
     payload: Message[]
+}
+
+interface SetUnreadMessagesCountAction {
+    type: ChatActionTypes.SET_IS_UNREAD_MESSAGES_COUNT
+    payload: number
+}
+
+interface SetLastReadMessageIdAction {
+    type: ChatActionTypes.SET_LAST_READ_MESSAGE_ID
+    payload: number
 }
 
 interface SetChatIdAction {
@@ -62,4 +70,5 @@ export type ChatAction =
     | SetHasPreviousMessages
     | SetHasHextMessages
     | FetchNextMessagesAction
-    | SetIsScrollingAction
+    | SetUnreadMessagesCountAction
+    | SetLastReadMessageIdAction

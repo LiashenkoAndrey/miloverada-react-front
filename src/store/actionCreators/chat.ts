@@ -24,17 +24,26 @@ export const setHasPreviousMessages =  (hasPreviousMessages : boolean) => {
     }
 }
 
-export const setIsScrolling =  (isScrolling : boolean) => {
-    return async (dispatch : Dispatch<ChatAction>) => {
-        dispatch({type : ChatActionTypes.SET_IS_SCROLLING, payload : isScrolling})
-    }
-}
 
 export const setHasNextMessages =  (hasNextMessages : boolean) => {
     return async (dispatch : Dispatch<ChatAction>) => {
         dispatch({type : ChatActionTypes.SET_HAS_NEXT_MESSAGES, payload : hasNextMessages})
     }
 }
+
+
+export const setLastReadMessageId =  (lastReadMessageId : number) => {
+    return async (dispatch : Dispatch<ChatAction>) => {
+        dispatch({type : ChatActionTypes.SET_LAST_READ_MESSAGE_ID, payload : lastReadMessageId})
+    }
+}
+
+export const setUnreadMessagesCount =  (unreadMessagesCount : number) => {
+    return async (dispatch : Dispatch<ChatAction>) => {
+        dispatch({type : ChatActionTypes.SET_IS_UNREAD_MESSAGES_COUNT, payload : unreadMessagesCount})
+    }
+}
+
 
 export const fetchPreviousMessages = (chatId : number, messages : Message[]) => {
     return async (dispatch : Dispatch<ChatAction>)=> {
