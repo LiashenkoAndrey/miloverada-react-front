@@ -16,6 +16,13 @@ export const newUser = (user : NewUserDto, accessToken : string) => {
 }
 
 
+export function isMyMessage(currentUserId : string | undefined, userId : string | undefined) {
+    if(currentUserId && userId) {
+        return currentUserId === userId
+    }
+    return false;
+}
+
 export const getActiveUsersAmount = () => {
     const config = {
         url: `${apiServerUrl}/api/forum/activeUsers`,

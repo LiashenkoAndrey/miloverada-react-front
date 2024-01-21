@@ -56,7 +56,6 @@ const MessageList: FC<MessageListProps> = ({
             const elemId = element.target.getAttribute("id");
             if (elemId) {
                 const messageId = Number(elemId.split("-")[1])
-                console.log("seen message", element)
                 setOldSeenMsgID(messageId)
 
             } else throw new Error("")
@@ -70,16 +69,12 @@ const MessageList: FC<MessageListProps> = ({
 
     const decrementCount = () => {
         if (unreadMessagesCount) {
-            // console.log("decrement start, lastReadMessageId=", lastReadMessageId, ", newSeenMessageId=", newSeenMessageId)
             const lastReadMessageIdIndex = getIndexOfMessage(lastReadMessageId)
             const newLastReadMessageIdIndex = getIndexOfMessage(newSeenMessageId)
             const difference = newLastReadMessageIdIndex - lastReadMessageIdIndex;
-            // console.log("decrement", lastReadMessageIdIndex, newLastReadMessageIdIndex, "diff=", difference, ", count=",unreadMessagesCount,", res=", unreadMessagesCount - difference )
-            // console.log("unreadMessagesCount ", unreadMessagesCount, unreadMessagesCount - difference)
-            setUnreadMessagesCount(unreadMessagesCount - difference)
-        } else console.log("ERROR CANT DECREMENT")
+            setUnreadMessagesCount(Math.abs(unreadMessagesCount - difference))
+        }
     }
-
 
 
     useEffect(() => {
@@ -91,7 +86,6 @@ const MessageList: FC<MessageListProps> = ({
             decrementCount()
             setLastReadMessageId(newSeenMessageId)
             const delayFunc = setTimeout(() => {
-                console.log("last seen message is", newSeenMessageId)
                 saveLastReadMessageId(newSeenMessageId)
             }, 1500)
             return () => clearTimeout(delayFunc)

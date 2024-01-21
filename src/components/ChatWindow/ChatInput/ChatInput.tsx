@@ -102,6 +102,7 @@ const ChatInput: FC<ChatInputProps> = ({
                 publishNewMessage(stompClient, messageDto)
 
                 setEditMessage(undefined)
+                setReplyMessage(undefined)
                 filterTypingUsers(user?.sub)
                 onStopTyping()
                 setFileList([])
@@ -222,7 +223,7 @@ const ChatInput: FC<ChatInputProps> = ({
                 setReplyMessage={setReplyMessage}
             />
 
-            <Flex style={{alignSelf: "flex-end", width: "100%", padding: 3, backgroundColor: "rgba(255,255,255,0.1)"}}>
+            <Flex className={"chatInput"}>
 
                 <Tooltip title={isAuthenticated ? "" : "Спочатку авторизуйтеся"}>
                     <TextareaAutosize maxRows={10}

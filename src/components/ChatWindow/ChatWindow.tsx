@@ -21,6 +21,7 @@ import {AuthContext} from "../../context/AuthContext";
 import chat_classes from './ChatWindow.module.css'
 import {useActions} from "../../hooks/useActions";
 import {useTypedSelector} from "../../hooks/useTypedSelector";
+import {isMyMessage} from "../../API/services/forum/UserService";
 
 interface ChatProps {
     chat? : Chat
@@ -37,7 +38,7 @@ const ChatWindow: FC<ChatProps> = ({
                                    }) => {
 
     const {messages, unreadMessagesCount} = useTypedSelector(state => state.chat)
-    const {setMsg, setLastReadMessageId, setUnreadMessagesCount} = useActions()
+    const {setMsg, setUnreadMessagesCount} = useActions()
 
     const stompClient = useStompClient()
     const {user} = useAuth0()
@@ -106,9 +107,7 @@ const ChatWindow: FC<ChatProps> = ({
         }
     }, [messages]);
 
-    function isMyMessage(userId : string | undefined) {
-        return userId === user?.sub
-    }
+
 
     function scrollToBottom() {
         setTimeout(() => {
@@ -120,7 +119,7 @@ const ChatWindow: FC<ChatProps> = ({
     const onChatMessagesSubscribe = (message: IMessage) => {
         const data : Message = JSON.parse(message.body)
 
-        if (isMyMessage(data.sender.id) || isNeedScrollToBottom) {
+        if (isMyMessage(data.sender.id, user?.sub) || isNeedScrollToBottom) {
             scrollToBottom()
         }
 
@@ -133,9 +132,7 @@ const ChatWindow: FC<ChatProps> = ({
     }
 
     const saveLastReadMessageId = (messageId : number) => {
-        console.log("saveLastReadMessageId", messageId)
         if (user?.sub && stompClient !== undefined) {
-            console.log("saveLastReadMessageId ok")
             const dto : LastReadMessageDto = {
                 chatId: chatId,
                 userId : user.sub,
@@ -167,6 +164,10 @@ const ChatWindow: FC<ChatProps> = ({
 
     const [editMessage, setEditMessage] = useState<Message>()
     const [replyMessage, setReplyMessage] = useState<Message>()
+
+    const setEditMessageCustom = (msg : Message | undefined) => {
+        setEditMessage(msg)
+    }
 
     const onEditMessage = useCallback((message : Message) => {
         if (replyMessage) setReplyMessage(undefined)
@@ -216,7 +217,7 @@ const ChatWindow: FC<ChatProps> = ({
                         chat={chat}
                         filterTypingUsers={filterTypingUsers}
             />
-            <Flex style={{backgroundColor: "black", overflowY: "hidden"}}>
+            <Flex style={{backgroundColor: "black", overflowY: "hidden", flexGrow: 1}}>
                 <Flex vertical={true} className={chat_classes.chat} justify={"space-between"}>
                     <MessageList
                                  chat={chat}

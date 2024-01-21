@@ -6,6 +6,7 @@ import {toTime} from "../../../API/Util";
 import MessageImages from "./MessageImages/MessageImages";
 import classes from './Message.module.css'
 import {useTypedSelector} from "../../../hooks/useTypedSelector";
+import {isMyMessage} from "../../../API/services/forum/UserService";
 
 interface MessageProps {
     message: Message
@@ -30,12 +31,10 @@ const MessageListItem: FC<MessageProps> = ({
                                                onDeleteMessage
                                            }) => {
     const messageRef = useRef<HTMLDivElement>(null)
-    const {isAuthenticated} = useAuth0()
+    const {isAuthenticated, user} = useAuth0()
     const {lastReadMessageId, messages} = useTypedSelector(state => state.chat)
     useEffect(() => {
-        console.log(isAuthenticated)
         if (isAuthenticated) {
-            console.log(observer)
             if (observer && messageRef.current && message.id > lastReadMessageId ) {
                 observer.observe(messageRef.current)
                 return () => observer.disconnect()
@@ -112,13 +111,18 @@ const MessageListItem: FC<MessageProps> = ({
     }
 
     return (
-        <div style={{width: "100%", paddingLeft: 5}} data-index={messages.indexOf(message)} className={isHighlighted()} id={"msgWrapper-" + message.id}>
+        <div style={{width: "100%", paddingLeft: 5}}
+             data-index={messages.indexOf(message)}
+             className={isHighlighted()}
+             id={"msgWrapper-" + message.id}
+        >
             <Dropdown disabled={!isAuthenticated}
                       menu={{items: messageMenuItems, onClick: onSelectAction}}
                       trigger={['contextMenu']}
             >
                 <Flex ref={messageRef}
                       className={classes.message}
+                      style={{backgroundColor: isMyMessage(user?.sub, message.sender.id) ? "#4C372F" : "var(--message-bg-color)"}}
                       id={"msgId-" + message.id}
                       gap={8}
                 >
@@ -126,7 +130,7 @@ const MessageListItem: FC<MessageProps> = ({
                         <Image
                             preview={false}
                             style={{cursor: "pointer"}}
-                            className={classes.messageImg}
+                            className={classes.messageImg + " nonSelect"}
                             width={35}
                             height={35}
                             src={message.sender.avatar}
@@ -146,10 +150,10 @@ const MessageListItem: FC<MessageProps> = ({
                         </span>
                         </Flex>
                         <Flex vertical style={{marginTop: 3}}>
-                            <span style={{fontWeight: "bold"}}>{message.id}</span>
+                            <span style={{fontWeight: "bold", display: "none"}}>{message.id}</span>
 
                             {message.repliedMessage &&
-                                <Flex onClick={onRepliedMessageLinkClick} className={"repliedMessage"} vertical>
+                                <Flex onClick={onRepliedMessageLinkClick} className={classes.repliedMessage + " nonSelect"} vertical>
                                     <span>{message.repliedMessage.text}</span>
                                 </Flex>
                             }

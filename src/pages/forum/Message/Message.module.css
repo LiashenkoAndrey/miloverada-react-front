@@ -11,6 +11,19 @@
     background-color: rgba(0, 0, 0, 0)!important;
 }
 
+.repliedMessage {
+    cursor: pointer;
+    background-color: #00000030;
+    border-left: #282A3E solid;
+    padding: 5px;
+    width: 100%;
+    transition: background-color 300ms;
+}
+
+.repliedMessage:hover {
+    background-color: rgba(0, 0, 0, 0.3);
+}
+
 @media (max-width: 600px) {
     .message {
         max-width: 82vw;
@@ -24,7 +37,6 @@
     color: #FFF;
     border-radius: 2px;
     margin: 5px 3em 5px 0;
-    background-color: var(--message-bg-color);
     font-family: 'Libre Baskerville', serif;
 }
 

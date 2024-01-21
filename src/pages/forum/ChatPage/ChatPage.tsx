@@ -16,7 +16,7 @@ import {useAuth0} from "@auth0/auth0-react";
 import {getLatestMessagesOfChat} from "../../../API/services/forum/MessageService";
 import {useTypedSelector} from "../../../hooks/useTypedSelector";
 import {useActions} from "../../../hooks/useActions";
-import {MESSAGE_LOAD_PORTION_SIZE} from "../../../Constants";
+import {MESSAGE_LOAD_PORTION_SIZE, MESSAGES_LIST_DEFAULT_SIZE} from "../../../Constants";
 
 
 const ChatPage = () => {
@@ -77,11 +77,14 @@ const ChatPage = () => {
 
                 const {data, error} = await getMessagesByChatIdAndLastReadMessage(Number(chatId), 0, MESSAGE_LOAD_PORTION_SIZE * 2, metadata.last_read_message_id);
                 if (data) {
+                    if (data.length < MESSAGES_LIST_DEFAULT_SIZE) {
+                        setHasNextMessages(false)
+                        setHasPreviousMessages(false)
+                    }
                     setMsg(data)
 
                     setTimeout(() => {
                         const lastReadMsg = document.getElementById(`msgId-${metadata.last_read_message_id}`)
-                        console.log("scrtoll to", lastReadMsg)
                         lastReadMsg?.scrollIntoView({behavior: "auto", block: 'end'});
                     }, 100)
 
@@ -132,14 +135,8 @@ const ChatPage = () => {
         }
     }
 
-    const loadPreviousMsg = async () => {
-        console.log("fetchPreviousMessages invoke")
-        fetchPreviousMessages(Number(id), messages)
-    }
 
-    const showState = async () => {
-        console.log("state:", messages.length, chatId)
-    }
+
 
     return (
         <Flex className={"chatPageWrapper"} align={"flex-start"} justify={"center"}>
@@ -184,8 +181,6 @@ const ChatPage = () => {
                         :
                         <Skeleton/>
                     }
-                    <Button onClick={loadPreviousMsg}>load top</Button>
-                    <Button onClick={showState}>state</Button>
                 </Flex>
 
 

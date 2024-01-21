@@ -1,4 +1,10 @@
 
+.chatInput {
+    background-color: #5C4742;
+    padding: 3px;
+    width: 100%;
+    align-self: flex-end;
+}
 
 .addImg {
     color: white;
@@ -12,12 +18,13 @@
 
 .sendBtn {
     cursor: pointer;
-    background-color: #2b2bf8;
+    background-color: #8D5B4C;
+    border: solid 1px rgba(196, 187, 175, 0.36) !important;
     transition: background-color 400ms!important;
 }
 
 .sendBtn:hover {
-    background-color: blue!important;
+    background-color: #694136 !important;
 }
 
 .editBtn {
