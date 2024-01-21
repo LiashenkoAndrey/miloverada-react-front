@@ -1,0 +1,3 @@
+
+
+export const MESSAGE_LOAD_PORTION_SIZE = 20

@@ -93,7 +93,6 @@ const ChatWindow: FC<ChatProps> = ({
 
             const callBack: IntersectionObserverCallback = (entries, observer) => {
                 if (entries[0].isIntersecting) {
-                    console.log("isIntersecting, load...")
                     setIsScrollDownButtonActive(false)
                     setIsNeedScrollToBottom(true)
                 } else {
@@ -140,7 +139,7 @@ const ChatWindow: FC<ChatProps> = ({
     }
 
     const saveLastReadMessageId = (messageId : number) => {
-        if (user?.sub && stompClient) {
+        if (user?.sub && stompClient !== undefined) {
             setLastReadMessageId(messageId)
             const dto : LastReadMessageDto = {
                 chatId: chatId,

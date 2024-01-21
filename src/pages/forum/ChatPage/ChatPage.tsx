@@ -1,11 +1,10 @@
-import React, {useCallback, useEffect, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Breadcrumb, Button, Flex, Image, Skeleton} from "antd";
 import {
     getAllChatsByThemeId,
     getChatById,
     getChatMetadata,
-    getMessagesByChatIdAndLastReadMessage,
-    getNewPageOfMessagesAuthUser
+    getMessagesByChatIdAndLastReadMessage
 } from "../../../API/services/forum/ChatService";
 import {LeftOutlined} from "@ant-design/icons";
 import {Chat, ChatMetadata, User} from "../../../API/services/forum/ForumInterfaces";
@@ -17,6 +16,7 @@ import {useAuth0} from "@auth0/auth0-react";
 import {getLatestMessagesOfChat} from "../../../API/services/forum/MessageService";
 import {useTypedSelector} from "../../../hooks/useTypedSelector";
 import {useActions} from "../../../hooks/useActions";
+import {MESSAGE_LOAD_PORTION_SIZE} from "../../../Constants";
 
 
 const ChatPage = () => {
@@ -24,8 +24,7 @@ const ChatPage = () => {
     const [chats, setChats] = useState<Array<Chat>>([])
 
     const {messages, chatId} = useTypedSelector(state => state.chat)
-    const {setMsg, fetchPreviousMessages, setChatId, setHasPreviousMessages} = useActions()
-
+    const {setMsg, fetchPreviousMessages, setChatId, setHasPreviousMessages, setHasNextMessages, setIsScrolling} = useActions()
     const {id} = useParams()
     const [searchParams] = useSearchParams();
     const nav = useNavigate()
@@ -35,10 +34,8 @@ const ChatPage = () => {
     const {user, isAuthenticated} = useAuth0()
     const [unreadMessagesCount, setUnreadMessagesCount] = useState<number>()
 
-    const [chatMetadata, setchatMetadata] = useState<ChatMetadata>()
     const [lastReadMessageId, setLastReadMessageId] = useState<number>()
-    const [hasMessages, setHasMessages] = useState<boolean>(true)
-    const PAGE_SIZE = 5
+
 
     useEffect(() => {
         setHasPreviousMessages(true)
@@ -59,23 +56,6 @@ const ChatPage = () => {
     }, []);
 
 
-    const addNewMessagesToBottom = useCallback(async(page : number, size : number) => {
-        if (!id) throw new Error("chat id is not present.")
-        if (lastReadMessageId && user?.sub && chatMetadata && messages.length > 0) {
-            const {data, error} = await getNewPageOfMessagesAuthUser(currentChatId, page, size,  chatMetadata.last_read_message_id);
-            if (data) {
-                console.log("loaded new messages", data)
-                if (data.length === 0) {
-                    setHasMessages(false)
-                } else {
-                    setMsg([...messages, ...data])
-                }
-            }
-            if (error) throw error;
-        }
-    }, [chatMetadata, currentChatId, id, lastReadMessageId, messages, user?.sub]);
-
-
     const scrollToBottom = () => {
         const chatBottom = document.getElementById("chatBottom")
         chatBottom?.scrollIntoView({behavior: "smooth", block: 'nearest'});
@@ -86,23 +66,28 @@ const ChatPage = () => {
             const chatMetadata = await getChatMetadata(chatId, encodeURIComponent(user.sub))
             if (chatMetadata.data) {
                 const metadata : ChatMetadata = chatMetadata.data
+                if (metadata.last_read_message_id) {
+                    setHasNextMessages(true)
+                }
                 setLastReadMessageId(metadata.last_read_message_id)
                 setUnreadMessagesCount(metadata.unread_messages_count)
-                setchatMetadata(metadata)
 
                 if (!metadata.last_read_message_id) {
-                    setHasMessages(false)
+                    setHasNextMessages(false)
                     getLatestOfChat()
                     return
                 }
 
-                const {data, error} = await getMessagesByChatIdAndLastReadMessage(Number(chatId), 0, PAGE_SIZE,  metadata.last_read_message_id);
+                const {data, error} = await getMessagesByChatIdAndLastReadMessage(Number(chatId), 0, MESSAGE_LOAD_PORTION_SIZE*2,  metadata.last_read_message_id);
                 if (data) {
                     setMsg(data)
+
                     setTimeout(() => {
                         const lastReadMsg = document.getElementById(`msgId-${metadata.last_read_message_id}`)
-                        lastReadMsg?.scrollIntoView({behavior: "smooth", block: 'end'});
-                    }, 1000)
+                        console.log("scrtoll to", lastReadMsg)
+                        lastReadMsg?.scrollIntoView({behavior: "auto", block: 'end'});
+                    },  100)
+
                 }
                 if (error) throw error;
 

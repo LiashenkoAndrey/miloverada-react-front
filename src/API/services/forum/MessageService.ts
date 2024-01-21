@@ -28,6 +28,15 @@ export const getPreviousMessagesOfChat = (chatId : number, fromMessageId : numbe
     return callAndGetResult(config)
 }
 
+export const getNextMessagesOfChat = (chatId : number, fromMessageId : number) => {
+    const config = {
+        url: `${apiServerUrl}/api/forum/chat/${chatId}/messages/next?fromMessageId=${fromMessageId}`,
+        method: "GET"
+    }
+    return callAndGetResult(config)
+}
+
+
 
 export const publishNewMessage = (client :  Client, messageDto : MessageDto) => {
     const body = JSON.stringify(messageDto)
@@ -65,10 +74,26 @@ export const updateMessage = (message : UpdateMessageDto, token : string) => {
     return callAndGetResult(config)
 }
 
-export const observeMessage = (observer: IntersectionObserver, messages : Message[]) => {
+export const observePreviousMessagesLoadingTrigger = (observer: IntersectionObserver, messages : Message[]) => {
     if (messages.length > 0) {
         const observerTargetMessage = messages[Math.round((messages.length / 2) / 2)].id;
         let target = document.getElementById("msgId-" + observerTargetMessage)
+        console.log("prev target", target, observerTargetMessage)
+        if (target) {
+            observer.observe(target)
+        }
+    }
+}
+
+export const observeNextMessagesLoadingTrigger = (observer: IntersectionObserver, messages : Message[]) => {
+    if (messages.length > 0) {
+        const middle = messages.length / 2;
+        const index = Math.round(middle + (middle / 2) + (middle / 4))
+        console.log("item", messages[index])
+        console.log(messages)
+        const observerTargetMessage = messages[index].id;
+        let target = document.getElementById("msgId-" + observerTargetMessage)
+        console.log("target", target, observerTargetMessage)
         if (target) {
             observer.observe(target)
         }

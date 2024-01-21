@@ -7,7 +7,10 @@ import classes from './MessageList.module.css'
 import {useTypedSelector} from "../../../hooks/useTypedSelector";
 import {compose} from "redux";
 import {useActions} from "../../../hooks/useActions";
-import {observeMessage} from "../../../API/services/forum/MessageService";
+import {
+    observeNextMessagesLoadingTrigger,
+    observePreviousMessagesLoadingTrigger
+} from "../../../API/services/forum/MessageService";
 
 interface MessageListProps {
     chat?: Chat,
@@ -37,10 +40,10 @@ const MessageList: FC<MessageListProps> = ({
 
     const readMessagesObserver = useRef<IntersectionObserver>()
     const {isAuthenticated} = useAuth0()
-    const {messages, chatId, hasPreviousMessages} = useTypedSelector(state => state.chat)
+    const {messages, chatId, hasPreviousMessages, hasNextMessages, isScrolling} = useTypedSelector(state => state.chat)
     const [newSeenMessageId, setNewSeenMessageId] = useState<number>()
     const [oldSeenMsgID, setOldSeenMsgID] = useState<number>()
-    const {fetchPreviousMessages} = useActions()
+    const {fetchPreviousMessages, fetchNextMessages} = useActions()
 
     useEffect(() => {
         if (newSeenMessageId === undefined) {
@@ -57,10 +60,11 @@ const MessageList: FC<MessageListProps> = ({
     const callBack: IntersectionObserverCallback = (entries, observer) => {
         const element = entries[0]
         if (element.isIntersecting) {
+            console.log("isIntersecting", element)
             const elemId = element.target.getAttribute("id");
             if (elemId) {
                 const messageId = Number(elemId.split("-")[1])
-                // console.log("seen message", element)
+                console.log("seen message", element)
                 setOldSeenMsgID(messageId)
 
             } else throw new Error("")
@@ -114,7 +118,7 @@ const MessageList: FC<MessageListProps> = ({
     }, [newSeenMessageId]);
 
 
-    const intersectionCallback : IntersectionObserverCallback = (entries, observer) => {
+    const loadPreviousMessagesObserverCallback : IntersectionObserverCallback = (entries, observer) => {
         const element = entries[0]
         if (element.isIntersecting) {
             fetchPreviousMessages(chatId, messages)
@@ -122,16 +126,36 @@ const MessageList: FC<MessageListProps> = ({
         }
     };
 
-    const loadPreviousMessagesObserver = new IntersectionObserver(intersectionCallback);
+    const loadNextMessagesObserverCallback : IntersectionObserverCallback = (entries, observer) => {
+        const element = entries[0]
+        console.log(element.isIntersecting)
+        if (element.isIntersecting) {
+            console.log("load next")
+            fetchNextMessages(chatId, messages)
+            observer.unobserve(element.target)
+        }
+    };
+
+    const loadPreviousMessagesObserver = new IntersectionObserver(loadPreviousMessagesObserverCallback);
+    const loadNextMessagesObserver = new IntersectionObserver(loadNextMessagesObserverCallback);
 
     useEffect(() => {
         if (hasPreviousMessages) {
             setTimeout(() => {
-                observeMessage(loadPreviousMessagesObserver, messages)
-            }, 300)
+                observePreviousMessagesLoadingTrigger(loadPreviousMessagesObserver, messages)
+            }, 1500)
         }
-
         return () => loadPreviousMessagesObserver.disconnect()
+    }, [messages]);
+
+
+    useEffect(() => {
+        if (hasNextMessages) {
+            setTimeout(() => {
+                observeNextMessagesLoadingTrigger(loadNextMessagesObserver, messages)
+            }, 1500)
+        }
+        return () => loadNextMessagesObserver.disconnect()
     }, [messages]);
 
 
