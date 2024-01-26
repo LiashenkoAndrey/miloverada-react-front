@@ -1,3 +1,4 @@
+import {MessageFile, MessageFileDto} from "./MessageDto";
 
 
 export interface Message {
@@ -9,6 +10,8 @@ export interface Message {
     repliedMessage : Message,
     messages : Array<Message>
     imagesList : MessageImage[]
+    filesList : MessageFile[]
+    fileDtoList : MessageFileDto[]
 }
 
 

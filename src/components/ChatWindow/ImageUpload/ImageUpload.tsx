@@ -4,7 +4,7 @@ import {CloseCircleOutlined, PlusOutlined} from "@ant-design/icons";
 
 interface ImageUploadProps {
     isImageUploadActive : boolean
-    fileList : string[],
+    imageList : string[],
     setFileList :  React.Dispatch<React.SetStateAction<string[]>>
     onImageUploadClose: MouseEventHandler<HTMLSpanElement>
 }
@@ -12,7 +12,7 @@ interface ImageUploadProps {
 
 const ImageUpload: FC<ImageUploadProps> = ({
                                                isImageUploadActive,
-                                               fileList,
+                                               imageList,
                                                setFileList,
                                                onImageUploadClose}) => {
 
@@ -31,13 +31,8 @@ const ImageUpload: FC<ImageUploadProps> = ({
 
     const onImageLoad = (file: FileList | null) => {
         if (file !== null) {
-
-
             getBase64(file[0], (res: string) => {
-                // let a = new Array<string>(fileList)
-                console.log("change")
-                setFileList([...fileList, res])
-                // console.log(fileList)
+                setFileList([...imageList, res])
             })
         }
     }
@@ -55,7 +50,7 @@ const ImageUpload: FC<ImageUploadProps> = ({
             borderTop: "solid rgba(0,0,0,0.40)"
         }}>
             <Flex gap={5}>
-                {fileList.map( (img) =>
+                {imageList.map( (img) =>
                     <Image key={"uploaded-" + img} style={{borderRadius: 5}} src={img} width={80} height={80}/>
                 )}
                 <input multiple onChange={(e) => onImageLoad(e.target.files)} style={{display: "none"}} ref={inputFile} type="file"/>

@@ -1,0 +1,21 @@
+
+
+.file {
+    width: fit-content;
+    padding: 2px 5px;
+    border-radius: 5px;
+    background-color: #cde0f6;
+    color: black;
+    transition: background-color 200ms;
+}
+
+.file:hover {
+    cursor: pointer;
+    background-color: #abbac9;
+}
+
+.removeFileBtn {
+    padding: 2px;
+    color: #750000;
+}
+

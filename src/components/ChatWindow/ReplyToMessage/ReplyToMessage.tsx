@@ -4,21 +4,21 @@ import {CloseCircleOutlined, EditOutlined} from "@ant-design/icons";
 import {Message} from "../../../API/services/forum/ForumInterfaces";
 
 interface ReplyToMessageProps {
-    setFileList :  React.Dispatch<React.SetStateAction<string[]>>
+    setImageList :  React.Dispatch<React.SetStateAction<string[]>>
     replyMessage? : Message
     setReplyMessage : React.Dispatch<React.SetStateAction<Message | undefined>>
     inputRef :  React.MutableRefObject<HTMLTextAreaElement | null>
 }
 
 const ReplyToMessage : FC<ReplyToMessageProps> = ({
-                                                      setFileList,
+                                                      setImageList,
                                                       replyMessage,
                                                       setReplyMessage,
                                                       inputRef}) => {
     const [isActive, setIsActive] = useState<boolean>(false)
 
     const onReplyCansel = () => {
-        setFileList([])
+        setImageList([])
         setReplyMessage(undefined)
         setIsActive(false)
     }

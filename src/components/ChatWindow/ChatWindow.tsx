@@ -22,6 +22,7 @@ import chat_classes from './ChatWindow.module.css'
 import {useActions} from "../../hooks/useActions";
 import {useTypedSelector} from "../../hooks/useTypedSelector";
 import {isMyMessage} from "../../API/services/forum/UserService";
+import {MessageFileDto} from "../../API/services/forum/MessageDto";
 
 interface ChatProps {
     chat? : Chat
@@ -75,9 +76,34 @@ const ChatWindow: FC<ChatProps> = ({
         }
     }
 
+    function onMessageFileSaved(message : IMessage) {
+        const dto : MessageFileDto = JSON.parse(message.body)
+        console.log("onMessageFileSaved", dto)
+        let foundMsg = messages.filter((message) => message.id === dto.messageId)[0]
+        let msgIndex = messages.indexOf(foundMsg)
+        let list = foundMsg.fileDtoList;
+        console.log("list", list)
+        let fileArr = list.filter((fileDto) => fileDto.name === dto.name)
+        console.log("dto.name",dto.name, fileArr)
+        let file = fileArr[0]
+
+        let index = list.indexOf(file)
+
+        file.mongoId = dto.mongoId
+        file.isLarge = dto.isLarge
+        file.messageId = dto.messageId
+
+        list[index] = file;
+        foundMsg.fileDtoList = list
+        messages[msgIndex] = foundMsg
+        console.log("changed messages", messages)
+        setMsg(messages)
+    }
+
     useSubscription(`/chat/` + chatId + "/deleteMessageEvent", onUserDeletesMessage)
     useSubscription(`/chat/` + chatId + "/deleteMessageImageEvent", onUserDeletesMessageImage)
     useSubscription(`/chat/` + chatId + "/updateMessageEvent", onUserUpdatedMessage)
+    useSubscription(`/chat/` + chatId + "/messageFileSaved", onMessageFileSaved)
 
     useEffect(() => {
         if (messages.length > 0) {
@@ -118,7 +144,7 @@ const ChatWindow: FC<ChatProps> = ({
 
     const onChatMessagesSubscribe = (message: IMessage) => {
         const data : Message = JSON.parse(message.body)
-
+        console.log("new msg", data)
         if (isMyMessage(data.sender.id, user?.sub) || isNeedScrollToBottom) {
             scrollToBottom()
         }

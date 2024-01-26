@@ -4,7 +4,7 @@ import {FileAddOutlined, FileImageOutlined, GlobalOutlined, RightOutlined} from 
 import {useAuth0} from "@auth0/auth0-react";
 import {ForumUserDto, Message, UpdateMessageDto} from "../../../API/services/forum/ForumInterfaces";
 import {Client} from "@stomp/stompjs";
-import {MessageDto} from "../../../API/services/forum/MessageDto";
+import {MessageDto, MessageFileDtoSmall, MessageIsSavedPayload} from "../../../API/services/forum/MessageDto";
 import './ChatInput.css'
 import ImageUpload from "../ImageUpload/ImageUpload";
 import EditMessage from "../EditMessage/EditMessage";
@@ -12,7 +12,12 @@ import TextareaAutosize from 'react-textarea-autosize';
 import {AuthContext} from "../../../context/AuthContext";
 import {publishNewMessage, updateMessage} from "../../../API/services/forum/MessageService";
 import ReplyToMessage from "../ReplyToMessage/ReplyToMessage";
-import {fileToDto} from "../../../API/services/ImageService";
+import {imageToDto} from "../../../API/services/ImageService";
+import FileUpload from "../FileUpload/FileUpload";
+import {IMessage} from "@stomp/stompjs/src/i-message";
+import {fileToDto, saveMessageFile} from "../../../API/services/forum/MessageFileService";
+import {useTypedSelector} from "../../../hooks/useTypedSelector";
+import {useSubscription} from "react-stomp-hooks";
 
 interface ChatInputProps {
     stompClient? : Client
@@ -25,6 +30,7 @@ interface ChatInputProps {
     setReplyMessage : React.Dispatch<React.SetStateAction<Message | undefined>>
     replyMessage? : Message
 }
+
 
 
 const ChatInput: FC<ChatInputProps> = ({
@@ -42,9 +48,13 @@ const ChatInput: FC<ChatInputProps> = ({
     const {isAuthenticated, user} = useAuth0()
     const [isTyping, setIsTyping] = useState<boolean>();
     const {jwt} = useContext(AuthContext)
+
+    const {filesList} = useTypedSelector(state => state.chatInput)
+
     const {notification} = App.useApp();
-    const [fileList, setFileList] = useState<string[]>([]);
+    const [imageList, setImageList] = useState<string[]>([]);
     const [isImageUploadActive, setIsImageUploadActive] = useState<boolean>(false)
+    const [isFileUploadActive, setIsFileUploadActive] = useState<boolean>(false)
 
 
     const onStopTyping = () => {
@@ -75,7 +85,7 @@ const ChatInput: FC<ChatInputProps> = ({
                 id: user.sub,
                 chatId: chatId
             }
-        } throw new Error("user data is undefined, perhaps not auth")
+        } throw new Error("user data is undefined, maybe not auth")
     }
 
 
@@ -86,17 +96,38 @@ const ChatInput: FC<ChatInputProps> = ({
         }
     }, [input]);
 
+    const onMessageIsSaved = async (message : IMessage) => {
+        const payload : MessageIsSavedPayload = JSON.parse(message.body)
+        console.log("onMessageIsSaved".toUpperCase(), payload)
+        console.log("files list", filesList)
+        if (jwt) {
 
-    const onSend = useCallback(async () => {
+            for (let i = 0; i < filesList.length; i++) {
+                const file = filesList[i]
+                console.log("Save file", file)
+                await saveMessageFile(file, payload.messageId, chatId, jwt)
+            }
+
+        } else console.log("jwt null")
+    }
+
+    useSubscription(`/chat/` + chatId + "/messageIsSaved?senderId=" + user?.sub, onMessageIsSaved)
+
+
+    const onSend = () => {
         if (input !== '' && input.length < 3000) {
             if(stompClient && user?.sub) {
+                console.log("after fileToDto", filesList)
+                const fileDtoList: MessageFileDtoSmall[] = fileToDto(filesList)
+                console.log("fileDtoList", fileDtoList)
 
                 const messageDto : MessageDto  = {
                     senderId : user.sub,
                     text: input,
                     chatId: chatId,
-                    imagesDtoList : fileToDto(fileList),
-                    replyToMessageId: replyMessage?.id
+                    imagesDtoList : imageToDto(imageList),
+                    replyToMessageId: replyMessage?.id,
+                    fileDtoList : fileDtoList
                 }
 
                 publishNewMessage(stompClient, messageDto)
@@ -105,12 +136,13 @@ const ChatInput: FC<ChatInputProps> = ({
                 setReplyMessage(undefined)
                 filterTypingUsers(user?.sub)
                 onStopTyping()
-                setFileList([])
+                setImageList([])
                 setIsImageUploadActive(false)
                 setInput('')
             } else console.error("stompClient or user id is null")
         } else console.error("validation error")
-    }, [chatId, input, stompClient, user, fileList]);
+    };
+
 
 
     const updateMsg = useCallback( async () => {
@@ -171,9 +203,13 @@ const ChatInput: FC<ChatInputProps> = ({
         setIsImageUploadActive(true)
     }
 
+    const openFileUpload = () => {
+        setIsFileUploadActive(true)
+    }
+
     const onImageUploadClose = () => {
         setIsImageUploadActive(false)
-        setFileList([])
+        setImageList([])
     }
 
     const [btnClass, setBtnClass] = useState<string>("")
@@ -205,8 +241,13 @@ const ChatInput: FC<ChatInputProps> = ({
 
     return (
         <Flex vertical>
-            <ImageUpload fileList={fileList}
-                         setFileList={setFileList}
+            <FileUpload
+                isFileUploadActive={isFileUploadActive}
+                setIsFileUploadActive={setIsFileUploadActive}
+            />
+
+            <ImageUpload imageList={imageList}
+                         setFileList={setImageList}
                          isImageUploadActive={isImageUploadActive}
                          onImageUploadClose={onImageUploadClose}
             />
@@ -218,7 +259,7 @@ const ChatInput: FC<ChatInputProps> = ({
             />
             <ReplyToMessage
                 inputRef={inputRef}
-                setFileList={setFileList}
+                setImageList={setImageList}
                 replyMessage={replyMessage}
                 setReplyMessage={setReplyMessage}
             />
@@ -239,7 +280,7 @@ const ChatInput: FC<ChatInputProps> = ({
                 </Tooltip>
                 <Flex align={"flex-end"}>
                     <Flex style={{margin: "0 5px"}} gap={3}>
-                        <Button className={"toolBtn"}  disabled={isBtnsActive()}  icon={<FileAddOutlined  style={{fontSize: 22}}  />}/>
+                        <Button className={"toolBtn"}  onClick={openFileUpload} disabled={isBtnsActive()}  icon={<FileAddOutlined  style={{fontSize: 22}}  />}/>
                         <Button className={"toolBtn"} onClick={openImageUpload} disabled={isBtnsActive()} icon={<FileImageOutlined style={{fontSize: 22}} />}/>
                         <Button className={"toolBtn"} disabled={isBtnsActive()} icon={<GlobalOutlined style={{fontSize: 22}} />}/>
                     </Flex>

@@ -40,6 +40,7 @@ export const getNextMessagesOfChat = (chatId : number, fromMessageId : number) =
 
 export const publishNewMessage = (client :  Client, messageDto : MessageDto) => {
     const body = JSON.stringify(messageDto)
+
     client.publish({
         destination: '/app/userMessage/new',
         body: body,

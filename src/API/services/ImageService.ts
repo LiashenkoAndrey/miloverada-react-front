@@ -1,4 +1,3 @@
-import {MessageImageDto} from "./forum/ForumInterfaces";
 
 const apiServerUrl = process.env.REACT_APP_API_SERVER_URL;
 const IMAGE_ENDPOINT = apiServerUrl + "/api/upload/image/"
@@ -15,7 +14,7 @@ export const getForumImageUrl = (imageId: string | undefined) => {
 }
 
 
-export const fileToDto = (fileList: string[]) => {
+export const imageToDto = (fileList: string[]) => {
     return fileList.map((file) => {
             return {
                 base64Image: file
