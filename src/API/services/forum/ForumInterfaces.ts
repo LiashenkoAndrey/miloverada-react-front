@@ -1,3 +1,4 @@
+import {MessageFile, MessageFileDto} from "./MessageDto";
 
 
 export interface Message {
@@ -9,6 +10,8 @@ export interface Message {
     repliedMessage : Message,
     messages : Array<Message>
     imagesList : MessageImage[]
+    filesList : MessageFile[]
+    fileDtoList : MessageFileDto[]
 }
 
 
@@ -42,6 +45,12 @@ export interface ForumUserDto {
     chatId : number,
     id : string,
     name : string,
+}
+
+export interface PrivateChat {
+    chat_id : number
+    user1 : User
+    user2 : User
 }
 
 export interface Chat {
@@ -80,10 +89,16 @@ export interface NewChat {
 }
 
 export interface User {
+    registeredOn? : string[]
     id? : string,
-    firstName? : string,
-    lastName? : string,
-    avatar? : string
+    firstName : string,
+    lastName : string,
+    avatar : string
+}
+
+export interface TypingUser {
+    id : string,
+    firstName : string,
 }
 
 export interface NewUserDto {

@@ -1,12 +1,15 @@
 import React, {FC, useCallback, useEffect, useRef} from 'react';
-import {Dropdown, Flex, Image, MenuProps} from "antd";
+import {Button, Dropdown, Flex, Image, MenuProps, Tooltip} from "antd";
 import {Chat, Message} from "../../../API/services/forum/ForumInterfaces";
 import {useAuth0} from "@auth0/auth0-react";
-import {toTime} from "../../../API/Util";
+import {toDate, toDateShort, toTime} from "../../../API/Util";
 import MessageImages from "./MessageImages/MessageImages";
 import classes from './Message.module.css'
 import {useTypedSelector} from "../../../hooks/useTypedSelector";
 import {isMyMessage} from "../../../API/services/forum/UserService";
+import FileList from "../../../components/Files/FileList";
+import FileDtoList from "../../../components/Files/FileDtoList";
+import UserPicture from "../../../components/UserPicture/UserPicture";
 
 interface MessageProps {
     message: Message
@@ -33,6 +36,8 @@ const MessageListItem: FC<MessageProps> = ({
     const messageRef = useRef<HTMLDivElement>(null)
     const {isAuthenticated, user} = useAuth0()
     const {lastReadMessageId, messages} = useTypedSelector(state => state.chat)
+    const {isFileDropdownActive} = useTypedSelector(state => state.dropdown)
+
     useEffect(() => {
         if (isAuthenticated) {
             if (observer && messageRef.current && message.id > lastReadMessageId ) {
@@ -116,26 +121,18 @@ const MessageListItem: FC<MessageProps> = ({
              className={isHighlighted()}
              id={"msgWrapper-" + message.id}
         >
-            <Dropdown disabled={!isAuthenticated}
+            <Dropdown
                       menu={{items: messageMenuItems, onClick: onSelectAction}}
                       trigger={['contextMenu']}
             >
                 <Flex ref={messageRef}
                       className={classes.message}
-                      style={{backgroundColor: isMyMessage(user?.sub, message.sender.id) ? "#4C372F" : "var(--message-bg-color)"}}
+                      style={{backgroundColor: isMyMessage(user?.sub, message.sender.id) ? "#8d654c" : "var(--message-bg-color)"}}
                       id={"msgId-" + message.id}
                       gap={8}
                 >
-                    <div style={{marginTop: 4}}>
-                        <Image
-                            preview={false}
-                            style={{cursor: "pointer"}}
-                            className={classes.messageImg + " nonSelect"}
-                            width={35}
-                            height={35}
-                            src={message.sender.avatar}
-                        />
-                    </div>
+
+                    <UserPicture user={message.sender}/>
 
                     <Flex vertical={true}>
                         <Flex style={{position: "relative"}}
@@ -152,6 +149,8 @@ const MessageListItem: FC<MessageProps> = ({
                         <Flex vertical style={{marginTop: 3}}>
                             <span style={{fontWeight: "bold", display: "none"}}>{message.id}</span>
 
+
+
                             {message.repliedMessage &&
                                 <Flex onClick={onRepliedMessageLinkClick} className={classes.repliedMessage + " nonSelect"} vertical>
                                     <span>{message.repliedMessage.text}</span>
@@ -162,6 +161,19 @@ const MessageListItem: FC<MessageProps> = ({
                                 message={message}
                                 chat={chat}
                             />
+
+                            {message.fileDtoList
+                                &&
+                                <FileDtoList files={message.fileDtoList}/>
+
+                            }
+
+                            {message.filesList
+                                &&
+                                <FileList messageFiles={message.filesList}/>
+
+                            }
+
                             <pre className={classes.messageText} style={{margin: 0, alignSelf: "flex-end"}}>
                                 {message.text}
                             </pre>

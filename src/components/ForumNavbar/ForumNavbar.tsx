@@ -10,12 +10,14 @@ import {
 } from "@ant-design/icons";
 import {useAuth0} from "@auth0/auth0-react";
 import './ForumNavbar.css'
+import {useNavigate} from "react-router-dom";
 interface ForumNavbarProps {
     children?: React.ReactNode;
 }
 
 const ForumNavbar : FC<ForumNavbarProps> = (props) => {
     const {isAuthenticated, loginWithRedirect, user, logout} = useAuth0()
+    const nav = useNavigate()
     const onLogin = async () => {
         await loginWithRedirect({
             appState: {
@@ -44,7 +46,7 @@ const ForumNavbar : FC<ForumNavbarProps> = (props) => {
                 <Button icon={<HomeOutlined style={{color: "black"}} />}>Головна</Button>
                 <Button icon={<TagsOutlined />}>Теги</Button>
                 <Button icon={<QuestionCircleOutlined />}>Питання</Button>
-                <Button icon={<UserOutlined />}>Користувачі</Button>
+                <Button icon={<UserOutlined />} onClick={() => nav("/forum/users")}>Користувачі</Button>
             </Flex>
 
             {props.children}

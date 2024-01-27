@@ -1,0 +1,34 @@
+
+
+.file {
+    border-radius: 5px;
+    padding: 4px 3px;
+}
+
+.file:hover {
+    background-color: rgba(0, 0, 0, 0.18);
+}
+
+.fileList {
+    padding: 8px 7px;
+    background-color: rgba(0, 0, 0, 0.09);
+    border: solid rgba(0, 0, 0, 0.49) 1px;
+    border-radius: 20px;
+}
+
+.fileName {
+    font-family: 'Open Sans', sans-serif;
+    font-weight: 500;
+    font-size: 16;
+    color: white;
+}
+
+.fileSize {
+    white-space: nowrap;
+    font-weight: 600;
+    color: white;
+}
+
+.download:hover {
+    cursor: pointer;
+}

@@ -1,6 +1,6 @@
-import React, {FC, useState} from 'react';
+import React, {FC, useEffect, useState} from 'react';
 import {Button, Flex, Image, Skeleton} from "antd";
-import {Chat, ForumUserDto, User} from "../../../API/services/forum/ForumInterfaces";
+import {Chat, ForumUserDto, TypingUser, User} from "../../../API/services/forum/ForumInterfaces";
 import classes from './ChatHeader.module.css'
 import {useSubscription} from "react-stomp-hooks";
 import {IMessage} from "@stomp/stompjs/src/i-message";
@@ -10,8 +10,8 @@ import ChatSettings from "../../ChatSettings/ChatSettings";
 
 interface ChatHeaderProps {
     chat? : Chat,
-    typingUsers : Array<User>
-    setTypingUsers : React.Dispatch<React.SetStateAction<User[]>>
+    typingUsers : Array<TypingUser>
+    setTypingUsers : React.Dispatch<React.SetStateAction<TypingUser[]>>
     chatId : number
     filterTypingUsers ( userId: string | undefined) : void
 }
@@ -35,6 +35,10 @@ const ChatHeader: FC<ChatHeaderProps> = ({
         const data : ForumUserDto = JSON.parse( message.body)
         filterTypingUsers(data.id)
     }
+
+    useEffect(() => {
+        console.log(chat)
+    }, [chat]);
 
     useSubscription(`/chat/` + chatId + "/userStopTyping", onUsersStopTyping)
     useSubscription(`/chat/` + chatId + "/typingUsers", onUsersStartTyping)
