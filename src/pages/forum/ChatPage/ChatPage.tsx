@@ -33,7 +33,7 @@ const ChatPage = () => {
             <Flex className={"chatWrapper"} gap={20} justify={"center"}>
                 <ChatNav/>
 
-                <StompSessionProvider url={'http://localhost:6060/ws-endpoint'}>
+                <StompSessionProvider url={'https://v2.miloverada.gov.ua:8443/ws-endpoint'}>
                     <ChatWindow chat={chat}/>
                 </StompSessionProvider>
             </Flex>
