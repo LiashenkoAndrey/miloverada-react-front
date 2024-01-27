@@ -2,6 +2,14 @@ import {NewUserDto} from "./ForumInterfaces";
 import {callAndGetResult} from "../ExternalApiService";
 import {apiServerUrl} from "../../Constants";
 
+export const getAllUsers = () => {
+    const config = {
+        url: `${apiServerUrl}/api/forum/users`,
+        method: "GET",
+    }
+    return callAndGetResult(config)
+}
+
 
 export const newUser = (user : NewUserDto, accessToken : string) => {
     const config = {
