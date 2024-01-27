@@ -3,18 +3,14 @@ import {NewChat} from "./ForumInterfaces";
 
 const apiServerUrl = process.env.REACT_APP_API_SERVER_URL;
 
-export const getAllChats = () => {
-    const config = {
-        url: `${apiServerUrl}/api/forum/chat/all`,
-        method: "GET"
-    }
-    return callAndGetResult(config)
-}
 
-export const getAllChatsByThemeId = (topicId : number) => {
+export const getOrCreatePrivateChat = (user1_id : string, user2_id : string, accessToken : string) => {
     const config = {
-        url: `${apiServerUrl}/api/forum/chat/all?topicId=${topicId}`,
-        method: "GET"
+        url: `${apiServerUrl}/api/protected/forum/user/${user1_id}/chat?user2_id=${user2_id}`,
+        method: "POST",
+        headers: {
+            Authorization: `Bearer ${accessToken}`,
+        }
     }
     return callAndGetResult(config)
 }
@@ -53,8 +49,6 @@ export const getNewPageOfMessagesAuthUser = (chatId : number, page : number, siz
     }
     return callAndGetResult(config)
 }
-
-
 
 
 export const newChat = (chat : NewChat, accessToken : string) => {

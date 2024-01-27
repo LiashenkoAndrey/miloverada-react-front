@@ -1,14 +1,15 @@
 import React, {FC, useCallback, useEffect, useRef} from 'react';
-import {Dropdown, Flex, Image, MenuProps} from "antd";
+import {Button, Dropdown, Flex, Image, MenuProps, Tooltip} from "antd";
 import {Chat, Message} from "../../../API/services/forum/ForumInterfaces";
 import {useAuth0} from "@auth0/auth0-react";
-import {toTime} from "../../../API/Util";
+import {toDate, toDateShort, toTime} from "../../../API/Util";
 import MessageImages from "./MessageImages/MessageImages";
 import classes from './Message.module.css'
 import {useTypedSelector} from "../../../hooks/useTypedSelector";
 import {isMyMessage} from "../../../API/services/forum/UserService";
 import FileList from "../../../components/Files/FileList";
 import FileDtoList from "../../../components/Files/FileDtoList";
+import UserPicture from "../../../components/UserPicture/UserPicture";
 
 interface MessageProps {
     message: Message
@@ -130,16 +131,8 @@ const MessageListItem: FC<MessageProps> = ({
                       id={"msgId-" + message.id}
                       gap={8}
                 >
-                    <div style={{marginTop: 4}}>
-                        <Image
-                            preview={false}
-                            style={{cursor: "pointer"}}
-                            className={classes.messageImg + " nonSelect"}
-                            width={35}
-                            height={35}
-                            src={message.sender.avatar}
-                        />
-                    </div>
+
+                    <UserPicture user={message.sender}/>
 
                     <Flex vertical={true}>
                         <Flex style={{position: "relative"}}

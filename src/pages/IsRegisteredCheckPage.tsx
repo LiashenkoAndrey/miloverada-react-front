@@ -6,6 +6,7 @@ import {Button, Flex} from "antd";
 import {AuthContext} from "../context/AuthContext";
 import {newUser, userIsRegistered} from "../API/services/forum/UserService";
 import {NewUserDto} from "../API/services/forum/ForumInterfaces";
+import axios from "axios";
 
 const IsRegisteredCheckPage = () => {
 
@@ -19,7 +20,6 @@ const IsRegisteredCheckPage = () => {
         if (jwt && user) {
             const save = async () => {
                 console.log(jwt)
-                console.log(user)
                 const newUserObj : NewUserDto = {
                     firstName : user.given_name,
                     lastName : user.family_name || user.nickname,
@@ -38,11 +38,25 @@ const IsRegisteredCheckPage = () => {
                 if (error) throw error
             }
 
+            const getAvatar = async () => {
+                if (user.picture) {
+                    const {data} = await axios.get(user.picture)
+                    if (data) {
+                        console.log(data)
+                    }
+                }
+            }
+
+            // getAvatar()
 
             setTimeout(async () => {
                 if (user.sub) {
-                    const {data, error} = await userIsRegistered(user.sub, jwt);
 
+
+
+                    const {data, error} = await userIsRegistered(user.sub, jwt);
+                    console.log(user)
+                    console.log(user.picture)
                     if (data) {
                         nav(String(searchParams.get("redirectTo")))
                     } else {

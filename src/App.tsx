@@ -14,6 +14,7 @@ import {AuthContext} from "./context/AuthContext";
 import {useAuth0} from "@auth0/auth0-react";
 import TopicPage from "./pages/forum/TopicPage/TopicPage";
 import IsRegisteredCheckPage from "./pages/IsRegisteredCheckPage";
+import PrivateChatPage from "./pages/forum/PrivateChatPage/PrivateChatPage";
 
 function App() {
     const [jwt, setJwt] = useState<string>()
@@ -43,6 +44,7 @@ function App() {
                       <Route path={"/topic/:id"} element={<TopicPage/>}/>
                       <Route path={"/forum"} element={<AllForumTopicsPage/>}/>
                       <Route path={"/resolveUser"} element={<IsRegisteredCheckPage/>}/>
+                      <Route path={"/forum/user/:user1_id/chat"} element={<PrivateChatPage/>}/>
                   </Routes>
                   <Footer />
               </Layout>

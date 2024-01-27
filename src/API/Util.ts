@@ -11,6 +11,10 @@ export function toDate(date : Array<string>) {
     return new Date(date.toString()).toLocaleString()
 }
 
+export function toDateShort(date : Array<string>) {
+    return new Date(date.toString()).toLocaleString().split(",")[0]
+}
+
 export function getFileUploadUrl(isLarge : boolean | undefined, id : string | undefined) {
     if (isLarge === undefined || id === undefined) {
         console.error("is undefined")

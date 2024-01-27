@@ -47,6 +47,12 @@ export interface ForumUserDto {
     name : string,
 }
 
+export interface PrivateChat {
+    chat_id : number
+    user1 : User
+    user2 : User
+}
+
 export interface Chat {
     id : number,
     name : string,
@@ -83,10 +89,16 @@ export interface NewChat {
 }
 
 export interface User {
+    registeredOn? : string[]
     id? : string,
-    firstName? : string,
-    lastName? : string,
-    avatar? : string
+    firstName : string,
+    lastName : string,
+    avatar : string
+}
+
+export interface TypingUser {
+    id : string,
+    firstName : string,
 }
 
 export interface NewUserDto {

@@ -2,10 +2,11 @@ import React, {FC, useCallback, useContext, useEffect, useRef, useState} from 'r
 import {App, Badge, Flex} from "antd";
 import {
     Chat,
+    ChatMetadata,
     DeleteMessageDto,
     DeleteMessageImageDto,
     LastReadMessageDto,
-    Message,
+    Message, TypingUser,
     UpdateMessageDto,
     User
 } from "../../API/services/forum/ForumInterfaces";
@@ -16,39 +17,98 @@ import ChatHeader from "./ChatHeader/ChatHeader";
 import {IMessage} from "@stomp/stompjs/src/i-message";
 import {useAuth0} from "@auth0/auth0-react";
 import {DownOutlined} from "@ant-design/icons";
-import {deleteMessageById} from "../../API/services/forum/MessageService";
+import {deleteMessageById, getLatestMessagesOfChat} from "../../API/services/forum/MessageService";
 import {AuthContext} from "../../context/AuthContext";
 import chat_classes from './ChatWindow.module.css'
 import {useActions} from "../../hooks/useActions";
 import {useTypedSelector} from "../../hooks/useTypedSelector";
 import {isMyMessage} from "../../API/services/forum/UserService";
 import {MessageFileDto} from "../../API/services/forum/MessageDto";
+import {getChatMetadata, getMessagesByChatIdAndLastReadMessage} from "../../API/services/forum/ChatService";
+import {MESSAGE_LOAD_PORTION_SIZE, MESSAGES_LIST_DEFAULT_SIZE} from "../../Constants";
 
 interface ChatProps {
     chat? : Chat
-    chatId : number,
-    typingUsers : Array<User>,
-    setTypingUsers : React.Dispatch<React.SetStateAction<User[]>>,
 }
 
-const ChatWindow: FC<ChatProps> = ({
-                                       chatId,
-                                       chat,
-                                       typingUsers,
-                                       setTypingUsers
+const ChatWindow: FC<ChatProps> = ({ chat
                                    }) => {
 
-    const {messages, unreadMessagesCount} = useTypedSelector(state => state.chat)
-    const {setMsg, setUnreadMessagesCount} = useActions()
-
+    const {messages, unreadMessagesCount, chatId} = useTypedSelector(state => state.chat)
+    const {setMsg, setUnreadMessagesCount, setHasPreviousMessages, setHasNextMessages, setLastReadMessageId} = useActions()
     const stompClient = useStompClient()
-    const {user} = useAuth0()
+    const {user, isAuthenticated} = useAuth0()
     const lastMessageObserver = useRef<IntersectionObserver>()
     const [isScrollDownButtonActive, setIsScrollDownButtonActive] = useState<boolean>(false)
     const [input, setInput] = useState<string>('');
     const {jwt} = useContext(AuthContext)
     const {notification} = App.useApp();
     const [isNeedScrollToBottom, setIsNeedScrollToBottom] = useState<boolean>(false)
+    const [typingUsers, setTypingUsers] = useState<Array<TypingUser>>([]);
+
+
+    useEffect(() => {
+        if (chatId > 0) {
+            if (isAuthenticated) {
+                getMetadataAndLoadMessages(chatId)
+            } else {
+                console.log("not auth")
+                getLatestOfChat()
+            }
+        }
+    }, [chatId]);
+
+
+    const getLatestOfChat = async () => {
+        const {data, error} = await getLatestMessagesOfChat(chatId)
+        if (data) {
+            setMsg(data)
+            setTimeout(() => {
+                scrollToChatBottom()
+            }, 100)
+        }
+        if (error) throw error;
+    }
+
+
+    const getMetadataAndLoadMessages = async (chatId: number) => {
+        if (user?.sub) {
+            const chatMetadata = await getChatMetadata(chatId, encodeURIComponent(user.sub))
+            if (chatMetadata.data) {
+                const metadata: ChatMetadata = chatMetadata.data
+                if (metadata.last_read_message_id) {
+                    setHasNextMessages(true)
+                }
+                setLastReadMessageId(metadata.last_read_message_id)
+                setUnreadMessagesCount(metadata.unread_messages_count)
+
+                if (!metadata.last_read_message_id) {
+                    setHasNextMessages(false)
+                    getLatestOfChat()
+                    return
+                }
+
+                const {data, error} = await getMessagesByChatIdAndLastReadMessage(Number(chatId), 0, MESSAGE_LOAD_PORTION_SIZE * 2, metadata.last_read_message_id);
+                if (data) {
+                    if (data.length < MESSAGES_LIST_DEFAULT_SIZE) {
+                        setHasNextMessages(false)
+                        setHasPreviousMessages(false)
+                    }
+                    setMsg(data)
+
+                    setTimeout(() => {
+                        const lastReadMsg = document.getElementById(`msgId-${metadata.last_read_message_id}`)
+                        lastReadMsg?.scrollIntoView({behavior: "auto", block: 'end'});
+                    }, 100)
+
+                }
+                if (error) throw error;
+
+            }
+            if (chatMetadata.error) throw chatMetadata.error
+        }
+    }
+
 
     const onUserDeletesMessage = (message : IMessage) => {
         const deletedMessageDto : DeleteMessageDto = JSON.parse(message.body)
@@ -78,13 +138,10 @@ const ChatWindow: FC<ChatProps> = ({
 
     function onMessageFileSaved(message : IMessage) {
         const dto : MessageFileDto = JSON.parse(message.body)
-        console.log("onMessageFileSaved", dto)
         let foundMsg = messages.filter((message) => message.id === dto.messageId)[0]
         let msgIndex = messages.indexOf(foundMsg)
         let list = foundMsg.fileDtoList;
-        console.log("list", list)
         let fileArr = list.filter((fileDto) => fileDto.name === dto.name)
-        console.log("dto.name",dto.name, fileArr)
         let file = fileArr[0]
 
         let index = list.indexOf(file)
@@ -96,7 +153,6 @@ const ChatWindow: FC<ChatProps> = ({
         list[index] = file;
         foundMsg.fileDtoList = list
         messages[msgIndex] = foundMsg
-        console.log("changed messages", messages)
         setMsg(messages)
     }
 
@@ -134,19 +190,24 @@ const ChatWindow: FC<ChatProps> = ({
     }, [messages]);
 
 
-
-    function scrollToBottom() {
+    function scrollToLastMessage() {
         setTimeout(() => {
-            const lastMessage = document.getElementById("msgId-" + messages[messages.length-1].id)
-            lastMessage?.scrollIntoView({behavior: "smooth", block: 'center'});
+            if (messages.length > 0) {
+                const lastMessage = document.getElementById("msgId-" + messages[messages.length-1].id)
+                lastMessage?.scrollIntoView({behavior: "smooth", block: 'center'});
+            }
         }, 5)
+    }
+
+    const scrollToChatBottom = () => {
+        const chatBottom = document.getElementById("chatBottom")
+        chatBottom?.scrollIntoView({behavior: "smooth", block: 'nearest'});
     }
 
     const onChatMessagesSubscribe = (message: IMessage) => {
         const data : Message = JSON.parse(message.body)
-        console.log("new msg", data)
         if (isMyMessage(data.sender.id, user?.sub) || isNeedScrollToBottom) {
-            scrollToBottom()
+            scrollToLastMessage()
         }
 
         setInput('')
@@ -191,9 +252,6 @@ const ChatWindow: FC<ChatProps> = ({
     const [editMessage, setEditMessage] = useState<Message>()
     const [replyMessage, setReplyMessage] = useState<Message>()
 
-    const setEditMessageCustom = (msg : Message | undefined) => {
-        setEditMessage(msg)
-    }
 
     const onEditMessage = useCallback((message : Message) => {
         if (replyMessage) setReplyMessage(undefined)

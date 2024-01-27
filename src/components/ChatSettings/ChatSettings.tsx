@@ -37,12 +37,12 @@ const ChatSettings :FC<ChatSettingsProps> = ({chat, setIsSettingsActive}) => {
             <p className={classes.chatDescription}>{chat?.description}</p>
             <Descriptions layout={"horizontal"} title={false}>
 
-                {chat &&
+                {chat?.owner &&
                     <Descriptions.Item label={<span style={{color: "black"}}>Створив</span>}><span className={classes.userLink}>{chat.owner.firstName}</span></Descriptions.Item>
                 }
 
                 {chat?.createdOn &&
-                    <Descriptions.Item label={<span style={{color: "black"}}>Час створено</span>}><span>{toDate(chat.createdOn)}</span></Descriptions.Item>
+                    <Descriptions.Item label={<span style={{color: "black"}}>Чат створено</span>}><span>{toDate(chat.createdOn)}</span></Descriptions.Item>
                 }
             </Descriptions>
         </Flex>
