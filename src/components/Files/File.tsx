@@ -60,7 +60,7 @@ const File: FC<FileProps> = ({fileIsLarge, fileSize, mongoFileId, messageFileId,
                   menu={{items:  getFileMenuItems(messageFileId), onClick: onSelectFileAction}}
                   trigger={['contextMenu']}
         >
-            <Flex gap={20}
+            <Flex gap={10}
                   align={"center"}
                   justify={"space-between"}
                   className={fileClasses.file}>

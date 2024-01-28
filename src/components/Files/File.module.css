@@ -23,6 +23,21 @@
     color: white;
 }
 
+@media (max-width: 600px) {
+    .fileName {
+        font-size: 12px!important;
+
+    }
+
+    .fileSize {
+        font-size: 12px!important;
+    }
+
+    .fileList {
+        padding: 8px 2px!important;
+    }
+}
+
 .fileSize {
     white-space: nowrap;
     font-weight: 600;
