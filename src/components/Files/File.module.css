@@ -26,6 +26,7 @@
 @media (max-width: 600px) {
     .fileName {
         font-size: 12px!important;
+        max-width: 100px!important;
 
     }
 
