@@ -22,7 +22,7 @@ const Header = () => {
                     <span onClick={() => nav("/forum")} >Форум</span>
                     <span>Управління</span>
                     <span>Установи</span>
-                    <span>Контакти</span>
+                    <span onClick={() => nav("/contacts")} >Контакти</span>
                 </Flex>
             </Flex>
         </Flex>
