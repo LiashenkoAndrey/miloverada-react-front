@@ -5,12 +5,12 @@ import contactPageClasses from './ContactsPage.module.css'
 // @ts-ignore
 import arrowLeft from '../../assets/arrowLeft.svg'
 import {useNavigate} from "react-router-dom";
-import {IContact, getAllContacts} from "../../API/services/ContactsService";
-import Contact from "../../components/Contact/Contact";
+import {IEmployee, getAllContacts} from "../../API/services/ContactsService";
+import Employee from "../../components/Employee/Employee";
 const ContactsPage = () => {
     const nav = useNavigate()
 
-    const [contacts, setContacts] = useState<IContact[]>([])
+    const [contacts, setContacts] = useState<IEmployee[]>([])
 
     useEffect(() => {
         const getContacts = async () => {
@@ -35,7 +35,7 @@ const ContactsPage = () => {
                         <h1>Контакти</h1>
                         <Flex vertical gap={10}>
                             {contacts.map((contact) =>
-                                <Contact contact={contact}/>
+                                <Employee contact={contact}/>
                             )}
                         </Flex>
                     </Flex>

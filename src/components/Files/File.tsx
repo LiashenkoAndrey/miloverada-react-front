@@ -66,7 +66,7 @@ const File: FC<FileProps> = ({fileIsLarge, fileSize, mongoFileId, messageFileId,
                   className={fileClasses.file}>
                 <Flex gap={5} align={"center"}>
 
-                    <FileFormat format={fileFormat}/>
+                    <FileFormat style={{fontSize : 32, color: "white"}} format={fileFormat}/>
 
                     <span className={fileClasses.fileName}>{fileName}</span>
                 </Flex>

@@ -1,4 +1,4 @@
-import React, {FC} from 'react';
+import React, {CSSProperties, FC} from 'react';
 import {Flex} from "antd";
 import {
     FileExcelOutlined,
@@ -13,22 +13,22 @@ import {
 
 interface FileFormatProps {
     format : string
+    style : CSSProperties
 }
 
-const FileFormat: FC<FileFormatProps> = ({format}) => {
-
+const FileFormat: FC<FileFormatProps> = ({format, style}) => {
     return (
         <Flex gap={5} >
             {(() => {
                 switch (format) {
-                    case "pdf" : return <FilePdfOutlined style={{fontSize: 32, color: "white"}}/>
-                    case "gif" : return  <FileGifOutlined style={{fontSize: 32, color: "white"}}/>
-                    case "zip" : return <FileZipOutlined style={{fontSize: 32, color: "white"}}/>
-                    case "word" : return  <FileWordOutlined style={{fontSize: 32, color: "white"}}/>
-                    case "xlsx" : return  <FileExcelOutlined style={{fontSize: 32, color: "white"}} />
-                    case  "png" || "webp" : return <FileImageOutlined  style={{fontSize: 32, color: "white"}}/>
-                    case "jpg" : return <FileJpgOutlined style={{fontSize: 32, color: "white"}} />
-                    default : return  <FileOutlined style={{fontSize: 32, color: "white"}}/>
+                    case "pdf" : return <FilePdfOutlined style={style}/>
+                    case "gif" : return  <FileGifOutlined style={style}/>
+                    case "zip" : return <FileZipOutlined style={style}/>
+                    case "word" : return  <FileWordOutlined style={style}/>
+                    case "xlsx" : return  <FileExcelOutlined style={style} />
+                    case  "png" || "webp" : return <FileImageOutlined  style={style}/>
+                    case "jpg" : return <FileJpgOutlined style={style} />
+                    default : return  <FileOutlined style={style}/>
                 }
             })()}
         </Flex>

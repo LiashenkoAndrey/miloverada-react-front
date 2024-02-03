@@ -1,6 +1,6 @@
 import React from 'react';
 import './Header.css'
-import {Flex, Image} from "antd";
+import {Flex} from "antd";
 // @ts-ignore
 import icon from '../../assets/icon.png'
 import {useLocation, useNavigate} from "react-router-dom";
@@ -21,7 +21,7 @@ const Header = () => {
                     <span onClick={() => nav("/news/all")}>Новини</span>
                     <span onClick={() => nav("/forum")} >Форум</span>
                     <span>Управління</span>
-                    <span>Установи</span>
+                    <span onClick={() => nav("/institutions")}>Установи</span>
                     <span onClick={() => nav("/contacts")} >Контакти</span>
                 </Flex>
             </Flex>

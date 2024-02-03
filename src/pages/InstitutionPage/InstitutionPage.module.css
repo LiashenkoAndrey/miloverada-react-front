@@ -1,0 +1,11 @@
+
+
+.page {
+    padding-bottom: 100px;
+    max-width: 80vw;
+    min-height: 90vh;
+    width: 100%;
+    margin-top: 13vh;
+    color: #343434;
+    font-family: 'Source Serif 4', serif;
+}

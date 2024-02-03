@@ -17,6 +17,8 @@ import IsRegisteredCheckPage from "./pages/IsRegisteredCheckPage";
 import PrivateChatPage from "./pages/forum/PrivateChatPage/PrivateChatPage";
 import AllUsersPage from "./pages/AllUsersPage/AllUsersPage";
 import ContactsPage from "./pages/ContactsPage/ContactsPage";
+import AllInstitutionsPage from "./pages/AllInstitutionsPage/AllInstitutionsPage";
+import InstitutionPage from "./pages/InstitutionPage/InstitutionPage";
 
 function App() {
     const [jwt, setJwt] = useState<string>()
@@ -45,6 +47,8 @@ function App() {
                       <Route path={"/chat/:id"} element={<ChatPage/>}/>
                       <Route path={"/topic/:id"} element={<TopicPage/>}/>
                       <Route path={"/contacts"} element={<ContactsPage/>}/>
+                      <Route path={"/institutions"} element={<AllInstitutionsPage/>}/>
+                      <Route path={"/institution/:id"} element={<InstitutionPage/>}/>
 
                       <Route path={"/forum"} element={<AllForumTopicsPage/>}/>
                       <Route path={"/resolveUser"} element={<IsRegisteredCheckPage/>}/>

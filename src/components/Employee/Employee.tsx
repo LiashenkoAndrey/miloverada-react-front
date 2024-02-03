@@ -1,36 +1,40 @@
 import React, {FC, useEffect, useState} from 'react';
-import classes from "./Contact.module.css"
+import classes from "./Employee.module.css"
 import {Button, Flex, Typography} from "antd";
-import {IContact} from "../../API/services/ContactsService";
+import {IEmployee} from "../../API/services/ContactsService";
 import {CopyOutlined, MailOutlined, PhoneOutlined} from "@ant-design/icons";
 const { Text, Paragraph } = Typography;
 interface ContactProps {
-    contact : IContact
+    contact : IEmployee
 }
-const Contact: FC<ContactProps> = ({contact}) => {
+const Employee: FC<ContactProps> = ({contact}) => {
     console.log(contact)
     const [writeActive, setWriteActive] = useState<boolean>(false)
     useEffect(() => {
         if (contact.id === 8) setWriteActive(true)
     }, []);
     return (
-        <Flex key={"contact-" + contact.id} className={classes.contact} gap={20} wrap={"wrap"}>
+        <Flex key={"contact-" + contact.id} className={classes.contact} gap={10} wrap={"wrap"}>
             <Flex gap={5} justify={"space-between"} className={classes.contactNameWrapper}>
                 <Flex className={classes.contactName} gap={5}>
-                    <span>{contact.first_name}</span>
-                    <span>{contact.last_name}</span>
+                    <h2>{contact.first_name} {contact.last_name}</h2>
                 </Flex>
-                {writeActive &&
-                    <Button>Написати</Button>
 
-                }
             </Flex>
             <Flex className={classes.contactInfo} vertical>
-                <Paragraph   className={classes.mail} copyable={{tooltips : ["Копіювати пошту", "Скопійовано!"], icon: <CopyOutlined style={{color:"rgba(19,78,196,0.4)"}} />}}><MailOutlined /> {contact.email}</Paragraph>
+                <Text className={classes.mail} copyable={{tooltips : ["Копіювати пошту", "Скопійовано!"], icon: <CopyOutlined style={{color:"rgba(19,78,196,0.4)"}} />}}><MailOutlined /> {contact.email}</Text>
                 <Text className={classes.phone} copyable={{tooltips : ["Копіювати номер телефону", "Скопійовано!"], icon: <CopyOutlined style={{color:"rgba(19,78,196,0.4)"}} />}}><PhoneOutlined /> {contact.phone_number}</Text>
+                {contact.position &&
+                    <span className={classes.contactInfo} >Посада: <strong>{contact.position}</strong></span>
+
+                }
+                {contact.sub_institution &&
+                    <span className={classes.contactInfo} > <strong>{contact.sub_institution}</strong></span>
+                }
+
             </Flex>
         </Flex>
     );
 };
 
-export default Contact;
+export default Employee;
