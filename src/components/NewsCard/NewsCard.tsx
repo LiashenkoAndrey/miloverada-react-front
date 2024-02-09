@@ -18,7 +18,7 @@ const NewsCard : FC<NewsCardProps>= ({news, style, className}) => {
     const newsImage = news.images && news.images[0].mongoImageId
 
     return (
-        <div onClick={() => nav("/news/" + news.id)} key={newsImage} className={"newsCard " + (className ? className : "")} style={style}>
+        <div onClick={() => nav("/newsList/" + news.id)} key={newsImage} className={"newsCard " + (className ? className : "")} style={style}>
             <img src={getImageUrl(newsImage)} alt="news"/>
             <div className={"newsCardContent"}>
                 <span>{news.newsType?.title}</span>

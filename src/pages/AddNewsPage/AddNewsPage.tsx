@@ -29,7 +29,8 @@ const AddNewsPage = () => {
     const [title, setTitle] = useState<string>('')
     const [dateOfPublication, setDateOfPublication] = useState<string>('')
     const [dateOfPostponedPublication, setDateOfPostponedPublication] = useState<string>('')
-    const [imagesFiles, setImagesFiles] = useState<string[]>([])
+    const [imagesFiles, setImagesFiles] = useState<File[]>([])
+    const [base64ImagesFiles, setBase64ImagesFiles] = useState<string[]>([])
     const {jwt} = useContext(AuthContext)
     const {notification} = App.useApp();
     const [newsTypes, setNewsTypes] = useState<NewsType[]>([])
@@ -53,8 +54,8 @@ const AddNewsPage = () => {
         const iNewsPreview : INewsPreview = {description : title,
             main_text: text,
             views: 100,
-            created: [dateOfPublication.split("T")[0]],
-            previewImages: imagesFiles,
+            dateOfPublication: dateOfPublication.split("T")[0],
+            previewImages: base64ImagesFiles,
         }
 
         setNewsPreview(iNewsPreview)
@@ -72,7 +73,6 @@ const AddNewsPage = () => {
 
             const onDelete: MenuProps['onClick'] = async ({key}) => {
                 let id = Number(key.split("-")[1])
-                console.log(id)
                 if (jwt) {
                     const {error} = await deleteNewsTypeById(id, jwt)
                     if (error) notification.error({message: "Не можу видалити тему ): 👿"})
@@ -112,11 +112,14 @@ const AddNewsPage = () => {
         inputFile.current?.click()
     }
 
-    const onImageLoad = (file: FileList | null) => {
-        if (file !== null) {
-            getBase64(file[0], (res: string) => {
-                setImagesFiles([...imagesFiles, res])
-            })
+    const onImageLoad = (fileList: FileList | null) => {
+        if (fileList !== null) {
+            for (let i = 0; i < fileList.length; i++) {
+                setImagesFiles([...imagesFiles, fileList[i]])
+                getBase64(fileList[i], (res: string) => {
+                    setBase64ImagesFiles([...base64ImagesFiles, res])
+                })
+            }
         }
     }
 
@@ -142,9 +145,9 @@ const AddNewsPage = () => {
 
         console.log(newsTypeId)
         if (newsTypeId !== undefined) {
-            data.append("newsType", newsTypeId.toString())
+            data.append("newsTypeId", newsTypeId.toString())
         } else {
-            data.append("newsType", "-1")
+            data.append("newsTypeId", "-1")
         }
 
 
@@ -206,8 +209,8 @@ const AddNewsPage = () => {
                     <Flex wrap={"wrap"} className={[classes.imagesWrapper, classes.primaryBg].join(' ')} gap={15}>
                         <Flex align={"center"} gap={5} wrap={"wrap"} justify={"center"} style={{flexGrow:1}}>
                             {imagesFiles.length > 0 ?
-                                imagesFiles.map((img) =>
-                                    <NewsImage key={"image-" + img.length}  imagesFile={imagesFiles} setImagesFiles={setImagesFiles} img={img}/>
+                                base64ImagesFiles.map((img) =>
+                                    <NewsImage key={"image-" + img.length}  imagesFile={base64ImagesFiles} setImagesFiles={setBase64ImagesFiles} img={img}/>
                                 )
                                 :
                                 <img className={classes.imagePlaceholder} src={imagePlaceholder} alt="imagePlaceholder"  />

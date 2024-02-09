@@ -93,6 +93,42 @@ export const deleteNewsTypeById = (newsTypeId : number, token : string) => {
     return callAndGetResult(config)
 }
 
+export const deleteNewsById = (newsId : number, token : string) => {
+    const config = {
+        url: `${apiServerUrl}/api/protected/news/${newsId}/delete`,
+        method: "DELETE",
+        data: newsId,
+        headers: {
+            Authorization: `Bearer ${token}`,
+        }
+    }
+    return callAndGetResult(config)
+}
+
+export const deleteNewsImageById = (imageId : string, token : string) => {
+    const config = {
+        url: `${apiServerUrl}/api/protected/news/image/${imageId}/delete`,
+        method: "DELETE",
+        data: imageId,
+        headers: {
+            Authorization: `Bearer ${token}`,
+        }
+    }
+    return callAndGetResult(config)
+}
+
+export const saveNewsImageByNewsId = (data : FormData, newsId : number, token : string) => {
+    const config = {
+        url: `${apiServerUrl}/api/protected/news/${newsId}/image/new`,
+        method: "POST",
+        data: data,
+        headers: {
+            Authorization: `Bearer ${token}`,
+        }
+    }
+    return callAndGetResult(config)
+}
+
 export const incrementNewsViews = (id : number) => {
     const config = {
         url: `${apiServerUrl}/api/news/${id}/incrementViews`,

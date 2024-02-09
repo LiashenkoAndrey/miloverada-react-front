@@ -1,16 +1,32 @@
-import React, {FC, useEffect, useState} from 'react';
+import React, {FC, useContext, useEffect, useRef, useState} from 'react';
 import {useNavigate, useParams} from "react-router-dom";
-import {getLatestNews, getNewsById, getSimilarNews, incrementNewsViews} from "../../API/services/NewsService";
-import {Breadcrumb, Button, Col, Flex, Row, Skeleton} from "antd";
+import {
+    deleteNewsById, deleteNewsImageById,
+    getLatestNews,
+    getNewsById,
+    getSimilarNews,
+    incrementNewsViews, saveNewsImageByNewsId
+} from "../../API/services/NewsService";
+import {App, Breadcrumb, Button, Col, Dropdown, Flex, MenuProps, Popconfirm, Row, Skeleton, Tooltip} from "antd";
 import {INews} from "../../domain/NewsInt";
 import {getImageUrl} from "../../API/services/ImageService";
 import './NewsPage.css'
-import {FacebookOutlined, InstagramFilled, LeftOutlined, ShareAltOutlined, TwitterOutlined} from "@ant-design/icons";
-import NewsList from "../../components/NewsList/NewsList";
+import {
+    FacebookOutlined,
+    InstagramFilled,
+    LeftOutlined, PlusCircleOutlined,
+    PlusOutlined,
+    ShareAltOutlined,
+    TwitterOutlined
+} from "@ant-design/icons";
 import {useTypedSelector} from "../../hooks/useTypedSelector";
 import {Carousel} from "react-bootstrap";
 // @ts-ignore
 import imagePlaceholder from "../../assets/image-placeholder.svg"
+import NewsCard from "../../components/NewsCard/NewsCard";
+import {useAuth0} from "@auth0/auth0-react";
+import {AuthContext} from "../../context/AuthContext";
+import {getBase64} from "../../API/Util";
 
 interface NewsPageProps {
     isPreview : boolean
@@ -25,6 +41,9 @@ const NewsPage : FC<NewsPageProps> = ({isPreview}) => {
     const [additionalNews, setAdditionalNews] = useState<INews[]>([])
     const [imagesList, setImagesList] = useState<string[]>([])
     const nav = useNavigate();
+    const {isAuthenticated} = useAuth0()
+    const {jwt} = useContext(AuthContext)
+    const {notification} = App.useApp();
 
     useEffect(() => {
         setNews(preview)
@@ -35,14 +54,13 @@ const NewsPage : FC<NewsPageProps> = ({isPreview}) => {
         if (data) {
             const news : INews = data
             setNews(news)
-            setImagesList(news.images ? news.images.map((img) => getImageUrl(img.mongoImageId)) : [])
+            setImagesList(news.images ? news.images.map((img) => img.mongoImageId) : [])
         } else throw error
     }
 
     const getSimilarOrLatest = async () => {
         const {data, error} = await getSimilarNews(Number(id))
         if (data) {
-            console.log(data, data.length)
             if (data.length > 0) {
                 setAdditionalNews(data)
             } else {
@@ -50,6 +68,12 @@ const NewsPage : FC<NewsPageProps> = ({isPreview}) => {
             }
         }
         if (error) throw error
+    }
+
+    const getNewsImages = () => {
+        if (!isPreview) {
+
+        }
     }
 
     const getLatest = async () => {
@@ -77,7 +101,7 @@ const NewsPage : FC<NewsPageProps> = ({isPreview}) => {
             setImagesList(preview.previewImages)
         } else {
             getNews()
-
+            document.getElementById("newsTop")?.scrollIntoView({block: "start", behavior: "smooth"})
             if (id !== undefined) {
                 getNews();
                 getSimilarOrLatest()
@@ -89,28 +113,110 @@ const NewsPage : FC<NewsPageProps> = ({isPreview}) => {
                 console.log("id is null")
             }
         }
-    }, []);
+    }, [id]);
 
+    const onDelete = async () => {
+        if (jwt) {
+            setConfirmLoading(true);
+            const {data, error} = await deleteNewsById(Number(id), jwt)
+            setConfirmLoading(false);
+            if (data) {
+                nav("/news/all")
+            }
+            if (error) throw error
+
+        } else notification.warning({message: "not auth"})
+    }
+
+    useEffect(() => {
+        console.log("list", imagesList)
+    }, [imagesList]);
+
+    const onImageDelete = async (id : string) => {
+        if (id === '') return;
+        if (jwt) {
+            const {data, error} = await deleteNewsImageById(id, jwt)
+            if (data) {
+                console.log("deleted," ,data)
+                console.log(imagesList)
+                const filtered = imagesList.filter((img) => img !== id);
+                console.log("filter",filtered)
+
+                setImagesList(filtered)
+            }
+            if (error) throw error
+        } else notification.warning({message: "not auth"})
+    }
+
+    const inputFile = useRef<HTMLInputElement | null>(null)
+    const [isNewImageLoading, setIsNewImageLoading] = useState(false);
+
+
+
+    const onImageAdd = () => {
+        inputFile.current?.click()
+    }
+
+    const onImageLoad = async (fileList: FileList | null) => {
+        if (fileList !== null) {
+            if (jwt) {
+
+                let formData = new FormData()
+                for (let i = 0; i < fileList.length; i++) {
+                    formData.append("images", fileList[i])
+                }
+                setIsNewImageLoading(true)
+                const {data, error} = await saveNewsImageByNewsId(formData, Number(id), jwt)
+                setIsNewImageLoading(false)
+                if (data) {
+                    console.log("ok",data)
+                    setImagesList([...imagesList, ...data])
+                }
+                if (error) throw error
+            } else notification.warning({message: "not auth"})
+        }
+    }
+
+    const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
+    const [confirmLoading, setConfirmLoading] = useState(false);
 
     return (
         <Flex justify={"center"}>
-            <Flex vertical={true} justify={"center"}  className={"newsPage"} >
+            <Flex vertical={true} justify={"center"} id={"newsTop"} className={"newsPage"} >
                 {!isPreview &&
-                    <Flex vertical={false} align={"center"}  gap={5} style={{marginBottom: 20}}>
-                        <Button onClick={() => nav(-1)} style={{maxWidth: 150}} icon={<LeftOutlined />} type={"text"}>Назад</Button>
-                        <Breadcrumb>
-                            <Breadcrumb.Item><Button onClick={() => nav("/")} type={"text"} size={"small"}>Головна</Button> </Breadcrumb.Item>
-                            <Breadcrumb.Item><Button type={"text"} size={"small"}>Новини</Button> </Breadcrumb.Item>
-                        </Breadcrumb>
+                    <Flex justify={"space-between"}>
+
+                        <Flex vertical={false} align={"center"}  gap={5} style={{marginBottom: 20}}>
+                            <Button onClick={() => nav(-1)} style={{maxWidth: 150}} icon={<LeftOutlined />} type={"text"}>Назад</Button>
+                            <Breadcrumb>
+                                <Breadcrumb.Item><Button onClick={() => nav("/")} type={"text"} size={"small"}>Головна</Button> </Breadcrumb.Item>
+                                <Breadcrumb.Item><Button type={"text"} size={"small"}>Новини</Button> </Breadcrumb.Item>
+                            </Breadcrumb>
+                        </Flex>
+                        {isAuthenticated &&
+                            <Popconfirm
+                                title="Видалити"
+                                description="Ви впевнені? Дія незворотня."
+                                open={deleteConfirmOpen}
+                                onConfirm={onDelete}
+                                okButtonProps={{ loading: confirmLoading }}
+                                onCancel={() => setDeleteConfirmOpen(false)}
+                            >
+                                <Button type="primary" onClick={() => setDeleteConfirmOpen(true)}>
+                                    Видалити
+                                </Button>
+                            </Popconfirm>
+                        }
                     </Flex>
                 }
 
-                <h6 className={"newsData"}>{news?.created}</h6>
+                <h6 className={"newsData"}>{news?.dateOfPublication?.split("T")[0]}</h6>
 
                 <h1 className={"newsTitle"}>{news?.description}</h1>
+
                 <div style={{borderTop: "solid #c0c0bf 1px", margin: "20px 0"}}></div>
                 <Flex gap={20}>
-                    <div  style={{alignSelf: "flex-start"}}>
+                    <div style={{alignSelf: "flex-start"}}>
                         <Row style={{marginBottom: 10}}>
                             <Col><ShareAltOutlined style={{fontSize: 31, marginRight: 5, cursor: "pointer"}}/></Col>
                             <Col><TwitterOutlined style={{fontSize: 31, cursor: "pointer"}}/></Col>
@@ -121,16 +227,49 @@ const NewsPage : FC<NewsPageProps> = ({isPreview}) => {
                         </Row>
                     </div>
 
-                    <Carousel style={{maxWidth: 800}}>
-                        {imagesList.map((img) =>
-                            <Carousel.Item>
-                                <Flex align={"center"} style={{width: 800, maxWidth: 800, height: "100%", minHeight: 800, backgroundColor: "black"}}>
-                                    <img style={{width: "100%", height: "100%"}} src={img}/>
+                    <Flex style={{position: "relative"}}>
 
-                                </Flex>
-                            </Carousel.Item>
-                        )}
-                    </Carousel>
+                        <Carousel style={{maxWidth: 800}}>
+                            {imagesList.map((img) =>
+                                <Carousel.Item key={"image-" +( img.length > 100 ? img.substring(0, 90) : img)}>
+                                    <Flex align={"center"} style={{width: 800, maxWidth: 800, height: 540, backgroundColor: "rgba(44,44,44,0.44)"}}>
+                                        <Dropdown placement={"topLeft"}
+                                                  disabled={isPreview || imagesList.length <= 1}
+                                                  menu={{ items: [
+                                                          {
+                                                              label: "Видалити зоображення",
+                                                              key: "deleteNewsImageOption-" + img.substring(0,40),
+                                                              style: {zIndex: 2147483647},
+                                                              danger: true}
+                                                      ],
+                                                      onClick : () => onImageDelete(isPreview ? "" : img)
+                                                  }}
+                                                  trigger={['contextMenu']}
+                                        >
+                                            <img style={{width: "100%", height: "100%", maxHeight : 540}}
+                                                 alt={"Картинка"}
+                                                 src={getImageUrl(img)}
+                                            />
+                                        </Dropdown>
+                                    </Flex>
+                                </Carousel.Item>
+                            )}
+                        </Carousel>
+                        <input multiple
+                               onChange={(e) => onImageLoad(e.target.files)}
+                               style={{display: "none"}}
+                               ref={inputFile}
+                               type="file"
+                        />
+
+                        <Button ghost loading={isNewImageLoading}
+                                icon={<PlusCircleOutlined />}
+                                style={{ position: "absolute", bottom: 20, left: 20, zIndex: 214748364}}
+                                onClick={onImageAdd}
+                        >
+                            Додати
+                        </Button>
+                    </Flex>
                 </Flex>
 
                 {news?.main_text
@@ -155,7 +294,12 @@ const NewsPage : FC<NewsPageProps> = ({isPreview}) => {
                 </Flex>
 
                 <h1 className={"whatReadNext"}>Що читати далі:</h1>
-                <NewsList newsList={additionalNews}/>
+
+                <Flex justify={"center"} wrap={"wrap"} gap={20}>
+                    {additionalNews.map((n) =>
+                        <NewsCard  className={"whiteNewsCard AllNewsPageCard"} news={n} key={"newsCa-" + n.id}/>
+                    )}
+                </Flex>
             </Flex>
         </Flex>
     );

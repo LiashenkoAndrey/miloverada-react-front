@@ -1,10 +1,10 @@
 import React, {useEffect, useState} from 'react';
 import './App.css';
-import {Route, Routes} from "react-router-dom";
+import { Route, Routes, Navigate } from "react-router-dom";
 import Header from "./components/Header/Header";
 import MainPage from "./pages/MainPage/MainPage";
 import Footer from "./components/Footer/Footer";
-import {App as AntdApp, ConfigProvider, Layout, theme} from "antd";
+import {App as AntdApp, ConfigProvider, Layout} from "antd";
 import NewsPage from "./pages/NewsPage/NewsPage";
 import AllNewsPage from "./pages/AllNewsPage/AllNewsPage";
 import AllDocumentsPage from "./pages/AllDocumentsPage/AllDocumentsPage";
@@ -23,6 +23,7 @@ import AddNewsPage from "./pages/AddNewsPage/AddNewsPage";
 import locale from 'antd/es/locale/uk_UA';
 import 'dayjs/locale/uk'
 import 'bootstrap/dist/css/bootstrap.min.css';
+
 function App() {
     const [jwt, setJwt] = useState<string>()
     const {getAccessTokenSilently, isAuthenticated} = useAuth0()
@@ -56,7 +57,7 @@ function App() {
                       <Header/>
                       <Routes>
                           <Route path={"/"} element={<MainPage/>}/>
-                          <Route path={"/news/:id"} element={<NewsPage isPreview={false}/>}/>
+                          <Route path={"/newsList/:id"} element={<NewsPage isPreview={false}/>}/>
                           <Route path={"/news/all"} element={<AllNewsPage/>}/>
                           <Route path={"/news/new"} element={<AddNewsPage/>}/>
 
@@ -72,8 +73,9 @@ function App() {
                           <Route path={"/resolveUser"} element={<IsRegisteredCheckPage/>}/>
                           <Route path={"/forum/user/:user1_id/chat"} element={<PrivateChatPage/>}/>
                           <Route path={"/forum/users"} element={<AllUsersPage/>}/>
+                          <Route path={"/*"} element={<Navigate to={"/"}/>}/>
                       </Routes>
-                      <Footer />
+                      <Footer/>
                   </Layout>
               </ConfigProvider>
           </AntdApp>

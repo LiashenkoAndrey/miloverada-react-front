@@ -44,7 +44,7 @@ const AllNewsPage = () => {
                     }
 
                 <Flex justify={"center"} wrap={"wrap"} gap={20}>
-                    {news.map((n) =>
+                    {news.slice(5, news.length).map((n) =>
                         <NewsCard className={"whiteNewsCard AllNewsPageCard"} news={n} key={"newsCa-" + n.id}/>
                     )}
                 </Flex>
