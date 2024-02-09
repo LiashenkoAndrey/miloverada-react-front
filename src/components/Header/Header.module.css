@@ -1,0 +1,177 @@
+
+
+
+
+.navBtnWrapper span {
+    font-size: 22px;
+    font-weight: 300;
+    font-family: 'Open Sans', sans-serif;
+    color: white;
+    padding: 10px 10px;
+    width: fit-content;
+    transition: background-color 200ms,
+                font-size 300ms,
+                padding-right 300ms,
+                padding-left 300ms;
+    }
+
+.navBtnWrapper span:hover {
+    cursor: pointer;
+    background-color: #232235FF;
+}
+
+.navBtnWrapper span:active {
+    background-color: #161521;
+}
+
+.header {
+    transition: width 300ms;
+    width: 90vw;
+}
+
+
+.navbar {
+    height: fit-content;
+    padding-bottom: 40px;
+    width: 100%;
+    background: linear-gradient(0deg,transparent,rgb(35, 34, 53)),linear-gradient(0deg,transparent 20%, rgb(0, 0, 0));
+    z-index: 100;
+    position: fixed;
+}
+
+.title {
+    transition: letter-spacing 300ms, font-size 300ms;
+    cursor: pointer;
+    letter-spacing: 10px;
+    font-weight: 300;
+    color: #FFF;
+    text-align: center;
+    font-size: 25px;
+}
+
+@media (max-width: 600px) {
+    /*.logo {*/
+    /*    display: block!important;*/
+    /*}*/
+
+    /*.title {*/
+    /*    display:  none;*/
+    /*}*/
+
+    .navBtnWrapper span {
+        font-size: 14px;
+    }
+}
+
+@media (max-width: 1780px) {
+    .title {
+       font-size: 22px;
+    }
+    .navBtnWrapper span {
+        font-size: 20px;
+    }
+}
+
+@media (max-width: 1665px) {
+    .title {
+        font-size: 21px;
+        letter-spacing: 8px;
+    }
+}
+
+
+@media (max-width: 1555px) {
+    .title {
+        letter-spacing: 5px;
+    }
+}
+
+@media (max-width: 1420px) {
+    .header {
+        width: 100%;
+    }
+}
+
+@media (max-width: 1277px) {
+    .title {
+        letter-spacing: 3px;
+    }
+    .navBtnWrapper span {
+        font-size: 18px;
+        padding: 10px 5px;
+    }
+}
+
+
+@media (max-width: 1165px) {
+    .title {
+        letter-spacing: 2px;
+    }
+}
+
+@media (max-width: 1100px) {
+    .title {
+        letter-spacing: initial;
+    }
+}
+
+@media (max-width: 960px) {
+    .header {
+        gap: 20px;
+    }
+    .title {
+        letter-spacing: initial;
+    }
+    .navBtnWrapper span {
+        padding: 5px 5px;
+    }
+}
+
+@media (max-width: 730px) {
+    .header {
+        gap: 0px;
+    }
+}
+
+
+.logo {
+    display: none;
+}
+
+.title span {
+    max-width: 900px ;
+    background: -webkit-linear-gradient(white, #cde0f6);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+@media (max-width: 500px) {
+    .header {
+        padding: 5px 10px;
+    }
+
+    .title {
+        line-height: 23px;
+        font-size: 20px;
+    }
+    .mobileNavBtnWrapper {
+        display: block!important;
+    }
+
+    .navBtnWrapper {
+        display: none;
+    }
+}
+
+.menu {
+    color:white;
+    transition: color 300ms;
+}
+
+.menu:active {
+    color: #820000;
+}
+
+.mobileNavBtnWrapper {
+    display: none;
+}

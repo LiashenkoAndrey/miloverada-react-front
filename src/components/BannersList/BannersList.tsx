@@ -32,7 +32,7 @@ const BannersList = () => {
             <h1 style={{fontSize: "3.0517578125em", marginBottom: 0}}>Важливе</h1>
             <Flex gap={15} justify={"center"} wrap={"wrap"} style={{maxWidth: "80vw"}}>
                 {linkBanners.map((linkBanner) =>
-                    <Flex gap={5} vertical className={classes.banner}>
+                    <Flex key={"linkBanner-" + linkBanner.id} gap={5} vertical className={classes.banner}>
                         <span>{linkBanner.text}</span>
                         <a href={linkBanner.url} className={classes.bannerBtn}>Перейти →</a>
                         <span className={classes.bannerTime}>{linkBanner.createdOn}</span>
@@ -40,7 +40,7 @@ const BannersList = () => {
                 )}
 
                 {textBanners.map((textBanner) =>
-                    <Flex gap={15} vertical className={classes.banner}>
+                    <Flex  key={"textBanner-" + textBanner.id} gap={15} vertical className={classes.banner}>
                         <span>{textBanner.description}</span>
                         <span className={classes.bannerBtn} >Читати</span>
                     </Flex>

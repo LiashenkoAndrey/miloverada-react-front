@@ -1,13 +1,31 @@
-import React from "react";
-
+import {NewsType} from "../API/services/NewsService";
 
 export interface INews {
     id?: number,
     description? : string,
-    image_id? : string,
     created? : Array<string>,
     main_text? : string,
-    newsType? : string
-    style? : React.CSSProperties | undefined
+    newsType? : NewsType
     views : number
+    images? : INewsImage[]
 }
+
+export interface INewsDto {
+    id?: number,
+    description? : string,
+    created? : Array<string>,
+    newsType? : NewsType
+    views : number
+    images? : INewsImage[]
+}
+
+export interface INewsPreview extends INews {
+    previewImages : string[]
+}
+
+export interface INewsImage {
+    id : number
+    newsId : number
+    mongoImageId : string
+}
+

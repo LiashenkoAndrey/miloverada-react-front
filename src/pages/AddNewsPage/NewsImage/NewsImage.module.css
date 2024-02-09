@@ -1,0 +1,25 @@
+
+
+.image {
+    max-width: 240px;
+    max-height: 240px;
+    width: 100%;
+}
+
+
+.imgWrapper {
+}
+
+.imgWrapper:hover .removeImgIcon {
+    opacity: 100;
+}
+.removeImgIcon:active {
+    color: red;
+}
+.removeImgIcon {
+    padding: 2px 2px 10px 10px;
+    cursor: pointer;
+    color: #be0000;
+    opacity: 0;
+    transition: opacity, color 200ms;
+}

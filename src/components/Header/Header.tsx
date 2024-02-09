@@ -1,28 +1,61 @@
 import React from 'react';
-import './Header.css'
-import {Flex} from "antd";
+import classes from './Header.module.css'
+import {Dropdown, Flex, MenuProps, Space} from "antd";
 // @ts-ignore
 import icon from '../../assets/icon.png'
 import {useLocation, useNavigate} from "react-router-dom";
+import MobileNav from "./MobileNav";
+import {MenuOutlined} from "@ant-design/icons";
+
+export interface HeaderOption {
+    onClick : () => void
+    title : string
+}
 
 const Header = () => {
     const nav  = useNavigate()
     const { pathname } = useLocation();
 
+    const options : HeaderOption[] = [
+        {onClick : () => nav("/documents/all"), title : "Документи"},
+        {onClick : () => nav("/news/all"), title : "Новини"},
+        {onClick : () => nav("/forum"), title : "Форум"},
+        {onClick : () => nav("/"), title : "Управління"},
+        {onClick : () => nav("/institutions"), title : "Установи"},
+        {onClick : () => nav("/contacts"), title : "Контакти"},
+    ]
+
+
+    const items: MenuProps['items'] =
+        options.map((o) => {
+            return {
+                label:  <span style={{fontSize: 20}} onClick={o.onClick}>{o.title}</span>,
+                key: 'nav-elem-' + o.title,
+            }
+        })
+
+
+
+
     return (
-        <Flex justify={"center"} className={"navbar"} style={{display: pathname.includes("chat") ? "none" : "block"}} >
-            <Flex gap={20} className={"container"} justify={"space-between"} align={"center"} style={{width: "90vw"}}>
+        <Flex justify={"center"} className={classes.navbar} style={{display: pathname.includes("chat") || pathname.includes("news/new") ? "none" : "block"}} >
+            <Flex className={"IContainer"} justify={"space-between"} align={"center"} >
                 <Flex onClick={() => nav("/")} className={"nonSelect"}>
-                    <span className={"title"}>Милівська сільська територіальна громада</span>
-                    <img className={"logo"} src={icon} width={50}/>
+                    <span className={classes.title}>Милівська сільська територіальна громада</span>
+                    <img className={classes.logo} src={icon} width={50} alt={"Герб України"}/>
                 </Flex>
-                <Flex wrap={"wrap"} className={"navBtnWrapper nonSelect"}>
-                    <span onClick={() => nav("/documents/all")} >Документи</span>
-                    <span onClick={() => nav("/news/all")}>Новини</span>
-                    <span onClick={() => nav("/forum")} >Форум</span>
-                    <span>Управління</span>
-                    <span onClick={() => nav("/institutions")}>Установи</span>
-                    <span onClick={() => nav("/contacts")} >Контакти</span>
+                <Flex wrap={"wrap"} justify={"center"} className={[classes.navBtnWrapper, "nonSelect"].join(' ')}>
+                    {options.map((o) =>
+                        <span key={"Head-option-" + o.title} onClick={o.onClick}>{o.title}</span>
+                    )}
+                </Flex>
+
+                <Flex wrap={"wrap"} justify={"center"} className={[classes.mobileNavBtnWrapper, "nonSelect"].join(' ')}>
+                    <Dropdown menu={{items}} trigger={['click']}>
+                        <Space>
+                            <MenuOutlined className={classes.menu} style={{ fontSize: 30}} />
+                        </Space>
+                    </Dropdown>
                 </Flex>
             </Flex>
         </Flex>

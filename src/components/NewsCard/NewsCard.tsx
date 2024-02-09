@@ -1,5 +1,5 @@
 import React, {FC} from 'react';
-import {INews} from "../../domain/NewsInt";
+import {INewsDto} from "../../domain/NewsInt";
 import {getImageUrl} from "../../API/services/ImageService";
 // @ts-ignore
 import {useNavigate} from "react-router-dom";
@@ -8,17 +8,20 @@ import classes from './NewsCard.module.css'
 import {Flex} from "antd";
 
 interface NewsCardProps {
-    news : INews,
+    news : INewsDto,
     style? : React.CSSProperties | undefined
+    className? : string
 }
 
-const NewsCard : FC<NewsCardProps>= ({news, style}) => {
+const NewsCard : FC<NewsCardProps>= ({news, style, className}) => {
     const nav = useNavigate()
+    const newsImage = news.images && news.images[0].mongoImageId
+
     return (
-        <div onClick={() => nav("/news/" + news.id)} key={news.image_id} className={"newsCard"} style={style}>
-            <img  src={getImageUrl(news.image_id)} alt="news"/>
+        <div onClick={() => nav("/news/" + news.id)} key={newsImage} className={"newsCard " + (className ? className : "")} style={style}>
+            <img src={getImageUrl(newsImage)} alt="news"/>
             <div className={"newsCardContent"}>
-                <span>{news.newsType}</span>
+                <span>{news.newsType?.title}</span>
                 <span className={"newsCardDescription"}>{news.description}</span>
             </div>
             <Flex gap={5} align={"center"} justify={"center"} className={classes.newsViews + " views"}>

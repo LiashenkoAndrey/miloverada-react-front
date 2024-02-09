@@ -43,10 +43,10 @@ const ForumNavbar : FC<ForumNavbarProps> = (props) => {
         <Flex className={"ForumNavbarWrapper"} vertical gap={40}>
 
             <Flex vertical style={{ color: "black"}} gap={5}>
-                <Button icon={<HomeOutlined style={{color: "black"}} />}>Головна</Button>
-                <Button icon={<TagsOutlined />}>Теги</Button>
-                <Button icon={<QuestionCircleOutlined />}>Питання</Button>
-                <Button icon={<UserOutlined />} onClick={() => nav("/forum/users")}>Користувачі</Button>
+                <Button type={"primary"} icon={<HomeOutlined style={{color: "black"}} />}>Головна</Button>
+                <Button type={"primary"}  icon={<TagsOutlined />}>Теги</Button>
+                <Button type={"primary"}  icon={<QuestionCircleOutlined />}>Питання</Button>
+                <Button type={"primary"}  icon={<UserOutlined />} onClick={() => nav("/forum/users")}>Користувачі</Button>
             </Flex>
 
             {props.children}
@@ -65,12 +65,12 @@ const ForumNavbar : FC<ForumNavbarProps> = (props) => {
                         </Flex>
 
                         <Flex gap={5} vertical>
-                            <Button icon={<SettingOutlined /> } >Налаштування</Button>
-                            <Button icon={<LoginOutlined /> } onClick={onLogout}>Вихід</Button>
+                            <Button type={"primary"}  icon={<SettingOutlined /> } >Налаштування</Button>
+                            <Button type={"primary"}  icon={<LoginOutlined /> } onClick={onLogout}>Вихід</Button>
                         </Flex>
                     </Flex>
                     :
-                    <Button  icon={<LoginOutlined /> } onClick={onLogin}>Вхід</Button>
+                    <Button type={"primary"}   icon={<LoginOutlined /> } onClick={onLogin}>Вхід</Button>
                 }
             </Flex>
         </Flex>

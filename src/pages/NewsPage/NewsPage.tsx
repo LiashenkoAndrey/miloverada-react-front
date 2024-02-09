@@ -1,24 +1,41 @@
-import React, {useEffect, useState} from 'react';
+import React, {FC, useEffect, useState} from 'react';
 import {useNavigate, useParams} from "react-router-dom";
 import {getLatestNews, getNewsById, getSimilarNews, incrementNewsViews} from "../../API/services/NewsService";
-import {Breadcrumb, Button, Col, Flex, Image, Row, Skeleton} from "antd";
+import {Breadcrumb, Button, Col, Flex, Row, Skeleton} from "antd";
 import {INews} from "../../domain/NewsInt";
 import {getImageUrl} from "../../API/services/ImageService";
 import './NewsPage.css'
 import {FacebookOutlined, InstagramFilled, LeftOutlined, ShareAltOutlined, TwitterOutlined} from "@ant-design/icons";
 import NewsList from "../../components/NewsList/NewsList";
+import {useTypedSelector} from "../../hooks/useTypedSelector";
+import {Carousel} from "react-bootstrap";
+// @ts-ignore
+import imagePlaceholder from "../../assets/image-placeholder.svg"
 
-const NewsPage = () => {
+interface NewsPageProps {
+    isPreview : boolean
+}
+
+const NewsPage : FC<NewsPageProps> = ({isPreview}) => {
+
+    const {preview} = useTypedSelector(state => state.newsPreview)
 
     const {id} = useParams();
     const [news, setNews] = useState<INews>()
-    const [additionalNews, setAdditionalNewsNews] = useState()
+    const [additionalNews, setAdditionalNews] = useState<INews[]>([])
+    const [imagesList, setImagesList] = useState<string[]>([])
     const nav = useNavigate();
+
+    useEffect(() => {
+        setNews(preview)
+    }, [preview]);
 
     const getNews = async () => {
         const {data, error} = await getNewsById(Number(id))
         if (data) {
-            setNews(data)
+            const news : INews = data
+            setNews(news)
+            setImagesList(news.images ? news.images.map((img) => getImageUrl(img.mongoImageId)) : [])
         } else throw error
     }
 
@@ -27,7 +44,7 @@ const NewsPage = () => {
         if (data) {
             console.log(data, data.length)
             if (data.length > 0) {
-                setAdditionalNewsNews(data)
+                setAdditionalNews(data)
             } else {
                 await getLatest()
             }
@@ -36,11 +53,9 @@ const NewsPage = () => {
     }
 
     const getLatest = async () => {
-        console.log("LAtest!")
         const {data, error} = await getLatestNews(3)
         if (data) {
-            console.log(data, "latest")
-            setAdditionalNewsNews(data)
+            setAdditionalNews(data)
         } else throw error
     }
 
@@ -52,30 +67,43 @@ const NewsPage = () => {
     }
 
     useEffect(() => {
-        getNews()
-
-        if (id !== undefined) {
-            getNews();
-            getSimilarOrLatest()
-
-            setTimeout(() => {
-                incrementViews(Number(id))
-            }, 5000)
+        if (isPreview) {
+            const additionalNews : INews[]= []
+            for (let i = 0; i < 3; i++) {
+                additionalNews.push({main_text : "test", description : "Отимано автромобіль Volkswagen Kombi для Качкарівського ЦПМСД", id : 1, newsType : {title:  "Допомога громаді", id: 1, titleExplanation: "d"}, views: 100, images : [{mongoImageId: "64be864fd388a05bd4608ee2", newsId: 1, id : 1}]})
+            }
+            setAdditionalNews(additionalNews)
+            setNews(preview)
+            setImagesList(preview.previewImages)
         } else {
-            console.log("id is null")
+            getNews()
+
+            if (id !== undefined) {
+                getNews();
+                getSimilarOrLatest()
+
+                setTimeout(() => {
+                    incrementViews(Number(id))
+                }, 5000)
+            } else {
+                console.log("id is null")
+            }
         }
     }, []);
+
 
     return (
         <Flex justify={"center"}>
             <Flex vertical={true} justify={"center"}  className={"newsPage"} >
-                <Flex vertical={false} align={"center"}  gap={5} style={{marginBottom: 20}}>
-                    <Button onClick={() => nav(-1)} style={{maxWidth: 150}} icon={<LeftOutlined />} type={"text"}>Назад</Button>
-                    <Breadcrumb>
-                        <Breadcrumb.Item><Button onClick={() => nav("/")} type={"text"} size={"small"}>Головна</Button> </Breadcrumb.Item>
-                        <Breadcrumb.Item><Button type={"text"} size={"small"}>Новини</Button> </Breadcrumb.Item>
-                    </Breadcrumb>
-                </Flex>
+                {!isPreview &&
+                    <Flex vertical={false} align={"center"}  gap={5} style={{marginBottom: 20}}>
+                        <Button onClick={() => nav(-1)} style={{maxWidth: 150}} icon={<LeftOutlined />} type={"text"}>Назад</Button>
+                        <Breadcrumb>
+                            <Breadcrumb.Item><Button onClick={() => nav("/")} type={"text"} size={"small"}>Головна</Button> </Breadcrumb.Item>
+                            <Breadcrumb.Item><Button type={"text"} size={"small"}>Новини</Button> </Breadcrumb.Item>
+                        </Breadcrumb>
+                    </Flex>
+                }
 
                 <h6 className={"newsData"}>{news?.created}</h6>
 
@@ -84,15 +112,25 @@ const NewsPage = () => {
                 <Flex gap={20}>
                     <div  style={{alignSelf: "flex-start"}}>
                         <Row style={{marginBottom: 10}}>
-                            <Col><ShareAltOutlined style={{fontSize: 31, marginRight: 5, cursor: "pointer"}} /></Col>
-                            <Col><TwitterOutlined style={{fontSize: 31, cursor: "pointer"}} /></Col>
+                            <Col><ShareAltOutlined style={{fontSize: 31, marginRight: 5, cursor: "pointer"}}/></Col>
+                            <Col><TwitterOutlined style={{fontSize: 31, cursor: "pointer"}}/></Col>
                         </Row>
                         <Row>
-                            <Col><InstagramFilled style={{fontSize: 31, marginRight: 5, cursor: "pointer"}} /></Col>
+                            <Col><InstagramFilled style={{fontSize: 31, marginRight: 5, cursor: "pointer"}}/></Col>
                             <Col><FacebookOutlined style={{fontSize: 31, cursor: "pointer"}}/></Col>
                         </Row>
                     </div>
-                    <Image  style={{maxHeight: 700}} src={getImageUrl(news?.image_id)}/>
+
+                    <Carousel style={{maxWidth: 800}}>
+                        {imagesList.map((img) =>
+                            <Carousel.Item>
+                                <Flex align={"center"} style={{width: 800, maxWidth: 800, height: "100%", minHeight: 800, backgroundColor: "black"}}>
+                                    <img style={{width: "100%", height: "100%"}} src={img}/>
+
+                                </Flex>
+                            </Carousel.Item>
+                        )}
+                    </Carousel>
                 </Flex>
 
                 {news?.main_text

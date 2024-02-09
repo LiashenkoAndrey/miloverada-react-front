@@ -1,6 +1,7 @@
 import React, {FC, MouseEventHandler, useRef} from 'react';
 import {Flex, Image} from "antd";
 import {CloseCircleOutlined, PlusOutlined} from "@ant-design/icons";
+import {getBase64} from "../../../API/Util";
 
 interface ImageUploadProps {
     isImageUploadActive : boolean
@@ -18,16 +19,7 @@ const ImageUpload: FC<ImageUploadProps> = ({
 
     const inputFile = useRef<HTMLInputElement | null>(null)
 
-    const getBase64 = (file : File, cb : Function) => {
-        let reader = new FileReader();
-        reader.readAsDataURL(file);
-        reader.onload = function () {
-            cb(reader.result)
-        };
-        reader.onerror = function (error) {
-            console.log('Error: ', error);
-        };
-    }
+
 
     const onImageLoad = (file: FileList | null) => {
         if (file !== null) {

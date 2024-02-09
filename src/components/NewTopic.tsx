@@ -31,12 +31,11 @@ const NewTopic: FC<NewTopicProps> = ({isAuth, getTopics}) => {
     const onFinish = async (values: any) => {
         setIsModalOpen(false);
         const topic : Topic = {name: topicName.value, description : topicDesc.value}
-        console.log(topic)
+
         if (jwt) {
             const {data, error} = await newTopic(topic, jwt)
 
             if (data) {
-                console.log(data)
                 notification.success({message: "Успішно створено."})
                 getTopics()
             }
@@ -47,7 +46,6 @@ const NewTopic: FC<NewTopicProps> = ({isAuth, getTopics}) => {
 
             }
         } else {
-            console.log(jwt)
             throw Error("token is not present")
         }
 
@@ -57,7 +55,7 @@ const NewTopic: FC<NewTopicProps> = ({isAuth, getTopics}) => {
 
     return isAuth ?
       <>
-          <Button onClick={showModal}  icon={<PlusCircleOutlined />}>Нова тема</Button>
+          <Button onClick={showModal}  type={"primary"}  icon={<PlusCircleOutlined />}>Нова тема</Button>
 
           <Modal title="Нова тема" open={isModalOpen}  onCancel={handleCancel} footer={false} >
               <Form
@@ -97,7 +95,7 @@ const NewTopic: FC<NewTopicProps> = ({isAuth, getTopics}) => {
       </>
         :
         <Tooltip title="Вам потрібно авторизуватися" placement="topLeft">
-            <Button disabled={isAuth} onClick={showModal} icon={<PlusCircleOutlined/>}>Нова тема</Button>
+            <Button type={"primary"}  disabled={!isAuth} onClick={showModal} icon={<PlusCircleOutlined/>}>Нова тема</Button>
         </Tooltip>
 };
 

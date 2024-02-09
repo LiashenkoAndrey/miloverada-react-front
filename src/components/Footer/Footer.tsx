@@ -8,7 +8,7 @@ const Footer = () => {
     const { pathname } = useLocation();
 
     return (
-        <Flex className={"footerWrapper"} justify={"flex-start"} align={"center"} style={{display: pathname.includes("chat") ? "none" : "flex"}} >
+        <Flex className={"footerWrapper"} justify={"flex-start"} align={"center"} style={{display: pathname.includes("chat") || pathname.includes("news/new") ? "none" : "flex"}} >
             <Flex wrap={"wrap"}  className={"footerBody"}>
                 <h1 className={"footerTitle"}>Милівська сільська територіальна громада</h1>
                 <Flex vertical={true} wrap={"wrap"} gap={20}>

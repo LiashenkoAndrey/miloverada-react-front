@@ -2,6 +2,7 @@
 
 .allnewsWrapper {
     padding-top: 20vh;
+    padding-bottom: 150px;
     background: linear-gradient(to bottom, #585754, #F2F1EB);
 }
 
@@ -11,7 +12,9 @@
     margin: 0;
 }
 
-.AllNewsList .newsCard {
+
+
+.whiteNewsCard {
     position: relative;
     box-shadow: none;
     font-family: 'Source Serif 4', serif;
@@ -20,20 +23,30 @@
     max-width: 277px;
 }
 
-.AllNewsList .newsCard:hover {
+.AllNewsPageWideCard {
+    max-height: 730px;
+    max-width: 845px;
+}
+
+.AllNewsPageCard {
+       max-width: 370px!important;
+    max-height: 520px!important;
+}
+
+.whiteNewsCard:hover {
     box-shadow: none;
 }
 
-.AllNewsList .newsCard .newsCardDescription {
+.whiteNewsCard .newsCardDescription {
     font-size:18px;
     font-weight: 400;
 }
 
-.AllNewsList .newsCard .newsCardDescription:hover {
+.whiteNewsCard .newsCardDescription:hover {
     text-decoration: underline;
 }
 
-.AllNewsList .newsCard .newsCardContent {
+.whiteNewsCard .newsCardContent {
     padding: 20px;
 }
 

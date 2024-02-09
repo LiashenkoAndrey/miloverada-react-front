@@ -4,7 +4,7 @@ import {Route, Routes} from "react-router-dom";
 import Header from "./components/Header/Header";
 import MainPage from "./pages/MainPage/MainPage";
 import Footer from "./components/Footer/Footer";
-import {App as AntdApp, Layout} from "antd";
+import {App as AntdApp, ConfigProvider, Layout, theme} from "antd";
 import NewsPage from "./pages/NewsPage/NewsPage";
 import AllNewsPage from "./pages/AllNewsPage/AllNewsPage";
 import AllDocumentsPage from "./pages/AllDocumentsPage/AllDocumentsPage";
@@ -19,7 +19,10 @@ import AllUsersPage from "./pages/AllUsersPage/AllUsersPage";
 import ContactsPage from "./pages/ContactsPage/ContactsPage";
 import AllInstitutionsPage from "./pages/AllInstitutionsPage/AllInstitutionsPage";
 import InstitutionPage from "./pages/InstitutionPage/InstitutionPage";
-
+import AddNewsPage from "./pages/AddNewsPage/AddNewsPage";
+import locale from 'antd/es/locale/uk_UA';
+import 'dayjs/locale/uk'
+import 'bootstrap/dist/css/bootstrap.min.css';
 function App() {
     const [jwt, setJwt] = useState<string>()
     const {getAccessTokenSilently, isAuthenticated} = useAuth0()
@@ -37,26 +40,42 @@ function App() {
   return (
       <AuthContext.Provider value={{jwt, setJwt}}>
           <AntdApp>
-              <Layout>
-                  <Header/>
-                  <Routes>
-                      <Route path={"/"} element={<MainPage/>}/>
-                      <Route path={"/news/:id"} element={<NewsPage/>}/>
-                      <Route path={"/news/all"} element={<AllNewsPage/>}/>
-                      <Route path={"/documents/all"} element={<AllDocumentsPage/>}/>
-                      <Route path={"/chat/:id"} element={<ChatPage/>}/>
-                      <Route path={"/topic/:id"} element={<TopicPage/>}/>
-                      <Route path={"/contacts"} element={<ContactsPage/>}/>
-                      <Route path={"/institutions"} element={<AllInstitutionsPage/>}/>
-                      <Route path={"/institution/:id"} element={<InstitutionPage/>}/>
+              <ConfigProvider locale={locale} theme={{
+                  token : {
+                      colorPrimary: '#71092C',
+                      borderRadius: 2,
 
-                      <Route path={"/forum"} element={<AllForumTopicsPage/>}/>
-                      <Route path={"/resolveUser"} element={<IsRegisteredCheckPage/>}/>
-                      <Route path={"/forum/user/:user1_id/chat"} element={<PrivateChatPage/>}/>
-                      <Route path={"/forum/users"} element={<AllUsersPage/>}/>
-                  </Routes>
-                  <Footer />
-              </Layout>
+                      // Alias Token
+                      colorBgContainer: '#ffffff',
+                  },
+                  components : {
+                  }
+              }}>
+
+                  <Layout>
+                      <Header/>
+                      <Routes>
+                          <Route path={"/"} element={<MainPage/>}/>
+                          <Route path={"/news/:id"} element={<NewsPage isPreview={false}/>}/>
+                          <Route path={"/news/all"} element={<AllNewsPage/>}/>
+                          <Route path={"/news/new"} element={<AddNewsPage/>}/>
+
+
+                          <Route path={"/documents/all"} element={<AllDocumentsPage/>}/>
+                          <Route path={"/chat/:id"} element={<ChatPage/>}/>
+                          <Route path={"/topic/:id"} element={<TopicPage/>}/>
+                          <Route path={"/contacts"} element={<ContactsPage/>}/>
+                          <Route path={"/institutions"} element={<AllInstitutionsPage/>}/>
+                          <Route path={"/institution/:id"} element={<InstitutionPage/>}/>
+
+                          <Route path={"/forum"} element={<AllForumTopicsPage/>}/>
+                          <Route path={"/resolveUser"} element={<IsRegisteredCheckPage/>}/>
+                          <Route path={"/forum/user/:user1_id/chat"} element={<PrivateChatPage/>}/>
+                          <Route path={"/forum/users"} element={<AllUsersPage/>}/>
+                      </Routes>
+                      <Footer />
+                  </Layout>
+              </ConfigProvider>
           </AntdApp>
       </AuthContext.Provider>
   );
