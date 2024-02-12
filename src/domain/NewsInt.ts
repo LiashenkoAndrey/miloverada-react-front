@@ -19,13 +19,12 @@ export interface INewsDto {
     images? : INewsImage[]
 }
 
-export interface INewsPreview extends INews {
-    previewImages : string[]
-}
+
 
 export interface INewsImage {
-    id : number
-    newsId : number
+    id? : number
+    newsId? : number
     mongoImageId : string
+    fileName : string
 }
 

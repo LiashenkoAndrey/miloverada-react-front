@@ -26,11 +26,12 @@
 
 
 .newsData {
-    margin: 0;
-    text-transform: uppercase;
-    font-size: 20px;
-    font-weight: 600;
-    color: #820000;
+    font-family: 'Source Serif 4', serif !important;
+    margin: 0!important;
+    text-transform: uppercase!important;
+    font-size: 20px!important;
+    font-weight: 600!important;
+    color: #820000!important;
 }
 
 .newsPageViews {
@@ -40,7 +41,7 @@
 
 .newsTitle {
     font-family: 'Source Serif 4', serif;
-    margin: 10px 0 0 0;
+    margin: 10px 0 0 0!important;
     font-size: 36px;
     font-weight: 700;
 }

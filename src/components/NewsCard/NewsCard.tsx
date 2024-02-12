@@ -15,11 +15,11 @@ interface NewsCardProps {
 
 const NewsCard : FC<NewsCardProps>= ({news, style, className}) => {
     const nav = useNavigate()
-    const newsImage = news.images && news.images[0].mongoImageId
+    const newsImage = news.images && news.images[0]
 
     return (
-        <div onClick={() => nav("/newsList/" + news.id)} key={newsImage} className={"newsCard " + (className ? className : "")} style={style}>
-            <img src={getImageUrl(newsImage)} alt="news"/>
+        <div onClick={() => nav("/newsList/" + news.id)} key={newsImage?.mongoImageId} className={"newsCard " + (className ? className : "")} style={style}>
+            <img src={getImageUrl(newsImage?.mongoImageId)} className={"imageWithPlaceholder"} alt={newsImage?.fileName}/>
             <div className={"newsCardContent"}>
                 <span>{news.newsType?.title}</span>
                 <span className={"newsCardDescription"}>{news.description}</span>

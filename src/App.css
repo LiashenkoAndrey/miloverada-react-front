@@ -18,6 +18,14 @@
     transition: opacity 200ms;
 }
 
+.imageWithPlaceholder {
+    text-align: center;
+    line-height: 30px;
+    background-image: url("assets/landscape-placeholder-svgrepo-com.svg");
+    background-position: center;
+    background-size: 80%;
+}
+
 :root {
     --forum-primary-bg-color : #C4BBAF;
     --forum-primary-title-color : #282A3E;

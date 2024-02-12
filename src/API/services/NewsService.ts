@@ -117,6 +117,19 @@ export const deleteNewsImageById = (imageId : string, token : string) => {
     return callAndGetResult(config)
 }
 
+export const updateNewsById = (newsId : number, data : FormData, token : string) => {
+    const config = {
+        url: `${apiServerUrl}/api/protected/news/${newsId}/update`,
+        method: "PUT",
+        data: data,
+        headers: {
+            Authorization: `Bearer ${token}`,
+        }
+    }
+    return callAndGetResult(config)
+}
+
+
 export const saveNewsImageByNewsId = (data : FormData, newsId : number, token : string) => {
     const config = {
         url: `${apiServerUrl}/api/protected/news/${newsId}/image/new`,

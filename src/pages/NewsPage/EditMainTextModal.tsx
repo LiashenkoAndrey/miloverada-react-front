@@ -11,9 +11,7 @@ interface EditMainTextModalProps {
 const EditMainTextModal:FC<EditMainTextModalProps> = ({setText, text}) => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const editorRef = useRef<TinyMCEEditor | null>(null);
-    const showModal = () => {
-        setIsModalOpen(true);
-    };
+
 
     const getEditorText  = () : string => {
         if (editorRef.current) {
@@ -34,18 +32,23 @@ const EditMainTextModal:FC<EditMainTextModalProps> = ({setText, text}) => {
 
     return (
         <>
-            {text &&
+            {(text) &&
                 <div onClick={() => setIsModalOpen(true)} className={"newsText"} dangerouslySetInnerHTML={{__html: text}}></div>
             }
-            <Modal width={"90vw"} title={false} open={isModalOpen} onOk={handleOk} onCancel={handleCancel}>
-                <HtmlEditor
-                    initVal={text}
-                    onInit={(evt, editor) => {
+
+
+            {isModalOpen &&
+                <Modal open={isModalOpen} onCancel={handleCancel} onOk={handleOk} width={"90vw"}>
+                    <HtmlEditor
+                        val={text}
+                        onInit={(evt, editor) => {
                             editorRef.current = editor
-                            }}
-                            onChange={() => setText(getEditorText)}
-                />
-            </Modal>
+                        }}
+                        onChange={(str) => setText(str)}
+                    />
+                </Modal>
+
+            }
         </>
     );
 };

@@ -76,7 +76,7 @@ function App() {
                           <Route path={"/resolveUser"} element={<IsRegisteredCheckPage/>}/>
                           <Route path={"/forum/user/:user1_id/chat"} element={<PrivateChatPage/>}/>
                           <Route path={"/forum/users"} element={<AllUsersPage/>}/>
-                          <Route path={"/*"} element={<Navigate to={"/"}/>}/>
+                          {/*<Route path={"/*"} element={<Navigate to={"/"}/>}/>*/}
                       </Routes>
                       <Footer/>
                   </Layout>

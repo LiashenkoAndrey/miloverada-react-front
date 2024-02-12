@@ -41,7 +41,7 @@ export const getBase64 = (file : File, cb : Function) => {
     let reader = new FileReader();
     reader.readAsDataURL(file);
     reader.onload = function () {
-        cb(reader.result)
+        cb(reader.result, file.name)
     };
     reader.onerror = function (error) {
         console.log('Error: ', error);

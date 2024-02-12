@@ -1,9 +1,9 @@
 import {Dispatch} from "redux";
 import {NewsPreviewActionTypes} from "../../types/NewsPreview";
-import {INews, INewsPreview} from "../../domain/NewsInt";
+import {INews} from "../../domain/NewsInt";
 
 
-export const setNewsPreview =  (preview : INewsPreview) => {
+export const setNewsPreview =  (preview : INews) => {
     return async (dispatch : Dispatch<NewsPreviewAction>) => {
         dispatch({type : NewsPreviewActionTypes.SET_NEWS_PREVIEW, payload : preview})
     }
@@ -11,7 +11,7 @@ export const setNewsPreview =  (preview : INewsPreview) => {
 
 interface SetNewsPreview {
     type: NewsPreviewActionTypes.SET_NEWS_PREVIEW
-    payload: INewsPreview
+    payload: INews
 }
 
 export type NewsPreviewAction = SetNewsPreview

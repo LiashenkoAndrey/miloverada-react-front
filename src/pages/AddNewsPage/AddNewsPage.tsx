@@ -5,7 +5,6 @@ import {PlusOutlined} from "@ant-design/icons";
 import locale from 'antd/es/date-picker/locale/uk_UA';
 // @ts-ignore
 import imagePlaceholder from "../../assets/image-placeholder.svg"
-import {Editor} from "@tinymce/tinymce-react";
 import {Editor as TinyMCEEditor} from 'tinymce';
 import {RangePickerProps} from "antd/es/date-picker";
 import dayjs from 'dayjs';
@@ -18,9 +17,9 @@ import {deleteNewsTypeById, getNewsTypesList, NewsType, saveNews} from "../../AP
 import {AuthContext} from "../../context/AuthContext";
 import NewsPreview from "./NewsPreview";
 import {useActions} from "../../hooks/useActions";
-import {INewsPreview} from "../../domain/NewsInt";
 import AddNewsTypeModal from "./AddNewsTypeModal";
 import HtmlEditor from "../../components/HtmlEditor";
+import {INews, INewsImage} from "../../domain/NewsInt";
 
 const AddNewsPage = () => {
 
@@ -31,7 +30,7 @@ const AddNewsPage = () => {
     const [dateOfPublication, setDateOfPublication] = useState<string>('')
     const [dateOfPostponedPublication, setDateOfPostponedPublication] = useState<string>('')
     const [imagesFiles, setImagesFiles] = useState<File[]>([])
-    const [base64ImagesFiles, setBase64ImagesFiles] = useState<string[]>([])
+    const [newsImages, setNewsImages] = useState<INewsImage[]>([])
     const {jwt} = useContext(AuthContext)
     const {notification} = App.useApp();
     const [newsTypes, setNewsTypes] = useState<NewsType[]>([])
@@ -52,15 +51,14 @@ const AddNewsPage = () => {
 
 
     useEffect(() => {
-        const iNewsPreview : INewsPreview = {description : title,
+        const iNewsPreview : INews = {description : title,
             main_text: text,
             views: 100,
             dateOfPublication: dateOfPublication.split("T")[0],
-            previewImages: base64ImagesFiles,
+            images: newsImages,
         }
-
         setNewsPreview(iNewsPreview)
-    }, [text, title, dateOfPublication, imagesFiles]);
+    }, [text, title, dateOfPublication, imagesFiles, newsImages]);
 
     const onSelectNewsType = (id: number | string) => {
         setIsNewTypeModalOpen(false)
@@ -113,12 +111,25 @@ const AddNewsPage = () => {
         inputFile.current?.click()
     }
 
+    useEffect(() => {
+        console.log(newsImages)
+    }, [newsImages]);
+
     const onImageLoad = (fileList: FileList | null) => {
         if (fileList !== null) {
+            const  arr : INewsImage[] = []
             for (let i = 0; i < fileList.length; i++) {
                 setImagesFiles([...imagesFiles, fileList[i]])
-                getBase64(fileList[i], (res: string) => {
-                    setBase64ImagesFiles([...base64ImagesFiles, res])
+
+                getBase64(fileList[i], (res: string, filename : string) => {
+                    const img : INewsImage = {
+                        mongoImageId : res,
+                        fileName : filename
+                    }
+                    arr.push(img)
+                    if (i === fileList.length-1) {
+                        setNewsImages([...newsImages, ...arr])
+                    }
                 })
             }
         }
@@ -139,22 +150,17 @@ const AddNewsPage = () => {
     const onSave = () => {
         let data = new FormData()
         data.append("title", title)
-
         data.append("text", getEditorText())
         data.append("dateOfPublication", dateOfPublication)
         data.append("dateOfPostponedPublication", dateOfPostponedPublication)
 
-        console.log(newsTypeId)
         if (newsTypeId !== undefined) {
             data.append("newsTypeId", newsTypeId.toString())
         } else {
             data.append("newsTypeId", "-1")
         }
-
-
         for (let i = 0; i < imagesFiles.length; i++) {
             data.append("images", imagesFiles[i])
-
         }
         save(data)
     }
@@ -181,8 +187,7 @@ const AddNewsPage = () => {
 
     const [isPostponedPublication, setIsPostponedPublication] = useState<boolean>(false)
 
-    const onisPostponedPublicationChange = (val : boolean) => {
-        console.log(val)
+    const onPostponedPublicationChange = (val : boolean) => {
         setIsPostponedPublication(val)
     }
     
@@ -210,8 +215,8 @@ const AddNewsPage = () => {
                     <Flex wrap={"wrap"} className={[classes.imagesWrapper, classes.primaryBg].join(' ')} gap={15}>
                         <Flex align={"center"} gap={5} wrap={"wrap"} justify={"center"} style={{flexGrow:1}}>
                             {imagesFiles.length > 0 ?
-                                base64ImagesFiles.map((img) =>
-                                    <NewsImage key={"image-" + img.length}  imagesFile={base64ImagesFiles} setImagesFiles={setBase64ImagesFiles} img={img}/>
+                                newsImages.map((img) =>
+                                    <NewsImage key={"image-" + img.fileName}  imagesFile={newsImages} setImagesFiles={setNewsImages} img={img}/>
                                 )
                                 :
                                 <img className={classes.imagePlaceholder} src={imagePlaceholder} alt="imagePlaceholder"  />
@@ -230,7 +235,7 @@ const AddNewsPage = () => {
                         <Flex gap={10} vertical style={{height: "fit-content"}} className={classes.primaryBg}>
                             <span className={classes.inputTitle}>Дата публікації</span>
                             <DatePicker onChange={onDateOfPublicationChange} style={{width: "fit-content"}} locale={locale}/>
-                            <Checkbox onChange={(e) => onisPostponedPublicationChange(e.target.checked)} >Відкласти публікацію</Checkbox >
+                            <Checkbox onChange={(e) => onPostponedPublicationChange(e.target.checked)} >Відкласти публікацію</Checkbox >
 
                             <CSSTransition nodeRef={nodeRef} in={isPostponedPublication} timeout={200} classNames="smoothAppearance">
                                 <Flex  ref={nodeRef} className={classes.test} vertical style={{display : isPostponedPublication ? "flex" : "none"}}>
@@ -277,10 +282,10 @@ const AddNewsPage = () => {
 
                 <Flex vertical className={classes.inputWrapper} >
                     <span className={classes.inputTitle} style={{margin: 10}}>Основний текст</span>
-                    <HtmlEditor onInit={(evt, editor) => {
+                    <HtmlEditor val={text} onInit={(evt, editor) => {
                         editorRef.current = editor
                     }}
-                        onChange={() => {setText(getEditorText)}}
+                        onChange={(str) => {setText(str)}}
                     />
                 </Flex>
 

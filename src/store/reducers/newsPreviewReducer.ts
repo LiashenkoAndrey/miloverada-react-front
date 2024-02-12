@@ -2,7 +2,7 @@ import {NewsPreviewActionTypes, NewsPreviewState} from "../../types/NewsPreview"
 import {NewsPreviewAction} from "../actionCreators/newsPreview";
 
 const initState: NewsPreviewState = {
-    preview : {views: 0, images: [], previewImages : []}
+    preview : {views: 0, images: []}
 }
 
 export const newsPreviewReducer = (state = initState, action: NewsPreviewAction): NewsPreviewState => {

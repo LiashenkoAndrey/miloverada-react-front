@@ -1,8 +1,8 @@
-import {INewsPreview} from "../domain/NewsInt";
+import {INews} from "../domain/NewsInt";
 
 
 export interface NewsPreviewState {
-    preview : INewsPreview
+    preview : INews
 }
 
 export enum NewsPreviewActionTypes {

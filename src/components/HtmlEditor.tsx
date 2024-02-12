@@ -3,7 +3,7 @@ import {Editor} from "@tinymce/tinymce-react";
 
 interface HtmlEditorProps {
     onInit : (evt: any, editor: any) => void
-    onChange : () => void
+    onChange : (str : string) => void
     initVal? : string
     val? : string
 }
@@ -11,20 +11,23 @@ interface HtmlEditorProps {
 const HtmlEditor: FC<HtmlEditorProps> = ({onInit, onChange, initVal, val}) => {
     return (
         <Editor
+            onEditorChange={onChange}
             initialValue={initVal}
             onInit={onInit}
             value={val}
-            onChange={onChange}
+
             apiKey={"s9e7vn9jkcnp5d5ptky7olb6es0niy1s9rtf7lz0d2l5tlwi"}
             init={{
+                language: 'uk',
+
                 height: 500,
                 menubar: false,
                 plugins: [
-                    'advlist autolink lists link image charmap print preview anchor',
-                    'searchreplace visualblocks code fullscreen',
-                    'insertdatetime media table paste code help wordcount'
+                    'advlist', 'autolink', 'lists', 'link', 'image', 'media ', 'charmap', 'preview',
+                    'anchor', 'searchreplace', 'visualblocks', 'code', 'fullscreen',
+                    'insertdatetime', 'media', 'table', 'help', 'wordcount'
                 ],
-                toolbar: 'undo redo | formatselect | ' +
+                toolbar: 'undo redo | language| blocks | image  | table media  | fullscreen preview | ' +
                     'bold italic backcolor | alignleft aligncenter ' +
                     'alignright alignjustify | bullist numlist outdent indent | ' +
                     'removeformat | help',
