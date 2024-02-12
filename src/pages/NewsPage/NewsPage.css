@@ -15,6 +15,7 @@
         margin-top: 15vh;
         padding: 15px;
         max-width: 95vw;
+
     }
 
     .newsTitle {
@@ -38,6 +39,7 @@
 }
 
 .newsTitle {
+    font-family: 'Source Serif 4', serif;
     margin: 10px 0 0 0;
     font-size: 36px;
     font-weight: 700;

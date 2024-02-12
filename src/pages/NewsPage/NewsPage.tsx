@@ -1,21 +1,23 @@
 import React, {FC, useContext, useEffect, useRef, useState} from 'react';
 import {useNavigate, useParams} from "react-router-dom";
 import {
-    deleteNewsById, deleteNewsImageById,
+    deleteNewsById,
+    deleteNewsImageById,
     getLatestNews,
     getNewsById,
     getSimilarNews,
-    incrementNewsViews, saveNewsImageByNewsId
+    incrementNewsViews,
+    saveNewsImageByNewsId
 } from "../../API/services/NewsService";
-import {App, Breadcrumb, Button, Col, Dropdown, Flex, MenuProps, Popconfirm, Row, Skeleton, Tooltip} from "antd";
+import {App, Breadcrumb, Button, Col, Dropdown, Flex, Popconfirm, Row, Skeleton, Typography} from "antd";
 import {INews} from "../../domain/NewsInt";
 import {getImageUrl} from "../../API/services/ImageService";
 import './NewsPage.css'
 import {
     FacebookOutlined,
     InstagramFilled,
-    LeftOutlined, PlusCircleOutlined,
-    PlusOutlined,
+    LeftOutlined,
+    PlusCircleOutlined,
     ShareAltOutlined,
     TwitterOutlined
 } from "@ant-design/icons";
@@ -26,7 +28,8 @@ import imagePlaceholder from "../../assets/image-placeholder.svg"
 import NewsCard from "../../components/NewsCard/NewsCard";
 import {useAuth0} from "@auth0/auth0-react";
 import {AuthContext} from "../../context/AuthContext";
-import {getBase64} from "../../API/Util";
+import EditMainTextModal from "./EditMainTextModal";
+const { Paragraph, Title } = Typography;
 
 interface NewsPageProps {
     isPreview : boolean
@@ -55,6 +58,8 @@ const NewsPage : FC<NewsPageProps> = ({isPreview}) => {
             const news : INews = data
             setNews(news)
             setImagesList(news.images ? news.images.map((img) => img.mongoImageId) : [])
+            setDescription(news.description)
+            setText(news.main_text)
         } else throw error
     }
 
@@ -68,12 +73,6 @@ const NewsPage : FC<NewsPageProps> = ({isPreview}) => {
             }
         }
         if (error) throw error
-    }
-
-    const getNewsImages = () => {
-        if (!isPreview) {
-
-        }
     }
 
     const getLatest = async () => {
@@ -128,10 +127,6 @@ const NewsPage : FC<NewsPageProps> = ({isPreview}) => {
         } else notification.warning({message: "not auth"})
     }
 
-    useEffect(() => {
-        console.log("list", imagesList)
-    }, [imagesList]);
-
     const onImageDelete = async (id : string) => {
         if (id === '') return;
         if (jwt) {
@@ -150,7 +145,6 @@ const NewsPage : FC<NewsPageProps> = ({isPreview}) => {
 
     const inputFile = useRef<HTMLInputElement | null>(null)
     const [isNewImageLoading, setIsNewImageLoading] = useState(false);
-
 
 
     const onImageAdd = () => {
@@ -180,12 +174,14 @@ const NewsPage : FC<NewsPageProps> = ({isPreview}) => {
     const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
     const [confirmLoading, setConfirmLoading] = useState(false);
 
+    const [description, setDescription] = useState<string>()
+    const [text, setText] = useState<string>()
+
     return (
         <Flex justify={"center"}>
             <Flex vertical={true} justify={"center"} id={"newsTop"} className={"newsPage"} >
                 {!isPreview &&
                     <Flex justify={"space-between"}>
-
                         <Flex vertical={false} align={"center"}  gap={5} style={{marginBottom: 20}}>
                             <Button onClick={() => nav(-1)} style={{maxWidth: 150}} icon={<LeftOutlined />} type={"text"}>Назад</Button>
                             <Breadcrumb>
@@ -212,7 +208,18 @@ const NewsPage : FC<NewsPageProps> = ({isPreview}) => {
 
                 <h6 className={"newsData"}>{news?.dateOfPublication?.split("T")[0]}</h6>
 
-                <h1 className={"newsTitle"}>{news?.description}</h1>
+                {isAuthenticated
+                    ?
+
+                    <Title className={"newsTitle"}
+                           editable={{onChange: setDescription, triggerType: ["text"]}}
+                    >
+                        {description}
+                    </Title>
+
+                    :
+                    <h1 className={"newsTitle"}>{news?.description}</h1>
+                }
 
                 <div style={{borderTop: "solid #c0c0bf 1px", margin: "20px 0"}}></div>
                 <Flex gap={20}>
@@ -272,12 +279,17 @@ const NewsPage : FC<NewsPageProps> = ({isPreview}) => {
                     </Flex>
                 </Flex>
 
-                {news?.main_text
+
+                {isAuthenticated
                     ?
-                    <div className={"newsText"} dangerouslySetInnerHTML={{__html: news?.main_text}}></div>
+                    <EditMainTextModal setText={setText} text={text}/>
                     :
-                    <Skeleton active/>
+                    news?.main_text &&
+                    <div className={"newsText"} dangerouslySetInnerHTML={{__html: news?.main_text}}></div>
+
                 }
+
+
                 <span style={{display: "block"}} className={"newsPageViews"}>{news?.views} переглядів</span>
                 <div style={{borderTop: "solid #c0c0bf 1px", margin: "20px 0"}}></div>
 

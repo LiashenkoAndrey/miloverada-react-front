@@ -50,6 +50,9 @@ function App() {
                       colorBgContainer: '#ffffff',
                   },
                   components : {
+                      Input : {
+                          fontFamily : "'Source Serif 4', serif"
+                      }
                   }
               }}>
 

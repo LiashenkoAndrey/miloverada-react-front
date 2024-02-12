@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import classes from './Header.module.css'
 import {Dropdown, Flex, MenuProps, Space} from "antd";
 // @ts-ignore
@@ -6,6 +6,7 @@ import icon from '../../assets/icon.png'
 import {useLocation, useNavigate} from "react-router-dom";
 import MobileNav from "./MobileNav";
 import {MenuOutlined} from "@ant-design/icons";
+import {useAuth0} from "@auth0/auth0-react";
 
 export interface HeaderOption {
     onClick : () => void
@@ -15,6 +16,7 @@ export interface HeaderOption {
 const Header = () => {
     const nav  = useNavigate()
     const { pathname } = useLocation();
+    const {isAuthenticated, isLoading, user} = useAuth0()
 
     const options : HeaderOption[] = [
         {onClick : () => nav("/documents/all"), title : "Документи"},
@@ -35,20 +37,29 @@ const Header = () => {
         })
 
 
-
+    useEffect(() => {
+        console.log(isAuthenticated)
+    }, [isAuthenticated]);
 
     return (
         <Flex justify={"center"} className={classes.navbar} style={{display: pathname.includes("chat") || pathname.includes("news/new") ? "none" : "block"}} >
             <Flex className={"IContainer"} justify={"space-between"} align={"center"} >
                 <Flex onClick={() => nav("/")} className={"nonSelect"}>
                     <span className={classes.title}>Милівська сільська територіальна громада</span>
+                    <h1>{isAuthenticated}</h1>
+                    <span>{isLoading}</span>
+                    <span>{user?.name}</span>
                     <img className={classes.logo} src={icon} width={50} alt={"Герб України"}/>
+
                 </Flex>
+
+
                 <Flex wrap={"wrap"} justify={"center"} className={[classes.navBtnWrapper, "nonSelect"].join(' ')}>
                     {options.map((o) =>
                         <span key={"Head-option-" + o.title} onClick={o.onClick}>{o.title}</span>
                     )}
                 </Flex>
+
 
                 <Flex wrap={"wrap"} justify={"center"} className={[classes.mobileNavBtnWrapper, "nonSelect"].join(' ')}>
                     <Dropdown menu={{items}} trigger={['click']}>

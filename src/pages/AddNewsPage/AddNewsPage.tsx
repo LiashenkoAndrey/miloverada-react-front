@@ -20,6 +20,7 @@ import NewsPreview from "./NewsPreview";
 import {useActions} from "../../hooks/useActions";
 import {INewsPreview} from "../../domain/NewsInt";
 import AddNewsTypeModal from "./AddNewsTypeModal";
+import HtmlEditor from "../../components/HtmlEditor";
 
 const AddNewsPage = () => {
 
@@ -276,26 +277,10 @@ const AddNewsPage = () => {
 
                 <Flex vertical className={classes.inputWrapper} >
                     <span className={classes.inputTitle} style={{margin: 10}}>Основний текст</span>
-                    <Editor
-                        onInit={(evt, editor) => {
-                            editorRef.current = editor
-                        }}
+                    <HtmlEditor onInit={(evt, editor) => {
+                        editorRef.current = editor
+                    }}
                         onChange={() => {setText(getEditorText)}}
-                        apiKey={"s9e7vn9jkcnp5d5ptky7olb6es0niy1s9rtf7lz0d2l5tlwi"}
-                        init={{
-                            height: 500,
-                            menubar: false,
-                            plugins: [
-                                'advlist autolink lists link image charmap print preview anchor',
-                                'searchreplace visualblocks code fullscreen',
-                                'insertdatetime media table paste code help wordcount'
-                            ],
-                            toolbar: 'undo redo | formatselect | ' +
-                                'bold italic backcolor | alignleft aligncenter ' +
-                                'alignright alignjustify | bullist numlist outdent indent | ' +
-                                'removeformat | help',
-                            content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:14px }'
-                        }}
                     />
                 </Flex>
 
