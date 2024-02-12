@@ -19,7 +19,7 @@ const Header = () => {
 
     const options : HeaderOption[] = [
         {onClick : () => nav("/documents/all"), title : "Документи"},
-        {onClick : () => nav("/news/all"), title : "Новини"},
+        {onClick : () => nav("/newsFeed/all"), title : "Новини"},
         {onClick : () => nav("/forum"), title : "Форум"},
         {onClick : () => nav("/"), title : "Управління"},
         {onClick : () => nav("/institutions"), title : "Установи"},

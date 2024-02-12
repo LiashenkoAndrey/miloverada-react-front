@@ -6,6 +6,7 @@ import {PlusCircleOutlined} from "@ant-design/icons";
 import {INewsImage} from "../../domain/NewsInt";
 import {deleteNewsImageById, saveNewsImageByNewsId} from "../../API/services/NewsService";
 import {AuthContext} from "../../context/AuthContext";
+import {useAuth0} from "@auth0/auth0-react";
 
 interface NewsImageCarouselProps {
     isPreview : boolean
@@ -20,6 +21,7 @@ const NewsImageCarousel:FC<NewsImageCarouselProps> = ({isPreview, imagesList, se
     const inputFile = useRef<HTMLInputElement | null>(null)
     const {jwt} = useContext(AuthContext)
     const {notification} = App.useApp();
+    const {isAuthenticated} = useAuth0()
 
     const onImageDelete = async (id : string) => {
         if (id === '') return;
@@ -59,10 +61,10 @@ const NewsImageCarousel:FC<NewsImageCarouselProps> = ({isPreview, imagesList, se
 
     return (
         <Flex style={{position: "relative"}}>
-            <Carousel style={{maxWidth: 800}}>
+            <Carousel controls={imagesList.length > 1} indicators={imagesList.length > 1} slide={true} style={{maxWidth: 800}}>
                 {imagesList.map((img) =>
                     <Carousel.Item key={"image-" + img.fileName}>
-                        <Flex align={"center"} style={{width: 800, maxWidth: 800, height: 540, backgroundColor: "rgba(44,44,44,0.44)"}}>
+                        <Flex align={"center"} className={"carouselImgWrapper"}>
                             <Dropdown placement={"topLeft"}
                                       disabled={isPreview || imagesList.length <= 1}
                                       menu={{ items: [
@@ -76,10 +78,13 @@ const NewsImageCarousel:FC<NewsImageCarouselProps> = ({isPreview, imagesList, se
                                       }}
                                       trigger={['contextMenu']}
                             >
-                                <img style={{width: "100%", height: "100%", maxHeight : 540}}
-                                     alt={"Картинка"} className={"imageWithPlaceholder"}
-                                     src={ isPreview ? img.mongoImageId : getImageUrl(img.mongoImageId)}
-                                />
+                                <div style={{width : "100%", height: "100%"}}>
+
+                                    <img style={{width: "100%", height: "100%", maxHeight : 540}}
+                                         alt={"Картинка"} className={"imageWithPlaceholder carouselImage"}
+                                         src={ isPreview ? img.mongoImageId : getImageUrl(img.mongoImageId)}
+                                    />
+                                </div>
                             </Dropdown>
                         </Flex>
                     </Carousel.Item>
@@ -92,13 +97,15 @@ const NewsImageCarousel:FC<NewsImageCarouselProps> = ({isPreview, imagesList, se
                    type="file"
             />
 
-            <Button ghost loading={isNewImageLoading}
-                    icon={<PlusCircleOutlined />}
-                    style={{ position: "absolute", bottom: 20, left: 20, zIndex: 214748364}}
-                    onClick={onImageAdd}
-            >
-                Додати
-            </Button>
+            {isAuthenticated &&
+                <Button ghost loading={isNewImageLoading}
+                        icon={<PlusCircleOutlined />}
+                        style={{ position: "absolute", bottom: 20, left: 20, zIndex: 214748364}}
+                        onClick={onImageAdd}
+                >
+                    Додати
+                </Button>
+            }
         </Flex>
     );
 };

@@ -181,7 +181,7 @@ const NewsPage : FC<NewsPageProps> = ({isPreview}) => {
     }
 
     return (
-        <Flex justify={"center"}>
+        <Flex  justify={"center"}>
             {isHasChanges &&
                 <Tooltip title="Ви маєте незбережені зміни, клікніть на кнопку щоб зберегти зміни." trigger="click" defaultOpen>
                     <FloatButton.Group shape="square" style={{right: 94}}>
@@ -190,16 +190,16 @@ const NewsPage : FC<NewsPageProps> = ({isPreview}) => {
                     </FloatButton.Group>
                 </Tooltip>
             }
-            <Flex vertical={true} justify={"center"} id={"newsTop"} className={"newsPage"} >
+            <Flex vertical={true} justify={"center"} className={"newsPage"} >
 
 
                 {!isPreview &&
-                    <Flex justify={"space-between"}>
+                    <Flex id={"newsTop"} justify={"space-between"}>
                         <Flex vertical={false} align={"center"}  gap={5} style={{marginBottom: 20}}>
                             <Button onClick={() => nav(-1)} style={{maxWidth: 150}} icon={<LeftOutlined />} type={"text"}>Назад</Button>
                             <Breadcrumb>
                                 <Breadcrumb.Item><Button onClick={() => nav("/")} type={"text"} size={"small"}>Головна</Button> </Breadcrumb.Item>
-                                <Breadcrumb.Item><Button type={"text"} size={"small"}>Новини</Button> </Breadcrumb.Item>
+                                <Breadcrumb.Item><Button onClick={() => nav("/newsFeed/all")}  type={"text"} size={"small"}>Новини</Button> </Breadcrumb.Item>
                             </Breadcrumb>
                         </Flex>
                         {isAuthenticated &&
@@ -249,15 +249,19 @@ const NewsPage : FC<NewsPageProps> = ({isPreview}) => {
                 }
 
                 <div style={{borderTop: "solid #c0c0bf 1px", margin: "20px 0"}}></div>
-                <Flex gap={20}>
+                <Flex gap={20} wrap={"wrap"}>
                     <div style={{alignSelf: "flex-start"}}>
                         <Row style={{marginBottom: 10}}>
-                            <Col><ShareAltOutlined style={{fontSize: 31, marginRight: 5, cursor: "pointer"}}/></Col>
-                            <Col><TwitterOutlined style={{fontSize: 31, cursor: "pointer"}}/></Col>
+                            <Col><ShareAltOutlined className={"contact"} style={{fontSize: 31, marginRight: 5, cursor: "pointer"}}/></Col>
+                            <Col><TwitterOutlined className={"contact"} style={{fontSize: 31, cursor: "pointer"}}/></Col>
                         </Row>
                         <Row>
-                            <Col><InstagramFilled style={{fontSize: 31, marginRight: 5, cursor: "pointer"}}/></Col>
-                            <Col><FacebookOutlined style={{fontSize: 31, cursor: "pointer"}}/></Col>
+                            <Col><InstagramFilled className={"contact"} style={{fontSize: 31, marginRight: 5, cursor: "pointer"}}/></Col>
+                            <Col>
+                                <a target={"_blank"} style={{color: "#343434"}} href="https://www.facebook.com/groups/2511266795585575">
+                                    <FacebookOutlined className={"contact"} style={{fontSize: 31, cursor: "pointer"}}/>
+                                </a>
+                            </Col>
                         </Row>
                     </div>
 
@@ -281,14 +285,16 @@ const NewsPage : FC<NewsPageProps> = ({isPreview}) => {
                 <div style={{borderTop: "solid #c0c0bf 1px", margin: "20px 0"}}></div>
 
 
-                <Flex justify={"space-between"}>
-                    <Button size={"large"} style={{fontSize: 18, height:"fit-content"}}>Новини громади</Button>
+                <Flex justify={"space-between"} wrap={"wrap"} gap={20}>
+                    <Button onClick={() => nav("/newsFeed")} size={"large"} style={{fontSize: 18, height:"fit-content"}}>Новини громади</Button>
 
                     <Flex wrap={"wrap"} gap={10}>
-                        <ShareAltOutlined style={{fontSize: 40, cursor: "pointer"}} />
-                        <TwitterOutlined style={{fontSize: 40, cursor: "pointer"}} />
-                        <InstagramFilled style={{fontSize: 40, cursor: "pointer"}} />
-                        <FacebookOutlined style={{fontSize: 40, cursor: "pointer"}}/>
+                        <ShareAltOutlined onClick={() => navigator.share({url: "https://developer.mozilla.org/en-US/docs/Web/API/Navigator/share"})} className={"contact"} style={{fontSize: 40, cursor: "pointer"}} />
+                        <TwitterOutlined className={"contact"} style={{fontSize: 40, cursor: "pointer"}} />
+                        <InstagramFilled className={"contact"} style={{fontSize: 40, cursor: "pointer"}} />
+                        <a target={"_blank"} style={{color: "#343434"}} href="https://www.facebook.com/groups/2511266795585575">
+                            <FacebookOutlined className={"contact"} style={{fontSize: 40, cursor: "pointer"}}/>
+                        </a>
                     </Flex>
                 </Flex>
 

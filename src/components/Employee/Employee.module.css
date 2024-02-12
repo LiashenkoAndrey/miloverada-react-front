@@ -2,7 +2,7 @@
 
 .contact {
     border-radius: 15px;
-
+    text-decoration: none!important;
     background-color: #EEEEEE;
     flex-direction: row;
 }

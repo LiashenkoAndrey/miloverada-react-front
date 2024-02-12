@@ -60,8 +60,8 @@ function App() {
                       <Header/>
                       <Routes>
                           <Route path={"/"} element={<MainPage/>}/>
-                          <Route path={"/newsList/:id"} element={<NewsPage isPreview={false}/>}/>
-                          <Route path={"/news/all"} element={<AllNewsPage/>}/>
+                          <Route path={"/newsFeed/:id"} element={<NewsPage isPreview={false}/>}/>
+                          <Route path={"/newsFeed/all"} element={<AllNewsPage/>}/>
                           <Route path={"/news/new"} element={<AddNewsPage/>}/>
 
 
