@@ -23,6 +23,7 @@ import AddNewsPage from "./pages/AddNewsPage/AddNewsPage";
 import locale from 'antd/es/locale/uk_UA';
 import 'dayjs/locale/uk'
 import 'bootstrap/dist/css/bootstrap.min.css';
+import DocumentPage from "./pages/DocumentPage/DocumentPage";
 
 function App() {
     const [jwt, setJwt] = useState<string>()
@@ -53,6 +54,7 @@ function App() {
                       Input : {
                           fontFamily : "'Source Serif 4', serif"
                       }
+
                   }
               }}>
 
@@ -64,8 +66,10 @@ function App() {
                           <Route path={"/newsFeed/all"} element={<AllNewsPage/>}/>
                           <Route path={"/news/new"} element={<AddNewsPage/>}/>
 
-
                           <Route path={"/documents/all"} element={<AllDocumentsPage/>}/>
+                          <Route path={"/documentGroup/:id/subGroup/:subGroupId"} element={<DocumentPage/>}/>
+                          <Route path={"/documentGroup/:id"} element={<DocumentPage/>}/>
+
                           <Route path={"/chat/:id"} element={<ChatPage/>}/>
                           <Route path={"/topic/:id"} element={<TopicPage/>}/>
                           <Route path={"/contacts"} element={<ContactsPage/>}/>

@@ -1,0 +1,496 @@
+import React, {useContext, useEffect, useRef, useState} from 'react';
+
+import {
+    Button,
+    Divider,
+    Flex,
+    InputNumber,
+    List,
+    Modal,
+    notification, Popconfirm,
+    Skeleton,
+    Tour,
+    TourProps,
+    Typography
+} from "antd";
+import {useNavigate, useParams} from "react-router-dom";
+import {IDocument, IDocumentGroup} from "../../API/services/InstitutionService";
+import {
+    deleteDocument,
+    deleteSubGroup,
+    getDocumentGroupById,
+    updateDocument,
+    updateSubGroup
+} from "../../API/services/DocumentService";
+import classes from './DocumentPage.module.css'
+import BackBtn from "../../components/BackBtn/BackBtn";
+import Document from "../../components/Document/Document";
+import DocumentsViewer from "../../components/DocumentsViewer/DocumentsViewer";
+import {CopyFilled} from "@ant-design/icons";
+import AddNewGroupModal from "./AddNewSubGroupModal";
+import {AuthContext} from "../../context/AuthContext";
+import {Accordion} from "react-bootstrap";
+import AddNewDocumentModal from "./AddNewDocumentModal";
+import Groups from "./Groups";
+
+
+// @ts-ignore
+import getGroupOptionImg from '../../assets/tour-documents-getGroupOptions.jpg'
+// @ts-ignore
+import groupOptionsImg from '../../assets/tour-documents-groupOptions.jpg'
+// @ts-ignore
+import editTextBtnImg from '../../assets/tour-documents-editTextBtn.jpg'
+// @ts-ignore
+import editTextInputImg from '../../assets/tour-documents-editTextInput.png'
+
+const { Paragraph, Title } = Typography;
+const DocumentPage = () => {
+
+    const {id, subGroupId} = useParams()
+    const [selectedGroupId, setSelectedGroupId] = useState<number>()
+    const [documentGroup, setDocumentGroup] = useState<IDocumentGroup>()
+    const [groups, setGroups] = useState<IDocumentGroup[]>([])
+    const [docs, setDocs] = useState<IDocument[]>([])
+
+    const [fileNameFontSize, setFileNameFontSize] = useState<number>(16)
+    const {jwt} = useContext(AuthContext)
+    const [selectedDocument, setSelectedDocument] = useState<IDocument>();
+    const [isModalOpen, setIsModalOpen] = useState<boolean>(false)
+    const [editGroupId, setEditGroupId] = useState<number>()
+    const [isNewDocumentModalActive, setIsNewDocumentModalActive] = useState<boolean>(false)
+    const [newName, setNewName] = useState<string>()
+
+    const handleOk = () => {
+        setIsModalOpen(false);
+    };
+
+    const handleCancel = () => {
+        setIsModalOpen(false);
+        setSelectedDocument(undefined);
+    };
+
+    const onShowDocument = (document : IDocument) => {
+        setSelectedDocument(document)
+        setIsModalOpen(true)
+    }
+
+    const getById = async () => {
+        const {data, error} = await getDocumentGroupById(Number(id))
+        if (data) {
+            const group : IDocumentGroup = data
+            setDocumentGroup(group)
+            setDocs(group.documents)
+            setGroups(group.groups)
+        }
+        if (error) throw error
+    }
+
+    const onSelectAction = (action : string, groupId : number) => {
+
+        switch (action) {
+            case "editName" :
+                setEditGroupId(Number(groupId))
+                break;
+            case 'delete':
+                deleteGroupById(Number(groupId))
+                break;
+            case 'addDoc':
+                setSelectedGroupId(Number(groupId))
+                setIsNewDocumentModalActive(true)
+                break;
+            default : console.error("def")
+        }
+    };
+
+    const deleteGroupById = async (id : number) => {
+        if (jwt) {
+            const {data} = await deleteSubGroup(id, jwt)
+            if (data) {
+                if (id === Number(id)) return
+                const arr = groups.filter((e) => e.id !== id)
+                setGroups(arr)
+            }
+        } else notification.error({message: "not auth"})
+
+    }
+
+
+    const updateGroupName = async (name : string, id : number, callback :  (name : string) => void) => {
+        const formData = new FormData()
+        formData.append("name", name)
+        if (jwt) {
+            const {data, error} = await updateSubGroup(formData, id, jwt)
+            if (data) {
+                callback(name)
+            }
+            if (error) throw error
+        } else notification.error({message: "not auth"})
+
+        setEditGroupId(undefined)
+    }
+
+    const editSubGroupNameCallback = (name : string) => {
+        const found  = groups.find((e) => e.id === editGroupId)
+        if (found) {
+            const i = groups.indexOf(found)
+            found.name = name
+            groups[i] = found
+            setGroups(groups)
+        }
+    }
+
+
+    const editGroupNameCallback = (name : string) => {
+        if (documentGroup) {
+            documentGroup.name = name
+            console.log(documentGroup)
+            setDocumentGroup(Object.create(documentGroup))
+        }
+    }
+
+
+    const updateDocumentName = async (name : string, document : IDocument) => {
+        const formData = new FormData()
+        formData.append("name", name)
+        if (jwt) {
+            const {data, error} = await updateDocument(formData, document.id, jwt)
+            if (data) {
+                updDocument(name, document)
+            }
+            if (error) throw error
+        } else notification.error({message: "not auth"})
+
+        setEditGroupId(undefined)
+    }
+
+
+    const updDocument = (name : string, document : IDocument) => {
+
+        if (document.documentGroup.id ===  Number(id)) {
+            const doc = docs.find((d) => d.id === document.id)
+            if (doc) {
+                const i = docs.indexOf(doc)
+                doc.title = name
+                docs[i] = doc
+                setDocs([...docs])
+            }
+        } else {
+            let foundGroup = groups.find((e) => {
+                const elem = e.documents.find((d) => d.id === document.id)
+                return elem !== undefined
+            });
+
+            if (foundGroup) {
+                const doc = foundGroup.documents.find((d) => d.id === document.id)
+                if (doc) {
+                    const i = foundGroup.documents.indexOf(doc)
+                    doc.name = name
+                    foundGroup.documents[i] = doc
+                    groups[groups.indexOf(foundGroup)] = foundGroup
+                    setGroups([...groups])
+                }
+            }
+        }
+    }
+
+
+
+
+    const removeDocument = (document : IDocument) => {
+        if (document.documentGroup.id === Number(id)) {
+            if (documentGroup) {
+                const arr = docs.filter((e) => e.id !== document.id)
+                setDocs(arr)
+            }
+        } else {
+            const foundGroup = groups.find((e) => {
+                return e.documents.find((doc) => doc.id === document.id)
+            });
+            if (foundGroup) {
+                foundGroup.documents = foundGroup.documents.filter((e) => e.id !== document.id)
+                groups[groups.indexOf(foundGroup)] = foundGroup
+                setGroups([...groups])
+            } else console.error("group not found")
+        }
+    }
+
+    const onDeleteDocument = async (document : IDocument) => {
+        if (jwt) {
+            const {data, error} = await deleteDocument(document.id, jwt)
+            if (data) {
+                removeDocument(data)
+            }
+            if (error) {
+                console.error("can't delete document", document)
+                notification.error({message: "can't delete document"})
+            }
+
+        } else notification.error({message: "not auth"})
+    }
+
+
+
+    useEffect(  () => {
+        if (newName && editGroupId) {
+            updateGroupName(newName, editGroupId, editSubGroupNameCallback)
+        }
+    }, [ newName]);
+
+
+    useEffect(() => {
+        getById()
+    }, []);
+
+    const footer = [
+        <Button>Завантажити</Button>,
+        <Button type={"primary"} onClick={handleCancel}>Заразд</Button>
+    ]
+
+
+    const addNewSubGroup = async (subGroup : IDocumentGroup) => {
+        setGroups([...groups, subGroup])
+    }
+
+    const setDoc = (doc : IDocument) => {
+        if (selectedGroupId === Number(id) ) {
+            setDocs([...docs, doc])
+        } else {
+            if (selectedGroupId) {
+                const group = groups.find((e) => e.id === selectedGroupId)
+                if (group) {
+                    group.documents.push(doc)
+                    setGroups([...groups])
+                }
+            }
+        }
+    }
+
+    useEffect(() => {
+        setIsTourModalOpen(false)
+    }, []);
+
+
+    const handleOk2 = () => {
+        setIsTourActive(true)
+        setIsTourModalOpen(false);
+    };
+
+    const handleCancel2 = () => {
+        setIsTourModalOpen(false);
+    };
+
+    const [isTourModalOpen, setIsTourModalOpen] = useState(false);
+    const mainGroupRef = useRef(null);
+    const groupsRef = useRef(null);
+    const newGroupRef = useRef(null);
+    const fontRef = useRef(null);
+    const groupRef = useRef(null);
+    const documentEditNameInputRef = useRef(null);
+
+    const steps: TourProps['steps'] = [
+        {
+            title: 'Групи та підгрупи',
+            description: 'Всі документи розподідені на групи, у кожної групи може бути підгрупа.  Щоб змінити назву групи, натисніть на текст',
+
+            target: () => mainGroupRef.current,
+        },
+        {
+            title: 'Як додати групу',
+            description : "Натисніть на цю кнопку щоб додати нову групу",
+            target: () => newGroupRef.current,
+        },
+        {
+            title: 'Як збільшити шрифт',
+            description : "Всі користувачі можуть збільшувати або зменшувати шрифт",
+            target: () => fontRef.current,
+        },
+        {
+            title: 'Керування документами',
+            description: 'Щоб додати новий документ, змінити назву або видалити підгрупу, наведіть курсор на підгрупу та натисніть праву кнопку миші. Те саме ви можете робити з підгрупами',
+            target: () => groupRef.current,
+            cover: (
+                <Flex>
+                    <img style={{width: "150%", height: 'auto'}} src={getGroupOptionImg} alt={getGroupOptionImg}/>
+                    <img style={{ height: "auto", width: "100%"}}  src={groupOptionsImg} alt={'groupOptionsImg'}/>
+                </Flex>
+            )
+        },
+        {
+            title: 'Як змінити текст підгрупи/документу',
+            description: 'Натисніть на відповідну кнопку в контекстному меню. Для підтвердження натисніть Enter, для відміни ESC',
+            cover : (
+                <Flex>
+                    <img style={{width: "100%", height: 'auto'}} src={editTextBtnImg} alt={'editTextBtnImg'}/>
+                    <img style={{width: "100%", height: 'auto'}} src={editTextInputImg} alt={'editTextInputImg'}/>
+                </Flex>
+            ),
+            target: () => groupRef.current,
+        },
+        {
+            title: 'Як додати документи, та інше',
+            description: 'Щоб додати документ до групи наведіть курсор на групу та натсніть праву кнопку миші',
+            target:  groupRef.current ,
+            nextButtonProps: {
+                onClick: () => {
+                    setIsTourActive(false)
+                    setIsNewDocumentModalActive(true)
+                    setIsAddDocTourActive(true)
+                }
+            }
+        }
+    ];
+
+
+    const [isTourActive, setIsTourActive] = useState(false)
+    const [isAddDocTourActive, setIsAddDocTourActive] = useState<boolean>(false);
+    const [newGroupName, setNewGroupName] = useState<string>('')
+
+    useEffect(() => {
+        if (newGroupName) {
+            updateGroupName(newGroupName, Number(id), editGroupNameCallback)
+        }
+    }, [newGroupName]);
+
+
+    const onAddGroupDocument = () => {
+        setSelectedGroupId(Number(id))
+        setIsNewDocumentModalActive(true)
+    }
+
+    const nav = useNavigate()
+
+    const onDeleteGroup = async () => {
+        setIsDeletingGroup(true)
+        await deleteGroupById(Number(id))
+        setIsDeletingGroup(false)
+        nav("/documents/all")
+    }
+
+    const [isDeletingGroup, setIsDeletingGroup] = useState<boolean>(false)
+
+    return (
+        <Flex justify={"center"}>
+            <Modal title="Вітаємо!" open={isTourModalOpen} cancelText={"Пропустити"} onOk={handleOk2} onCancel={handleCancel2}>
+                <p >Схоже ви вперше на цій сторінці як адміністратор, пропонуємо вам пройти екскурсію по основному фунціоналу</p>
+                <p>Ви завжди можете пройти її знову</p>
+            </Modal>
+            <Tour open={isTourActive} onClose={() => setIsTourActive(false)} steps={steps} />
+
+            <Flex vertical className={classes.documentGroupPage}>
+                <BackBtn/>
+
+                <Flex style={{padding: 5}} justify={"space-between"} align={"center"} wrap={"wrap"} gap={5}>
+                    {documentGroup
+                        ?
+                        <Title ref={mainGroupRef} style={{margin: 0, flexGrow: 1}}
+                                   editable={{
+                                       triggerType : ['text'],
+                                       icon: <CopyFilled style={{display: "none"}}/>,
+                                       onChange: (str: string) => setNewGroupName(str)
+                                   }}
+                        >{documentGroup.name}
+                        </Title>
+                        :
+                        <Skeleton style={{height: 20}}/>
+                    }
+                    <Flex wrap={"wrap"} gap={15} align={"center"}>
+
+                        <Flex ref={fontRef} gap={5} align={"center"}>
+
+                            <InputNumber value={fileNameFontSize}
+                                         onChange={(e) => setFileNameFontSize(e ? e : 16)}
+                                         min={14}
+                                         max={35}
+                                         style={{height:"fit-content"}}
+                                         defaultValue={fileNameFontSize}
+                            />
+                            <span>Шрифт</span>
+                        </Flex>
+                        <Flex gap={3}>
+                            <AddNewGroupModal newGroupRef={newGroupRef} addGroup={addNewSubGroup}
+                                              groupId={Number(id)}
+                            />
+                            <Button  onClick={onAddGroupDocument}>Додати документ</Button>
+                            <Popconfirm
+                                title="Видалити"
+                                description="Ви впевнені? Дія незворотня."
+                                onConfirm={onDeleteGroup}
+                                okButtonProps={{ loading: isDeletingGroup }}
+                            >
+                                <Button danger>Видалити групу</Button>
+                            </Popconfirm>
+                        </Flex>
+                    </Flex>
+                </Flex>
+
+                <Divider/>
+
+
+                <Flex ref={groupsRef} gap={10} vertical style={{maxWidth: 1600}}>
+                    <Accordion defaultActiveKey={subGroupId}>
+                        {groups.map((group, i) =>
+                            <Accordion.Item ref={i === 0 ? groupRef : null}  key={group.id} eventKey={String(group.id)}>
+                                 <Groups fileNameFontSize={fileNameFontSize}
+                                        setNewName={setNewName}
+                                        editGroupId={editGroupId}
+                                        onSelectAction={onSelectAction}
+                                        group={group}
+                                />
+
+                                <Accordion.Body>
+                                    {group.documents &&
+                                        <List
+                                            size="small"
+                                            dataSource={group.documents}
+                                            renderItem={(doc) =>
+                                                (
+                                                    <Document onClick={onShowDocument}
+                                                              onEditName={updateDocumentName}
+                                                              key={"doc-" + doc.id}
+                                                              fontSize={fileNameFontSize}
+                                                              document={doc}
+                                                              onDeleteDocument={onDeleteDocument}
+                                                              documentEditNameInputRef={documentEditNameInputRef}
+                                                    />
+                                                )}
+                                        />
+
+                                    }
+
+                                </Accordion.Body>
+                            </Accordion.Item>
+                        )}
+                    </Accordion>
+
+                </Flex>
+                <Flex vertical>
+                    {docs.map((doc) =>
+                        <Document onClick={onShowDocument}
+                                  onEditName={updateDocumentName}
+                                  key={"doc-" + doc.id}
+                                  fontSize={fileNameFontSize}
+                                  document={doc}
+                                  onDeleteDocument={onDeleteDocument}
+                        />
+                    )}
+                </Flex>
+            </Flex>
+
+            {selectedDocument &&
+                <Modal width={"100vw"} title={selectedDocument.title} footer={footer} open={isModalOpen} onOk={handleOk} onCancel={handleCancel}>
+                    <DocumentsViewer document={selectedDocument}/>
+                </Modal>
+            }
+            <AddNewDocumentModal groupId={selectedGroupId}
+                                 isActive={isNewDocumentModalActive}
+                                 setIsActive={setIsNewDocumentModalActive}
+                                 setDoc={setDoc}
+                                 isTourActive={isAddDocTourActive}
+                                 setIsAddDocTourActive={setIsAddDocTourActive}
+
+            />
+        </Flex>
+    );
+};
+
+export default DocumentPage;

@@ -16,15 +16,22 @@ export interface IDocumentGroup {
     id : number
     name : string
     documents : IDocument[]
+    groups : IDocumentGroup[]
+    createdOn : string
 }
 
 export interface IDocument {
     id : number
     title : string
     name : string
+    documentGroup : IDocumentGroupDto
 }
 
-
+export interface IDocumentGroupDto {
+    id : number
+    name : string
+    documentGroup : IDocumentGroupDto
+}
 
 export const getAllInstitutions = () => {
     const config = {

@@ -1,139 +1,143 @@
 import React, {useEffect, useState} from 'react';
-import {DownloadOutlined, FilePdfOutlined, SettingOutlined} from '@ant-design/icons';
-import type {MenuProps} from 'antd';
-import {Button, Flex, Image, Menu} from 'antd';
-import {getAllDocumentsBySubGroupId, getAllDocumentsGroups} from "../../API/services/DocumentService";
-import {DocumentViewer} from 'react-documents';
-// @ts-ignore
-import expandArrow from '../../assets/arrows-expand-svgrepo-com.svg';
-// @ts-ignore
-import collapseArrow from '../../assets/arrows-collapse-svgrepo-com.svg';
-import Document from "../../components/Document/Document";
+import {Button, Divider, Flex} from 'antd';
+import {getAllDocumentsGroups, searchDocuments} from "../../API/services/DocumentService";
 import {IDocument, IDocumentGroup} from "../../API/services/InstitutionService";
-
-type MenuItem = Required<MenuProps>['items'][number];
-function getItem(
-    label: React.ReactNode,
-    key: React.Key,
-    icon?: React.ReactNode,
-    children?: MenuItem[],
-    type?: 'group',
-): MenuItem {
-    return {
-        key,
-        icon,
-        children,
-        label,
-        type,
-    } as MenuItem;
-}
-
-
-
-
-
+import classes from './AllDocumentsPage.module.css'
+import BackBtn from "../../components/BackBtn/BackBtn";
+import Search from "antd/es/input/Search";
+import {useNavigate} from "react-router-dom";
+import {SearchProps} from "antd/lib/input";
+import Document from "../../components/Document/Document";
+import AddNewGroupModal from "../DocumentPage/AddNewSubGroupModal";
+import dayjs from "dayjs";
 
 const AllDocumentsPage = () => {
 
-    const [documentsGroups, setDocumentsGroups] = useState<MenuProps['items']>([]);
-    const [documents, setDocuments] = useState<IDocument[]>([])
-    const [docMap] = useState<Map<number, IDocument[]>>(new Map<number, IDocument[]>())
-    const [documentUrl, setDocumentUrl] = useState<string | null>(null);
-    function objToMenuItems(groups : IDocumentGroup[]) : MenuProps['items'] {
-        let arr : MenuProps['items'] = []
+    const [documentsGroups, setDocumentsGroups] = useState<IDocumentGroup[]>([]);
+    const nav = useNavigate()
+    const [searchedDocs, setSearchedDocs] = useState<IDocument[][] | null>(null)
+    const [isSearching, setIsSearching] = useState<boolean>(false)
 
-        // for (let i = 0; i < groups.length; i++) {
-        //     let itemKey =  "group-"+ groups[i].id
-        //     arr.push(
-        //         getItem(
-        //             groups[i].title,
-        //             itemKey,
-        //             <SettingOutlined />,
-        //             groups[i].subGroups.map(
-        //                 (subGroup) => getItem(subGroup.title, "group-"+ subGroup.id)
-        //             )
-        //         )
-        //     )
-        // }
-        return arr;
-    }
-
-    useEffect(() => {
-        const getGroups = async () => {
-            const {data, error} = await getAllDocumentsGroups();
-            if (data) {
-                const ar = objToMenuItems(data as IDocumentGroup[]);
-                console.log(ar)
-                setDocumentsGroups(ar);
-            }
-            if (error) throw error
-        }
-
-        getGroups()
-    }, []);
-
-    // let docMap = new Map<number, Array<Document>>();
-
-    const getDocuments = async (id : number) => {
-        const {data, error} = await getAllDocumentsBySubGroupId(id);
+    const getDocumentsGroups = async () => {
+        const {data, error} = await getAllDocumentsGroups();
         if (data) {
-            setDocuments(data)
-            docMap.set(id, data);
+            setDocumentsGroups(data)
         }
         if (error) throw error
     }
 
-    const onClick: MenuProps['onClick'] = (e) => {
-        console.log("here")
-        // Subgroup id contains in key value of a menu element in format 'group-id'
-        const subGroupId = Number(e.key.substring(e.key.indexOf("-") + 1, e.key.length));
-        if (docMap.has(subGroupId)) {
-            const docList : IDocument[] | undefined = docMap.get(subGroupId);
-            if (docList) {
-                setDocuments(docList)
-            }
-        }
-        else {
-            getDocuments(subGroupId);
-        }
-    };
+    useEffect(() => {
+        getDocumentsGroups()
+    }, []);
 
-    const onSelectDocument = (filename : string) => {
-        console.log(filename)
-        setDocumentUrl("https://miloverada.gov.ua/upload/document/" + filename)
+
+    const onSearchDocument: SearchProps['onSearch'] = async (value) => {
+        if (value === '') {
+            setSearchedDocs(null)
+            return
+        }
+        setIsSearching(true)
+        const {data, error} = await searchDocuments(value)
+        if (data) {
+            setIsSearching(false)
+            const res =sort(data)
+
+            setSearchedDocs(res)
+        }
+        if (error) throw error
     }
 
+    const sort = (arr : IDocument[]) => {
+        const map = new Map()
+        for (let i = 0; i < arr.length; i++) {
+            const elem = arr[i]
+            const id = elem.documentGroup.id
+            if (!map.has(id)) {
+                map.set(id, [elem])
+            } else {
+                map.get(id).push(elem)
+            }
+        }
+        return Array.from(map.values())
+    }
+
+    const addNewGroup = (group : IDocumentGroup) => {
+        setDocumentsGroups([...documentsGroups, group])
+    }
 
     return (
-        <Flex align={"flex-start"} justify={"center"} style={{paddingTop: "20vh", minHeight: "100vh", backgroundColor: "rgb(249, 246, 239)"}}>
-            <Flex style={{maxWidth: "90vw", width: "100%"}} gap={30} wrap={ "wrap"}>
-                <Flex vertical={true} className={"menuWrapper"} gap={5}>
-                    <Flex justify={"flex-end"} align={"center"} className={"toolMenu"}>
-                        <Button  ghost  style={{height: "fit-content", width: "fit-content"}} icon={<Image width={25} height={25} preview={false} src={collapseArrow}/>}/>
-                        <Button ghost style={{height: "fit-content", width: "fit-content"}} icon={<Image width={25} height={25} preview={false} src={expandArrow}/>}/>
+        <Flex justify={"center"}>
+            <Flex vertical className={classes.documentsPage}>
+                <BackBtn/>
+
+                <Flex justify={"space-between"}>
+
+                    <h1 className={classes.heading}>Документи громади{searchedDocs !== null && searchedDocs.length > 0  && ": пошук"}</h1>
+
+                    <Flex gap={3}>
+
+                        <Search allowClear
+
+                                placeholder="Шукати..."
+                                className={classes.input}
+                                style={{width: 300, color: "black"}}
+                                onSearch={onSearchDocument}
+                                enterButton
+                                loading={isSearching}
+                        />
+                        <AddNewGroupModal addGroup={addNewGroup}
+                                          groupId={null}
+                        />
                     </Flex>
-                    <Menu
-                        onClick={onClick}
-                        style={{ width: 256 }}
-                        mode="inline"
-                        items={documentsGroups}
-                    />
                 </Flex>
+                <Divider/>
+                {searchedDocs !== null
+                    ?
+                    <Flex vertical gap={10}>
+                        {searchedDocs.length === 0
+                            ?
+                            <Flex align={"center"}  vertical gap={10}>
+                                <span className={classes.res}>Результатів не знайдено.</span>
+                                <Button style={{width : "fit-content"}} onClick={() => setSearchedDocs(null)}>Всі документи</Button>
+                            </Flex>
+                            :
+                            searchedDocs.map((docs, index) =>
+                                        <Flex className={classes.searchGroup} vertical key={"docs-" + index} style={{padding: 5}}>
+                                <span
+                                    onClick={() => nav(`/documentGroup/${docs[0].documentGroup.documentGroup.id}/subGroup/${docs[0].documentGroup.id}`)}
+                                    style={{marginLeft: 20}} className={classes.groupName}
+                                >
+                                    {docs[0].documentGroup.documentGroup.name + ": "} {docs[0].documentGroup.name}
+                                </span>
+                                            <Flex gap={10} vertical>
 
-                <Flex vertical={true} gap={3} style={{maxWidth: 500, overflowY: "auto", maxHeight: 500, minWidth: 300}}>
-                    {documents.map((doc) =>
-                        <Document document={doc} onClick={onSelectDocument}/>
-                    )}
-                </Flex>
+                                                {docs.map((doc) =>
+                                                    <Document document={doc} onClick={() => {}} key={"doc-" + doc.id}/>
 
-                {documentUrl != null &&
-                    <DocumentViewer
-                        queryParams="hl=Nl"
-                        url={documentUrl}
-                        // viewerUrl={selectedViewer.viewerUrl}
-                        style={{height: "75vh", width: "100%", maxWidth: 850}}
-                    />
+                                                )}
+                                            </Flex>
+                                        </Flex>
+                                )
+                        }
+
+                    </Flex>
+                    :
+                    <Flex vertical gap={25}>
+                        {documentsGroups.map((group) =>
+                            <Flex key={"group-" + group.id} gap={8} vertical className={classes.group}>
+                                <h2 onClick={() => nav("/documentGroup/" + group.id)} className={classes.groupName}>{group.name}</h2>
+                                <Flex gap={20}>
+                                    {group.groups?.map((subGroup) =>
+                                        <Flex key={"subGroup-" + subGroup.id} className={classes.subGroup}>
+                                            <h3 onClick={() => nav(`/documentGroup/${group.id}/subGroup/${subGroup.id}`)} className={classes.subGroupName}>{subGroup.name}</h3>
+                                        </Flex>
+                                    )}
+                                </Flex>
+                            </Flex>
+                        )}
+                    </Flex>
                 }
+
             </Flex>
         </Flex>
     );

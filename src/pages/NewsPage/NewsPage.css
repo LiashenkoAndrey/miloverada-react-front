@@ -27,18 +27,11 @@
     .newsTitle {
         font-size: 26px!important;
     }
-
-
-
-
 }
-iframe, img {
+.newsText img, .newsText iframe {
     width: 100%!important;
 }
 
-img {
-    height: inherit;
-}
 
 
 @media (max-width: 400px) {

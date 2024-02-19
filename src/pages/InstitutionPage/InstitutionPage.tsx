@@ -27,7 +27,7 @@ const InstitutionPage = () => {
                 label: <h2 style={{margin: 0, fontWeight : "initial", fontSize: 16}}>{sub.name}</h2>,
                 children: <Flex gap={10} vertical>
                             {sub.documents.map((doc) =>
-                                <Document document={doc} onClick={(fileName) => console.log(fileName)}/>
+                                <Document onClick={() => {}} document={doc}/>
                             )}
                         </Flex>
             }

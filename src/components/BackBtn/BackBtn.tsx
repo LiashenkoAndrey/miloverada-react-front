@@ -1,16 +1,21 @@
-import React from 'react';
-import {Flex} from "antd";
+import React, {CSSProperties, FC} from 'react';
 
 // @ts-ignore
 import arrowLeft from '../../assets/arrowLeft.svg'
 import {useNavigate} from "react-router-dom";
-const BackBtn = () => {
+
+interface BackBtnProps {
+    style? : CSSProperties
+}
+
+const BackBtn:FC<BackBtnProps> = ({style}) => {
     const nav = useNavigate()
 
     return (
-        <div style={{padding:"10px 20px"}}>
-            <img onClick={() => nav(-1)}  style={{cursor: "pointer"}} src={arrowLeft} height={50}/>
+        <div style={style} >
+            <img className={"backBtn"} onClick={() => nav(-1)}  style={{cursor: "pointer"}} src={arrowLeft} height={50} width={50}/>
         </div>
+
     );
 };
 
