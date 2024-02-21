@@ -47,3 +47,14 @@ export const getBase64 = (file : File, cb : Function) => {
         console.log('Error: ', error);
     };
 }
+
+export const getBase642 = (blob : Blob, cb : Function) => {
+    let reader = new FileReader();
+    reader.readAsDataURL(blob);
+    reader.onload = function () {
+        cb(reader.result, "test")
+    };
+    reader.onerror = function (error) {
+        console.log('Error: ', error);
+    };
+}

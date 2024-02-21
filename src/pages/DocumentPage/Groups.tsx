@@ -51,13 +51,11 @@ const Groups: FC<GroupsProps> = ({
         const action = values[0]
         const groupId = values[1]
 
-        switch (action) {
-            case "editName" :
-                console.log("edit", groupId)
-                setIsEditing(true)
-                break;
-            default : console.error("def")
+        if (action === 'editName') {
+            console.log("edit", groupId)
+            setIsEditing(true)
         }
+
         onSelectAction(action, Number(groupId))
     }
 

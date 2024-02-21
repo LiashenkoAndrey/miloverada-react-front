@@ -107,6 +107,8 @@ export interface NewUserDto {
     lastName? : string,
     avatar? : string
     email? : string
+    base64Avatar : string
+    avatarContentType : string
 }
 
 export interface Topic {

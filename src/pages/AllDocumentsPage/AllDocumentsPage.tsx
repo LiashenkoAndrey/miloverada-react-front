@@ -10,6 +10,7 @@ import {SearchProps} from "antd/lib/input";
 import Document from "../../components/Document/Document";
 import AddNewGroupModal from "../DocumentPage/AddNewSubGroupModal";
 import dayjs from "dayjs";
+import {useAuth0} from "@auth0/auth0-react";
 
 const AllDocumentsPage = () => {
 
@@ -17,6 +18,7 @@ const AllDocumentsPage = () => {
     const nav = useNavigate()
     const [searchedDocs, setSearchedDocs] = useState<IDocument[][] | null>(null)
     const [isSearching, setIsSearching] = useState<boolean>(false)
+    const {isAuthenticated} = useAuth0()
 
     const getDocumentsGroups = async () => {
         const {data, error} = await getAllDocumentsGroups();
@@ -85,9 +87,13 @@ const AllDocumentsPage = () => {
                                 enterButton
                                 loading={isSearching}
                         />
-                        <AddNewGroupModal addGroup={addNewGroup}
-                                          groupId={null}
-                        />
+
+                        {isAuthenticated &&
+                            <AddNewGroupModal addGroup={addNewGroup}
+                                              groupId={null}
+                            />
+                        }
+
                     </Flex>
                 </Flex>
                 <Divider/>

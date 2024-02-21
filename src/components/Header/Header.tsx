@@ -5,7 +5,7 @@ import {Dropdown, Flex, MenuProps, Space} from "antd";
 import icon from '../../assets/icon.png'
 import {useLocation, useNavigate} from "react-router-dom";
 import MobileNav from "./MobileNav";
-import {MenuOutlined} from "@ant-design/icons";
+import {MenuOutlined, UserOutlined} from "@ant-design/icons";
 import {useAuth0} from "@auth0/auth0-react";
 
 export interface HeaderOption {
@@ -16,6 +16,7 @@ export interface HeaderOption {
 const Header = () => {
     const nav  = useNavigate()
     const { pathname } = useLocation();
+    const {loginWithRedirect} = useAuth0()
 
     const options : HeaderOption[] = [
         {onClick : () => nav("/documents/all"), title : "Документи"},
@@ -25,15 +26,39 @@ const Header = () => {
         {onClick : () => nav("/institutions"), title : "Установи"},
         {onClick : () => nav("/contacts"), title : "Контакти"},
     ]
+    const onLogin = async () => {
+        await loginWithRedirect({
+            appState: {
+                returnTo : "resolveUser?redirectTo="+ window.location.pathname
+            },
+            authorizationParams: {
+                prompt: "login",
+            },
+        })
+    }
 
+    const userIcon = (
+        <Flex align={"center"} onClick={onLogin} gap={10} className={classes.headNavItem} style={{paddingLeft: 10}}>
+            <UserOutlined style={{fontSize: 18, padding: 0, color: "white"}} />
+            <span className={classes.btnText} >Вхід</span>
+        </Flex>
+    )
 
-    const items: MenuProps['items'] =
-        options.map((o) => {
+    let items = () : MenuProps['items'] => {
+        let arr = options.map((o) => {
             return {
-                label:  <span style={{fontSize: 20}} onClick={o.onClick}>{o.title}</span>,
+                label:  <span className={[classes.headNavItem, classes.btnText].join(' ')} style={{fontSize: 20}} onClick={o.onClick}>{o.title}</span>,
                 key: 'nav-elem-' + o.title,
             }
         })
+        arr.push({label: (
+            <>
+                {userIcon}
+            </>
+            ), key: 'nav-elem-user'})
+        return arr;
+    }
+
 
 
     return (
@@ -46,15 +71,17 @@ const Header = () => {
                 </Flex>
 
 
+
                 <Flex wrap={"wrap"} justify={"center"} className={[classes.navBtnWrapper, "nonSelect"].join(' ')}>
                     {options.map((o) =>
-                        <span key={"Head-option-" + o.title} onClick={o.onClick}>{o.title}</span>
+                        <span className={[classes.headNavItem, classes.btnText].join(' ')}  key={"Head-option-" + o.title} onClick={o.onClick}>{o.title}</span>
                     )}
+                    {userIcon}
                 </Flex>
 
 
                 <Flex wrap={"wrap"} justify={"center"} className={[classes.mobileNavBtnWrapper, "nonSelect"].join(' ')}>
-                    <Dropdown menu={{items}} trigger={['click']}>
+                    <Dropdown menu={{items: items()}} trigger={['click']}>
                         <Space>
                             <MenuOutlined className={classes.menu} style={{ fontSize: 30}} />
                         </Space>

@@ -67,39 +67,65 @@ const AddNewDocumentModal:FC<AddNewDocumentModalProps> = ({groupId, isActive, se
 
 
 
+    const modalRef = useRef(null);
     const ref1 = useRef(null);
-    const ref2 = useRef(null);
+    const checkboxRef = useRef(null);
     const inputRef = useRef(null);
 
     const steps: TourProps['steps'] = [
         {
+            title: 'Як додати новий документ',
+            target: () => modalRef.current,
+        },
+        {
             title: 'Як завантажити файл',
-            cover: (
-                'Натисніть або перетягніть файл у виділену зону'
+            description : (
+                <p>
+                    Щоб завантажити файл натисніть на це поле або перетягніть файл
+                </p>
             ),
             target: () => ref1.current,
         },
-
         {
             title: "Назва файлу",
-            description: 'Ви',
-            target: () => ref2.current,
+            description: (
+                <p>Тут ви вписуєте назву файла, намагайтеся уникати довгих назв, до 195 символів</p>
+            ),
+            target: () => inputRef.current,
         },
         {
-            title: "Ви можене не вписувати назву",
-            target: () => ref2.current,
+            title: "Чи можна просто взяти назву з файлу",
+            description: (
+                <p>
+                    Коли файл буде завантажено ви можете не списувати назву вручну а витягнути його з файлу поставивши цю галочку
+                </p>
+            ),
+            target: () => checkboxRef.current,
+            nextButtonProps: {
+                onClick: () => {
+                    setIsActive(false)
+                }
+            }
         },
+
+
     ];
         
     return (
         <>
             <Tour open={isTourActive} onClose={() => setIsAddDocTourActive(false)} steps={steps} />
-            <Modal title={"Новий документ"} open={isActive} onOk={save} onCancel={handleCancel}>
-                <Flex vertical gap={10}>
-                    <Flex ref={inputRef} gap={10} vertical style={{width: "inherit"}}>
+            <Modal modalRender={(modal) =>
+                <div ref={modalRef}>
+                    {modal}
+                </div>
+            } title={"Новий документ"} open={isActive} onOk={save} onCancel={handleCancel}>
+                <Flex  vertical gap={10}>
+                    <Flex gap={10} vertical style={{width: "inherit"}}>
                         <span>Назва<span style={{color: "red"}}>*</span></span>
-                        <Input style={{width: "inherit"}} value={filename} onChange={(e) => setFilename(e.target.value)}  type="text"/>
-                        <div  ref={ref2}>
+                        <div ref={inputRef} style={{width: "100%"}}>
+                            <Input showCount  ref={inputRef}  style={{width: "inherit"}} value={filename} onChange={(e) => setFilename(e.target.value)}  type="text"/>
+                        </div>
+                        <div  ref={checkboxRef}>
                             <Checkbox onChange={(e) => onCheckbox(e.target.checked)}>Взяти з назви файлу</Checkbox>
                         </div>
                     </Flex>

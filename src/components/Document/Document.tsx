@@ -109,9 +109,9 @@ const Document: FC<DocumentProps> = ({
                   className={classes.document}
                   align={"center"} gap={10}
             >
-                <FileFormat style={{fontSize: 30, color: "#820000"}} format={fileFormat}/>
+                <FileFormat  style={{fontSize: 30, color: "#820000"}} format={fileFormat}/>
 
-                <Flex ref={documentEditNameInputRef}  style={{width: "100%"}}>
+                <Flex onClick={() => onClick(document)} ref={documentEditNameInputRef}  style={{width: "100%"}}>
 
                     <Paragraph style={{margin: 0, fontWeight : "initial", fontSize: fontSize ? fontSize : 16, width: "100%"}}
                                editable={{

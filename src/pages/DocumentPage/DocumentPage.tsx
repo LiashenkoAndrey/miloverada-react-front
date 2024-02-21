@@ -2,10 +2,10 @@ import React, {useContext, useEffect, useRef, useState} from 'react';
 
 import {
     Button,
-    Divider,
+    Divider, Dropdown,
     Flex,
     InputNumber,
-    List,
+    List, MenuProps,
     Modal,
     notification, Popconfirm,
     Skeleton,
@@ -26,7 +26,7 @@ import classes from './DocumentPage.module.css'
 import BackBtn from "../../components/BackBtn/BackBtn";
 import Document from "../../components/Document/Document";
 import DocumentsViewer from "../../components/DocumentsViewer/DocumentsViewer";
-import {CopyFilled} from "@ant-design/icons";
+import {CopyFilled, DownloadOutlined, InfoCircleOutlined, InfoOutlined, SettingOutlined} from "@ant-design/icons";
 import AddNewGroupModal from "./AddNewSubGroupModal";
 import {AuthContext} from "../../context/AuthContext";
 import {Accordion} from "react-bootstrap";
@@ -42,8 +42,10 @@ import groupOptionsImg from '../../assets/tour-documents-groupOptions.jpg'
 import editTextBtnImg from '../../assets/tour-documents-editTextBtn.jpg'
 // @ts-ignore
 import editTextInputImg from '../../assets/tour-documents-editTextInput.png'
+import {useAuth0} from "@auth0/auth0-react";
+import {apiServerUrl} from "../../API/Constants";
 
-const { Paragraph, Title } = Typography;
+const {  Title } = Typography;
 const DocumentPage = () => {
 
     const {id, subGroupId} = useParams()
@@ -51,7 +53,7 @@ const DocumentPage = () => {
     const [documentGroup, setDocumentGroup] = useState<IDocumentGroup>()
     const [groups, setGroups] = useState<IDocumentGroup[]>([])
     const [docs, setDocs] = useState<IDocument[]>([])
-
+    const {isAuthenticated} = useAuth0()
     const [fileNameFontSize, setFileNameFontSize] = useState<number>(16)
     const {jwt} = useContext(AuthContext)
     const [selectedDocument, setSelectedDocument] = useState<IDocument>();
@@ -70,6 +72,7 @@ const DocumentPage = () => {
     };
 
     const onShowDocument = (document : IDocument) => {
+        console.log("show")
         setSelectedDocument(document)
         setIsModalOpen(true)
     }
@@ -86,7 +89,6 @@ const DocumentPage = () => {
     }
 
     const onSelectAction = (action : string, groupId : number) => {
-
         switch (action) {
             case "editName" :
                 setEditGroupId(Number(groupId))
@@ -98,20 +100,20 @@ const DocumentPage = () => {
                 setSelectedGroupId(Number(groupId))
                 setIsNewDocumentModalActive(true)
                 break;
-            default : console.error("def")
+            default : console.error("default case, onSelectAction method")
         }
     };
 
-    const deleteGroupById = async (id : number) => {
+    const deleteGroupById = async (groupId : number) => {
         if (jwt) {
-            const {data} = await deleteSubGroup(id, jwt)
+            const {data} = await deleteSubGroup(groupId, jwt)
             if (data) {
-                if (id === Number(id)) return
-                const arr = groups.filter((e) => e.id !== id)
+                if (groupId === Number(id)) return
+
+                const arr = groups.filter((e) => e.id !== groupId)
                 setGroups(arr)
             }
         } else notification.error({message: "not auth"})
-
     }
 
 
@@ -143,7 +145,6 @@ const DocumentPage = () => {
     const editGroupNameCallback = (name : string) => {
         if (documentGroup) {
             documentGroup.name = name
-            console.log(documentGroup)
             setDocumentGroup(Object.create(documentGroup))
         }
     }
@@ -194,8 +195,6 @@ const DocumentPage = () => {
     }
 
 
-
-
     const removeDocument = (document : IDocument) => {
         if (document.documentGroup.id === Number(id)) {
             if (documentGroup) {
@@ -241,10 +240,13 @@ const DocumentPage = () => {
         getById()
     }, []);
 
-    const footer = [
-        <Button>Завантажити</Button>,
-        <Button type={"primary"} onClick={handleCancel}>Заразд</Button>
+    const footer = selectedDocument && [
+        <a key={"showDocFooterBtn-1"} href={apiServerUrl + "/api/download/file/" + selectedDocument.name}  style={{ textDecoration: "none"}}>
+            <Button icon={<DownloadOutlined/>}>Завантажити</Button>
+        </a> ,
+        <Button key={"showDocFooterBtn-2"} type={"primary"} onClick={handleCancel}>Заразд</Button>
     ]
+
 
 
     const addNewSubGroup = async (subGroup : IDocumentGroup) => {
@@ -283,6 +285,7 @@ const DocumentPage = () => {
     const mainGroupRef = useRef(null);
     const groupsRef = useRef(null);
     const newGroupRef = useRef(null);
+    const addDocBtnRef = useRef(null);
     const fontRef = useRef(null);
     const groupRef = useRef(null);
     const documentEditNameInputRef = useRef(null);
@@ -290,8 +293,12 @@ const DocumentPage = () => {
     const steps: TourProps['steps'] = [
         {
             title: 'Групи та підгрупи',
-            description: 'Всі документи розподідені на групи, у кожної групи може бути підгрупа.  Щоб змінити назву групи, натисніть на текст',
+            description:(
+                <p>
+                    Всі документи розподідені на групи, у кожної групи може бути підгрупа. <strong>Щоб змінити назву групи, натисніть на текст</strong>
+                </p>
 
+            ),
             target: () => mainGroupRef.current,
         },
         {
@@ -306,18 +313,26 @@ const DocumentPage = () => {
         },
         {
             title: 'Керування документами',
-            description: 'Щоб додати новий документ, змінити назву або видалити підгрупу, наведіть курсор на підгрупу та натисніть праву кнопку миші. Те саме ви можете робити з підгрупами',
+            description: (
+                <p>
+                    Щоб додати новий документ, змінити назву або видалити підгрупу, <strong>наведіть курсор на підгрупу та натисніть праву кнопку миші.</strong>
+                </p>
+            ),
             target: () => groupRef.current,
             cover: (
                 <Flex>
                     <img style={{width: "150%", height: 'auto'}} src={getGroupOptionImg} alt={getGroupOptionImg}/>
                     <img style={{ height: "auto", width: "100%"}}  src={groupOptionsImg} alt={'groupOptionsImg'}/>
                 </Flex>
-            )
+            ),
         },
         {
             title: 'Як змінити текст підгрупи/документу',
-            description: 'Натисніть на відповідну кнопку в контекстному меню. Для підтвердження натисніть Enter, для відміни ESC',
+            description: (
+                <p>
+                    Натисніть на відповідну кнопку в контекстному меню. <strong>Для підтвердження натисніть Enter, для відміни ESC</strong>
+                </p>
+            ),
             cover : (
                 <Flex>
                     <img style={{width: "100%", height: 'auto'}} src={editTextBtnImg} alt={'editTextBtnImg'}/>
@@ -325,11 +340,6 @@ const DocumentPage = () => {
                 </Flex>
             ),
             target: () => groupRef.current,
-        },
-        {
-            title: 'Як додати документи, та інше',
-            description: 'Щоб додати документ до групи наведіть курсор на групу та натсніть праву кнопку миші',
-            target:  groupRef.current ,
             nextButtonProps: {
                 onClick: () => {
                     setIsTourActive(false)
@@ -337,7 +347,8 @@ const DocumentPage = () => {
                     setIsAddDocTourActive(true)
                 }
             }
-        }
+        },
+
     ];
 
 
@@ -367,6 +378,16 @@ const DocumentPage = () => {
     }
 
     const [isDeletingGroup, setIsDeletingGroup] = useState<boolean>(false)
+
+    const items: MenuProps['items'] = [
+        {
+            key: '1',
+            label: (
+                <span onClick={() => setIsTourModalOpen(true)}>Пройти екскурсію</span>
+            ),
+        }
+        ]
+
 
     return (
         <Flex justify={"center"}>
@@ -401,25 +422,36 @@ const DocumentPage = () => {
                                          onChange={(e) => setFileNameFontSize(e ? e : 16)}
                                          min={14}
                                          max={35}
-                                         style={{height:"fit-content"}}
+                                         style={{height: "fit-content"}}
                                          defaultValue={fileNameFontSize}
                             />
                             <span>Шрифт</span>
                         </Flex>
-                        <Flex gap={3}>
-                            <AddNewGroupModal newGroupRef={newGroupRef} addGroup={addNewSubGroup}
-                                              groupId={Number(id)}
-                            />
-                            <Button  onClick={onAddGroupDocument}>Додати документ</Button>
-                            <Popconfirm
-                                title="Видалити"
-                                description="Ви впевнені? Дія незворотня."
-                                onConfirm={onDeleteGroup}
-                                okButtonProps={{ loading: isDeletingGroup }}
-                            >
-                                <Button danger>Видалити групу</Button>
-                            </Popconfirm>
-                        </Flex>
+                        {isAuthenticated &&
+                            <Flex gap={3}>
+                                <AddNewGroupModal newGroupRef={newGroupRef}
+                                                  addGroup={addNewSubGroup}
+                                                  groupId={Number(id)}
+                                />
+
+                                <Button ref={addDocBtnRef} onClick={onAddGroupDocument}>Додати документ</Button>
+                                <Popconfirm
+                                    title="Видалити"
+                                    description="Ви впевнені? Дія незворотня."
+                                    onConfirm={onDeleteGroup}
+                                    okButtonProps={{loading: isDeletingGroup}}
+                                >
+                                    <Button danger>Видалити групу</Button>
+                                </Popconfirm>
+
+
+                                <Dropdown  trigger={["click"]} menu={{ items }}>
+                                    <Button icon={<InfoCircleOutlined />}/>
+                                </Dropdown>
+
+                            </Flex>
+
+                        }
                     </Flex>
                 </Flex>
 
