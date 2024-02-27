@@ -101,14 +101,27 @@ export interface TypingUser {
     firstName : string,
 }
 
+
+export interface AppUser {
+    id? : string,
+    firstName? : string,
+    lastName? : string,
+    email? : string
+    avatarBase64Image? : string
+    avatarContentType? : string
+    avatarUrl? : string
+    registeredOn : string
+}
+
 export interface NewUserDto {
     id? : string,
     firstName? : string,
     lastName? : string,
     avatar? : string
     email? : string
-    base64Avatar : string
-    avatarContentType : string
+    avatarBase64Image? : string
+    avatarContentType? : string
+    avatarUrl? : string
 }
 
 export interface Topic {

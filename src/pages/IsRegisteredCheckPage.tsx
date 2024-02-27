@@ -5,9 +5,11 @@ import {useAuth0} from "@auth0/auth0-react";
 import {Button, Flex} from "antd";
 import {AuthContext} from "../context/AuthContext";
 import {newUser, userIsRegistered} from "../API/services/forum/UserService";
-import {NewUserDto} from "../API/services/forum/ForumInterfaces";
-import axios from "axios";
+import {AppUser, NewUserDto} from "../API/services/forum/ForumInterfaces";
 import {getBase642} from "../API/Util";
+import {getUserAvatar} from "../API/services/UserService";
+import {useActions} from "../hooks/useActions";
+import {setUser} from "../store/actionCreators/user";
 
 const IsRegisteredCheckPage = () => {
 
@@ -15,39 +17,44 @@ const IsRegisteredCheckPage = () => {
     const {user, isAuthenticated} = useAuth0()
     const {jwt,} = useContext(AuthContext)
     const nav = useNavigate()
+    const {setUser} = useActions()
 
     useEffect(() => {
         if (jwt && user) {
-            const saveUser = async (avatarContentType : string, base64Avatar : string) => {
-                const newUserObj : NewUserDto = {
-                    firstName : user.given_name,
-                    lastName : user.family_name || user.nickname,
-                    id : user.sub,
-                    email : user.email,
-                    avatarContentType : avatarContentType,
-                    base64Avatar
-                }
-                console.log("save user", newUserObj)
+            const saveUser = async (base64Avatar : string, avatarContentType : string) => {
+                if (user.sub && user.picture) {
 
-                const {data, error} = await newUser(newUserObj, jwt);
-                if (data) {
-                    console.log(data)
-                    // nav(String(searchParams.get("redirectTo")))
-                }
-                if (error) throw error
+                    const newUserObj : NewUserDto = {
+                        firstName : user.given_name,
+                        lastName : user.family_name || user.nickname,
+                        id : user.sub,
+                        email : user.email,
+                        avatarContentType : avatarContentType,
+                        avatarBase64Image :  base64Avatar,
+                        avatarUrl : user.picture
+                    }
+                    console.log("newUserObj", newUserObj)
+
+                    const {data, error} = await newUser(newUserObj, jwt);
+                    if (data) {
+                        console.log(data)
+                        nav(String(searchParams.get("redirectTo")))
+                    }
+                    if (error) throw error
+                } else console.error("user data null")
             }
 
             const getAvatarAndThenSaveUser = async () => {
                 if (user.picture) {
-                    console.log(user.picture)
-                    const response = await axios.get(user.picture, {
-                        responseType: "blob"
-                    })
-                    if (response.data) {
-                        const blobAvatar: Blob = response.data
-                        getBase642(blobAvatar, (base64Avatar: string) => {
-                            saveUser(blobAvatar.type ,base64Avatar)
+                    const {data, error} = await getUserAvatar(user.picture)
+                    if (data) {
+                        let blobAvatar = new Blob([data], {type: "image/jpeg"})
+                        getBase642(blobAvatar, (res :string) => {
+                            saveUser(res, 'image/jpeg')
                         })
+                    }
+                    if (error) {
+                        console.log("can't load user avatar")
                     }
                 }
             }
@@ -55,10 +62,13 @@ const IsRegisteredCheckPage = () => {
             setTimeout(async () => {
                 if (user.sub) {
                     const {data, error} = await userIsRegistered(user.sub, jwt);
+                    console.log(data)
                     if (data) {
-                        console.log(data)
+                        const appUser : AppUser = data
+                        console.log(appUser)
+                        setUser(appUser)
                         console.log("userIsRegistered")
-                        // nav(String(searchParams.get("redirectTo")))
+                        nav(String(searchParams.get("redirectTo")))
                     } else {
                         getAvatarAndThenSaveUser()
                     }

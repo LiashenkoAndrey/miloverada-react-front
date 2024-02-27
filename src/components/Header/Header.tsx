@@ -1,12 +1,18 @@
-import React, {useEffect} from 'react';
+import React, {useContext, useEffect} from 'react';
 import classes from './Header.module.css'
-import {Dropdown, Flex, MenuProps, Space} from "antd";
+import {Dropdown, Flex, MenuProps, Skeleton, Space} from "antd";
 // @ts-ignore
 import icon from '../../assets/icon.png'
 import {useLocation, useNavigate} from "react-router-dom";
 import MobileNav from "./MobileNav";
 import {MenuOutlined, UserOutlined} from "@ant-design/icons";
 import {useAuth0} from "@auth0/auth0-react";
+import {AuthContext} from "../../context/AuthContext";
+import {useTypedSelector} from "../../hooks/useTypedSelector";
+import {getUserById} from "../../API/services/UserService";
+import {AppUser} from "../../API/services/forum/ForumInterfaces";
+import {useActions} from "../../hooks/useActions";
+import {setUser} from "../../store/actionCreators/user";
 
 export interface HeaderOption {
     onClick : () => void
@@ -16,7 +22,33 @@ export interface HeaderOption {
 const Header = () => {
     const nav  = useNavigate()
     const { pathname } = useLocation();
-    const {loginWithRedirect} = useAuth0()
+    const {loginWithRedirect, isAuthenticated, user } = useAuth0()
+    const {jwt} = useContext(AuthContext)
+    const {appUser} = useTypedSelector(state => state.user)
+    const {setUser} = useActions()
+
+    useEffect(() => {
+        console.log(isAuthenticated)
+    }, [isAuthenticated]);
+
+    useEffect( () => {
+        const getUser =  async (id : string, jwt : string) => {
+            const {data} = await getUserById(encodeURI(id), jwt)
+            console.log(data)
+            const gotUser : AppUser = data
+            setUser(gotUser)
+        }
+        if (jwt) {
+            console.log("is auth jwt")
+            if (appUser === undefined) {
+                if (user?.sub) {
+                    console.log(user.sub)
+                    getUser(user.sub, jwt)
+                }
+            }
+            console.log(user)
+        }
+    }, [jwt]);
 
     const options : HeaderOption[] = [
         {onClick : () => nav("/documents/all"), title : "Документи"},
@@ -37,12 +69,22 @@ const Header = () => {
         })
     }
 
-    const userIcon = (
-        <Flex align={"center"} onClick={onLogin} gap={10} className={classes.headNavItem} style={{paddingLeft: 10}}>
-            <UserOutlined style={{fontSize: 18, padding: 0, color: "white"}} />
-            <span className={classes.btnText} >Вхід</span>
-        </Flex>
-    )
+    const userIcon =
+        appUser
+            ?
+            <Flex align={"center"} vertical className={classes.headNavItem} style={{padding: "5px 5px 0 5px"}}>
+                <img src={appUser.avatarUrl} height={30} alt=""/>
+                <span style={{color: "white"}}>{appUser.firstName}</span>
+            </Flex>
+            :
+            <Flex align={"center"} onClick={onLogin} gap={10} className={classes.headNavItem} style={{paddingLeft: 10}}>
+                <UserOutlined style={{fontSize: 18, padding: 0, color: "white"}} />
+                <span className={classes.btnText} >Вхід</span>
+            </Flex>
+
+
+
+
 
     let items = () : MenuProps['items'] => {
         let arr = options.map((o) => {
@@ -67,8 +109,19 @@ const Header = () => {
                 <Flex onClick={() => nav("/")} className={"nonSelect"}>
                     <span className={classes.title}>Милівська сільська територіальна громада</span>
                     <img className={classes.logo} src={icon} width={50} alt={"Герб України"}/>
-
                 </Flex>
+
+                {/*{appUser &&*/}
+                {/*    <Flex>*/}
+                {/*        <img src={appUser.avatarBase64Image} height={50} alt=""/>*/}
+                {/*        <img src={appUser.avatarUrl} height={50} alt=""/>*/}
+                {/*        <span>{appUser.firstName}</span>*/}
+                {/*        <span>{appUser.email}</span>*/}
+                {/*        <span>{appUser.firstName}</span>*/}
+                {/*        <span>{appUser.lastName}</span>*/}
+                {/*        <span>{appUser.id}</span>*/}
+                {/*    </Flex>*/}
+                {/*}*/}
 
 
 

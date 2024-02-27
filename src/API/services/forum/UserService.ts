@@ -40,12 +40,12 @@ export const getActiveUsersAmount = () => {
 }
 
 
-export const userIsRegistered = (userId : string, accessToken : string) => {
+export const userIsRegistered = (userId : string, jwt : string) => {
     const config = {
         url: `${apiServerUrl}/api/protected/user/isRegistered/id/${encodeURIComponent(userId)}`,
         method: "GET",
         headers: {
-            Authorization: `Bearer ${accessToken}`,
+            Authorization: `Bearer ${jwt}`,
         }
     }
     return callAndGetResult(config)
