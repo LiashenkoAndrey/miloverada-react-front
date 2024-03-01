@@ -1,11 +1,15 @@
-import React, {FC, useEffect, useRef, useState} from 'react';
-import {Checkbox, Dropdown, Flex, MenuProps, Modal, Tour, Typography} from "antd";
-import {CopyFilled, DownloadOutlined, EditOutlined} from "@ant-design/icons";
+import React, {FC, useCallback, useContext, useEffect, useState} from 'react';
+import {Checkbox, CheckboxProps, Dropdown, Flex, MenuProps, Modal, Typography} from "antd";
+import {CopyFilled, DownloadOutlined, InfoCircleOutlined} from "@ant-design/icons";
 import {IDocument} from "../../API/services/InstitutionService";
 import FileFormat from "../Files/FileFormat";
 import classes from './Document.module.css'
 import {apiServerUrl} from "../../API/Constants";
-import type { TourProps } from 'antd';
+import {useTypedSelector} from "../../hooks/useTypedSelector";
+import {updateAdminMeta} from "../../API/services/UserService";
+import {AuthContext} from "../../context/AuthContext";
+import {useActions} from "../../hooks/useActions";
+import {setAdminMetadata} from "../../store/actionCreators/user";
 
 const { Paragraph, Text, Title } = Typography;
 
@@ -28,6 +32,10 @@ const Document: FC<DocumentProps> = ({
                                          documentEditNameInputRef
                                      }) => {
     const fileFormat = document.name.substring(document.name.lastIndexOf('.') + 1, document.name.length)
+    const {adminMetadata, appUser} = useTypedSelector(state => state.user)
+    const {jwt} = useContext(AuthContext)
+    const {setAdminMetadata} = useActions()
+
 
     const items: MenuProps['items'] = [
         {
@@ -75,9 +83,23 @@ const Document: FC<DocumentProps> = ({
     }, [newTitle]);
 
 
+    const [isNotShowConfirm, setIsNotShowConfirm] = useState(true)
+
+    const onOkDelete = useCallback(() => {
+        console.log(isEditing)
+        if (!isNotShowConfirm) {
+            console.log("Update !!!")
+        }
+    }, [isEditing]);
+
+    const onChange: CheckboxProps['onChange'] = (e) => {
+        console.log(`checked = ${e.target.checked}`);
+        setIsNotShowConfirm(e.target.checked)
+    };
+    const [isConfirmModalOpen, setIsConfirmModalOpen] = useState<boolean>(false)
+
     const onSelectAction: MenuProps['onClick'] = ({ key }) => {
         const values = key.split("-")
-        const id = values[1]
         const action = values[2]
 
         switch (action) {
@@ -85,22 +107,44 @@ const Document: FC<DocumentProps> = ({
                 setIsEditing(true)
                 break;
             case 'delete':
+                console.log(adminMetadata)
 
-                if (onDeleteDocument !== undefined) {
-                    Modal.confirm({
-                        title : "Ви впевнені? Дія незворотня.",
-                        content : (
-                            <Checkbox  >Не нагадувати мені знову</Checkbox>
-                        ),
-                        onOk : () => onDeleteDocument(document)
-                    })
-                }
+                if (adminMetadata) {
+                    if (adminMetadata.isShowConfirmWhenDeleteDocument) {
+                        console.log("show")
+                        setIsConfirmModalOpen(true)
+                    } else {
+                        if (onDeleteDocument) {
+                            onDeleteDocument(document)
+                        }
+                    }
+                } else console.log("admin meta null")
                 break;
             case 'show':
                 break;
-            default : console.error("def")
+            default :
+                console.error("def")
         }
     }
+
+
+    const onDelete = async () => {
+        console.log(isNotShowConfirm)
+        setIsConfirmModalOpen(false)
+        if (onDeleteDocument) {
+            onDeleteDocument(document)
+        }
+        if (adminMetadata && jwt) {
+            adminMetadata.isShowConfirmWhenDeleteDocument = false
+            const {data, error} = await updateAdminMeta(adminMetadata,  jwt)
+            if (data) {
+                console.log("ok")
+            }
+            setAdminMetadata(adminMetadata)
+            if (error) console.error(error);
+        }
+    }
+
 
 
     return (
@@ -109,6 +153,12 @@ const Document: FC<DocumentProps> = ({
                   className={classes.document}
                   align={"center"} gap={10}
             >
+                <Modal onOk={onDelete} open={isConfirmModalOpen}
+                       title={<span><InfoCircleOutlined style={{color: "#cb771c", fontSize: 20}} /> Ви впевнені? Дія незворотня.</span> }
+                       onCancel={() => setIsConfirmModalOpen(false)}
+                >
+                    <Checkbox onChange={onChange}>Не нагадувати мені знову</Checkbox>
+                </Modal>
                 <FileFormat  style={{fontSize: 30, color: "#820000"}} format={fileFormat}/>
 
                 <Flex onClick={() => onClick(document)} ref={documentEditNameInputRef}  style={{width: "100%"}}>

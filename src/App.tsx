@@ -1,10 +1,10 @@
 import React, {useEffect, useState} from 'react';
 import './App.css';
-import { Route, Routes, Navigate } from "react-router-dom";
+import {Route, Routes} from "react-router-dom";
 import Header from "./components/Header/Header";
 import MainPage from "./pages/MainPage/MainPage";
 import Footer from "./components/Footer/Footer";
-import {App as AntdApp, ConfigProvider, Layout} from "antd";
+import {App as AntdApp, ConfigProvider, Layout, notification} from "antd";
 import NewsPage from "./pages/NewsPage/NewsPage";
 import AllNewsPage from "./pages/AllNewsPage/AllNewsPage";
 import AllDocumentsPage from "./pages/AllDocumentsPage/AllDocumentsPage";
@@ -24,20 +24,44 @@ import locale from 'antd/es/locale/uk_UA';
 import 'dayjs/locale/uk'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import DocumentPage from "./pages/DocumentPage/DocumentPage";
+import {useActions} from "./hooks/useActions";
+import {setAdminMetadata} from "./store/actionCreators/user";
+import { getAppUser, UserDto} from "./API/services/UserService";
 
 function App() {
     const [jwt, setJwt] = useState<string>()
-    const {getAccessTokenSilently, isAuthenticated} = useAuth0()
-    useEffect(() => {
-        const getJwt = async () => {
-            const token = await getAccessTokenSilently();
-            setJwt(token)
-        }
+    const {getAccessTokenSilently, isAuthenticated, user} = useAuth0()
+    const {setAdminMetadata, setUser} = useActions()
 
+    const getJwt = async () => {
+        const token = await getAccessTokenSilently();
+        setJwt(token)
+    }
+    const getUser = async (userId : string, token : string) => {
+        const {data, error} = await getAppUser(userId, token)
+        if (data) {
+            const userDto : UserDto = data;
+            console.log("user dto", data)
+            setUser(userDto.appUser)
+            setAdminMetadata(userDto.adminMetadata)
+        }
+        if (error) console.error(error);
+    }
+
+    useEffect(() => {
         if (isAuthenticated) {
             getJwt()
         }
     }, [isAuthenticated]);
+
+    useEffect(() => {
+        console.log("jwt", jwt, isAuthenticated)
+        if (jwt) {
+            if (user?.sub) {
+                getUser(encodeURIComponent(user.sub), jwt)
+            } else console.error("user null")
+        }
+    }, [jwt]);
 
   return (
       <AuthContext.Provider value={{jwt, setJwt}}>

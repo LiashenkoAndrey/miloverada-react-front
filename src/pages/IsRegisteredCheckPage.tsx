@@ -6,10 +6,10 @@ import {Button, Flex} from "antd";
 import {AuthContext} from "../context/AuthContext";
 import {newUser, userIsRegistered} from "../API/services/forum/UserService";
 import {AppUser, NewUserDto} from "../API/services/forum/ForumInterfaces";
-import {getBase642} from "../API/Util";
-import {getUserAvatar} from "../API/services/UserService";
+import {checkPermission, getBase642} from "../API/Util";
+import { getUserAvatar, UserDto} from "../API/services/UserService";
 import {useActions} from "../hooks/useActions";
-import {setUser} from "../store/actionCreators/user";
+import {setAdminMetadata, setUser} from "../store/actionCreators/user";
 
 const IsRegisteredCheckPage = () => {
 
@@ -23,7 +23,6 @@ const IsRegisteredCheckPage = () => {
         if (jwt && user) {
             const saveUser = async (base64Avatar : string, avatarContentType : string) => {
                 if (user.sub && user.picture) {
-
                     const newUserObj : NewUserDto = {
                         firstName : user.given_name,
                         lastName : user.family_name || user.nickname,
@@ -33,8 +32,6 @@ const IsRegisteredCheckPage = () => {
                         avatarBase64Image :  base64Avatar,
                         avatarUrl : user.picture
                     }
-                    console.log("newUserObj", newUserObj)
-
                     const {data, error} = await newUser(newUserObj, jwt);
                     if (data) {
                         console.log(data)
@@ -61,16 +58,32 @@ const IsRegisteredCheckPage = () => {
 
             setTimeout(async () => {
                 if (user.sub) {
-                    const {data, error} = await userIsRegistered(user.sub, jwt);
-                    console.log(data)
-                    if (data) {
-                        const appUser : AppUser = data
-                        console.log(appUser)
-                        setUser(appUser)
-                        console.log("userIsRegistered")
-                        nav(String(searchParams.get("redirectTo")))
+
+                    let isAdmin = false;
+                    if (checkPermission(jwt, "admin")) {
+                        console.log("IS ADMIN!!!")
+                        isAdmin = true
                     } else {
-                        getAvatarAndThenSaveUser()
+                        console.log("JUST USER")
+                    }
+
+
+                    const {data, error} = await userIsRegistered(user.sub, isAdmin, jwt);
+
+                    if (data) {
+                        const userDto : UserDto = data
+                        console.log(userDto)
+                        if (userDto.isRegistered) {
+
+                            if (userDto.adminMetadata) {
+                                setAdminMetadata(userDto.adminMetadata)
+                            }
+                            setUser(userDto.appUser)
+                            console.log("userIsRegistered")
+                            nav(String(searchParams.get("redirectTo")))
+                        } else {
+                            getAvatarAndThenSaveUser()
+                        }
                     }
 
                     if (error) {

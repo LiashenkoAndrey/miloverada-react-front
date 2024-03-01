@@ -40,9 +40,9 @@ export const getActiveUsersAmount = () => {
 }
 
 
-export const userIsRegistered = (userId : string, jwt : string) => {
+export const userIsRegistered = (userId : string, isAdmin : boolean, jwt : string) => {
     const config = {
-        url: `${apiServerUrl}/api/protected/user/isRegistered/id/${encodeURIComponent(userId)}`,
+        url: `${apiServerUrl}/api/protected/user/isRegistered/id/${encodeURIComponent(userId)}?isAdmin=${isAdmin}`,
         method: "GET",
         headers: {
             Authorization: `Bearer ${jwt}`,

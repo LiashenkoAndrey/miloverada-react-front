@@ -1,3 +1,4 @@
+import {jwtDecode} from "jwt-decode";
 
 
 const apiServerUrl = process.env.REACT_APP_API_SERVER_URL;
@@ -57,4 +58,18 @@ export const getBase642 = (blob : Blob, cb : Function) => {
     reader.onerror = function (error) {
         console.log('Error: ', error);
     };
+}
+
+export const checkPermission = (token : string, permission : string) => {
+    if (token !== null) {
+        const  payload = jwtDecode(token);
+
+        console.log("payload", payload)
+
+        // @ts-ignore
+        const  has = jwtDecode(token).permissions.indexOf(permission) !== -1
+        return has;
+    } else {
+        return false
+    }
 }

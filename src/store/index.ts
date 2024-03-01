@@ -4,7 +4,7 @@ import {rootReducer} from "./reducers";
 import {composeWithDevTools} from "@redux-devtools/extension";
 
 //
-// const composedEnhancer = compose(applyMiddleware(thunk), composeWithDevTools())
+const composedEnhancer = compose(applyMiddleware(thunk), composeWithDevTools())
 
 // @ts-ignore
-export const store = createStore(rootReducer, applyMiddleware(thunk))
+export const store = createStore(rootReducer, composedEnhancer)
