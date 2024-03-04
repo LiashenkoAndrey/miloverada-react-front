@@ -1,8 +1,8 @@
 import React, {useEffect, useState} from 'react';
 import {getLatestNews} from "../../API/services/NewsService";
 import {Button, Flex} from "antd";
-import './AllNewsPage.css'
-import NewsList from "../../components/NewsList/NewsList";
+import classes from './AllNewsPage.module.css'
+import newsCardClasses from '../../components/NewsCard/NewsCard.module.css'
 import NewsCard from "../../components/NewsCard/NewsCard";
 import {INewsDto} from "../../domain/NewsInt";
 import {useNavigate} from "react-router-dom";
@@ -23,31 +23,57 @@ const AllNewsPage = () => {
     }, []);
 
     return (
-        <Flex align={"center"} justify={"center"} className={"allnewsWrapper"}>
-            <Flex gap={20} style={{maxWidth: "90vw"}} vertical>
+        <Flex align={"center"}
+              justify={"center"}
+              className={classes.allnewsWrapper}
+        >
+            <Flex gap={20}
+                  vertical
+                  className={classes.wrapper2}
+            >
                 <Flex justify={"end"} style={{margin: 20}}>
-                    <Button type={"primary"} onClick={() => nav("/news/new")}>Нова новина</Button>
+                    <Button type={"primary"}
+                            onClick={() => nav("/news/new")}
+                    >Нова новина
+                    </Button>
                 </Flex>
 
 
                     {news.length > 0
                         ?
-                        <Flex className={"NewsWrapper"} align={"center"} justify={"center"}>
-                            <NewsCard
-                                      news={news[0]}
-                                      className={"wideNewsCard AllNewsPageWideCard"}
-                            />
-                            <NewsList name={"AllNewsList"} newsList={news.slice(1, 5)}/>
+                        <Flex align={"center"}
+                              justify={"center"}
+                              className={classes.topNewsListWrapper}
+                        >
+                            <Flex gap={50} vertical>
+
+                                <NewsCard
+                                    news={news[0]}
+                                    className={[newsCardClasses.wideNewsCard, newsCardClasses.wideNewsCard, classes.WideNewsCard].join(" ")}
+                                />
+                            </Flex>
+
+                            <div className={classes.topNewsList}>
+                                {news.slice(1, 5).map((newsItem) =>
+                                    <NewsCard className={[classes.WhiteNewsCard ].join(' ')}
+                                              news={newsItem}
+                                              key={"newsTop-" + newsItem.id}/>
+                                )}
+                            </div>
+
+
                         </Flex>
                         :
                         <></>
                     }
 
-                <Flex justify={"center"} wrap={"wrap"} gap={20}>
+                <div className={classes.bottomNewsList} >
                     {news.slice(5, news.length).map((n) =>
-                        <NewsCard className={"whiteNewsCard AllNewsPageCard"} news={n} key={"newsCa-" + n.id}/>
+                        <NewsCard className={[classes.AllNewsPageBottomCard, classes.WhiteNewsCard ].join(' ')}
+                                  news={n}
+                                  key={"newsCa-" + n.id}/>
                     )}
-                </Flex>
+                </div>
             </Flex>
         </Flex>
     );

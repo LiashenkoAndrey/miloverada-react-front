@@ -122,7 +122,7 @@ const NewsPage : FC<NewsPageProps> = ({isPreview}) => {
             const {data, error} = await deleteNewsById(Number(id), jwt)
             setConfirmLoading(false);
             if (data) {
-                nav("/news/all")
+                nav("/newsFeed/all")
             }
             if (error) throw error
 

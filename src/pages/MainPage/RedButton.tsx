@@ -1,14 +1,18 @@
-import React, {FC, MouseEventHandler} from 'react';
+import React, {CSSProperties, FC, MouseEventHandler, ReactNode} from 'react';
 import {Button} from "antd";
 
 interface IBtn {
-    text : string
     onClick? : MouseEventHandler<HTMLElement>
+    style? : CSSProperties
+    children : ReactNode
 }
 
-const RedButton : FC<IBtn> = ({text, onClick}) => {
+const RedButton : FC<IBtn> = ({children, onClick, style}) => {
     return (
-        <Button onClick={onClick} type={"primary"} style={{borderRadius: 0, color: "white", fontSize: 28, height: "fit-content", padding: "3px 4em", fontFamily: "Open Sans"}}>{text}</Button>
+        <Button onClick={onClick} type={"primary"}
+                className={"redBtn"}
+                style={style}
+        >{children}</Button>
     );
 };
 

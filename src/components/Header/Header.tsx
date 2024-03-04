@@ -143,13 +143,20 @@ const Header = () => {
 
                 <Drawer title="Мій профіль" onClose={() => setIsUserDrawerActive(false)} open={isUserDrawerActive}>
                     <Flex vertical style={{height: "100%"}} justify={"space-between"}  gap={40}>
-                        <Flex gap={10}>
-                            <Image src={user?.picture}/>
-                            <Flex vertical>
-                                <span>{user?.name}</span>
-                                <span>{user?.email}</span>
+
+                        <Flex gap={10} vertical>
+
+                            <Flex gap={10}>
+                                <Image src={user?.picture}/>
+                                <Flex vertical>
+                                    <span>{user?.name}</span>
+                                    <span>{user?.email}</span>
+                                </Flex>
                             </Flex>
+                            <Button onClick={onLogout} style={{width: "fit-content"}} type={"primary"}>Вийти</Button>
                         </Flex>
+
+
 
                         <Flex vertical gap={5} >
                             <Button style={{width: "fit-content"}} onClick={onClearMetadata} loading={isLoading}>Очистити метадані</Button>

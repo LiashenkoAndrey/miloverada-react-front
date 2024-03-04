@@ -28,11 +28,15 @@ const BannersList = () => {
     }, []);
 
     return (
-        <Flex align={"center"} justify={"center"} className={classes.bannersList} vertical style={{backgroundColor: "white"}}>
-            <h1 style={{fontSize: "3.0517578125em", marginBottom: 0}}>Важливе</h1>
-            <Flex gap={15} justify={"center"} wrap={"wrap"} style={{maxWidth: "80vw"}}>
+        <Flex align={"center"} justify={"center"} className={classes.bannersListWrapper} vertical >
+            <div className={classes.bannersList} >
                 {linkBanners.map((linkBanner) =>
-                    <Flex key={"linkBanner-" + linkBanner.id} gap={5} vertical className={classes.banner}>
+                    <Flex key={"linkBanner-" + linkBanner.id}
+                          gap={10}
+                          vertical
+                          className={classes.banner}
+                          justify={"space-between"}
+                    >
                         <span>{linkBanner.text}</span>
                         <a href={linkBanner.url} className={classes.bannerBtn}>Перейти →</a>
                         <span className={classes.bannerTime}>{linkBanner.createdOn}</span>
@@ -40,13 +44,19 @@ const BannersList = () => {
                 )}
 
                 {textBanners.map((textBanner) =>
-                    <Flex  key={"textBanner-" + textBanner.id} gap={15} vertical className={classes.banner}>
+                    <Flex  key={"textBanner-" + textBanner.id}
+                           gap={10}
+                           vertical
+                           className={classes.banner}
+                           justify={"space-between"}
+                    >
                         <span>{textBanner.description}</span>
                         <span className={classes.bannerBtn} >Читати</span>
+                        <span className={classes.bannerTime}>{textBanner.createdOn}</span>
                     </Flex>
                 )}
 
-            </Flex>
+            </div>
         </Flex>
     );
 };

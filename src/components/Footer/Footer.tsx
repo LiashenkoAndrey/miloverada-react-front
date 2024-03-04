@@ -10,7 +10,7 @@ const Footer = () => {
     return (
         <Flex className={"footerWrapper"} justify={"flex-start"} align={"center"} style={{display: pathname.includes("chat") || pathname.includes("news/new") ? "none" : "flex"}} >
             <Flex wrap={"wrap"}  className={"footerBody"}>
-                <h1 className={"footerTitle"}>Милівська сільська територіальна громада</h1>
+                <h1 className={"footerTitle"} onClick={() => nav('/')}>Милівська сільська територіальна громада</h1>
                 <Flex vertical={true} wrap={"wrap"} gap={20}>
                     <Flex wrap={"wrap"} gap={8}>
                         <span onClick={() => nav("/newsFeed/all")} className={"footerBtn"}>Новини</span>
