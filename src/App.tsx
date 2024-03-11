@@ -55,7 +55,6 @@ function App() {
     }, [isAuthenticated]);
 
     useEffect(() => {
-        console.log("jwt", jwt, isAuthenticated)
         if (jwt) {
             if (user?.sub) {
                 getUser(encodeURIComponent(user.sub), jwt)

@@ -3,7 +3,8 @@
 .topicName {
     color: var(--forum-secondary-title-color);
     font-size: 18px;
-    font-weight: 900;
+    font-weight: 500;
+    margin-left: 20px;
 }
 .topicName:hover {
 

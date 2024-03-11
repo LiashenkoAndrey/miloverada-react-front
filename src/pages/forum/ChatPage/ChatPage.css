@@ -70,10 +70,6 @@
 
 }
 
-.chatPageWrapper {
-
-    background-color: var(--forum-primary-bg-color);
-}
 
 .chatWrapper {
     width: 100%;
@@ -82,7 +78,7 @@
 
     .chatWrapper {
         display: flex;
-        max-width: 70vw;
+        max-width: 90vw;
         width: 100%;
     }
 }

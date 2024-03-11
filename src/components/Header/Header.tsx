@@ -133,6 +133,13 @@ const Header = () => {
 
     const [isUserDrawerActive, setIsUserDrawerActive] = useState<boolean>(false)
 
+    if ( pathname.includes("forum")) {
+        return (
+            <>
+            </>
+        )
+    }
+
     return (
         <Flex justify={"center"} className={classes.navbar} style={{display: pathname.includes("chat") || pathname.includes("news/new") ? "none" : "block"}} >
             <Flex className={"IContainer"} justify={"space-between"} align={"center"} >

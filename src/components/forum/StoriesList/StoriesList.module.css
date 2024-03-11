@@ -1,0 +1,17 @@
+
+.toolbarWrapper {
+    padding: 8px 15px;
+    border-radius: 20px;
+    background-color: rgba(0, 0, 0, 0.36);
+}
+.toolbarWrapper span {
+    transition: color 200ms;
+    font-size: 25px;
+}
+.toolbarWrapper span:hover {
+    color: #545675;
+}
+
+.toolbarWrapper span:active {
+    color: #292a3a;
+}

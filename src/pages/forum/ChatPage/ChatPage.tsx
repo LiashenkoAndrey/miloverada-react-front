@@ -8,6 +8,8 @@ import {useActions} from "../../../hooks/useActions";
 import ChatNav from "../../../components/ChatNav";
 import {Chat} from "../../../API/services/forum/ForumInterfaces";
 import {getChatById} from "../../../API/services/forum/ChatService";
+import classes from "../AllTopicsPage/AllForumTopicsPage.module.css";
+import ChatsList from "../AllTopicsPage/ChatsList/ChatsList";
 
 
 const ChatPage = () => {
@@ -29,9 +31,16 @@ const ChatPage = () => {
     }, []);
 
     return (
-        <Flex className={"chatPageWrapper"} align={"flex-start"} justify={"center"}>
-            <Flex className={"chatWrapper"} gap={20} justify={"center"}>
-                <ChatNav/>
+        <Flex  className={['chatPageWrapper',  classes.forumBg].join(' ')} align={"flex-start"} justify={"center"}>
+            <Flex className={"chatWrapper"}  justify={"center"}>
+                {/*<Flex></Flex>*/}
+                {/*<ChatNav/>*/}
+                <Flex style={{order: 0, marginTop: 10}}>
+                    <ChatsList/>
+                </Flex>
+                <Flex>
+                    1
+                </Flex>
 
                 <StompSessionProvider url={'http://localhost:6060/ws-endpoint'}>
                     <ChatWindow chat={chat}/>

@@ -59,7 +59,7 @@ const TopicPage = () => {
                     <div>3</div>
                     <div>4</div>
                 </Flex>
-                {topic && <ChatsList chats={topic.chats} topicId={topic.id}/>}
+                {/*{topic && <ChatsList chats={topic.chats} topicId={topic.id}/>}*/}
             </Flex>
         </ForumWrapper>
     );

@@ -8,10 +8,9 @@ import {AuthContext} from "../context/AuthContext";
 
 interface NewTopicProps {
     isAuth? : boolean
-    getTopics : () => Promise<void>
 }
 
-const NewTopic: FC<NewTopicProps> = ({isAuth, getTopics}) => {
+const NewTopic: FC<NewTopicProps> = ({isAuth}) => {
 
     const [isModalOpen, setIsModalOpen] = useState(false);
     const { notification } = App.useApp();
@@ -37,7 +36,6 @@ const NewTopic: FC<NewTopicProps> = ({isAuth, getTopics}) => {
 
             if (data) {
                 notification.success({message: "Успішно створено."})
-                getTopics()
             }
 
             if (error) {
@@ -55,7 +53,7 @@ const NewTopic: FC<NewTopicProps> = ({isAuth, getTopics}) => {
 
     return isAuth ?
       <>
-          <Button onClick={showModal}  type={"primary"}  icon={<PlusCircleOutlined />}>Нова тема</Button>
+          <Button  onClick={showModal}  ghost icon={<PlusCircleOutlined />}>Нова тема</Button>
 
           <Modal title="Нова тема" open={isModalOpen}  onCancel={handleCancel} footer={false} >
               <Form
@@ -95,7 +93,7 @@ const NewTopic: FC<NewTopicProps> = ({isAuth, getTopics}) => {
       </>
         :
         <Tooltip title="Вам потрібно авторизуватися" placement="topLeft">
-            <Button type={"primary"}  disabled={!isAuth} onClick={showModal} icon={<PlusCircleOutlined/>}>Нова тема</Button>
+            <Button ghost  onClick={showModal} icon={<PlusCircleOutlined/>}>Нова тема</Button>
         </Tooltip>
 };
 

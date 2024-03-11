@@ -36,10 +36,6 @@ const ChatHeader: FC<ChatHeaderProps> = ({
         filterTypingUsers(data.id)
     }
 
-    useEffect(() => {
-        console.log(chat)
-    }, [chat]);
-
     useSubscription(`/chat/` + chatId + "/userStopTyping", onUsersStopTyping)
     useSubscription(`/chat/` + chatId + "/typingUsers", onUsersStartTyping)
 
