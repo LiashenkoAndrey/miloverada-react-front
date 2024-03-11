@@ -5,6 +5,7 @@ import * as ChatInputActionCreators from '../store/actionCreators/chatInput'
 import * as DropdownActionCreators from '../store/actionCreators/dropdown'
 import * as NewsPreviewActionCreators from '../store/actionCreators/newsPreview'
 import * as UserActionCreators from '../store/actionCreators/user'
+import * as NewsCommentsActionCreators from '../store/actionCreators/newsComments'
 
 export const useActions = () => {
     const dispatch = useDispatch()
@@ -14,6 +15,7 @@ export const useActions = () => {
         ChatInputActionCreators,
         DropdownActionCreators,
         NewsPreviewActionCreators,
-        UserActionCreators
+        UserActionCreators,
+        NewsCommentsActionCreators
     ), dispatch)
 }

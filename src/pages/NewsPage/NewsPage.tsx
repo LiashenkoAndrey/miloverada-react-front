@@ -1,5 +1,7 @@
 import React, {FC, useContext, useEffect, useState} from 'react';
 import {useNavigate, useParams} from "react-router-dom";
+import newsCardClasses from '../../components/NewsCard/NewsCard.module.css'
+import mainPageClasses from '../MainPage/MainPage.module.css'
 import {
     deleteNewsById,
     getLatestNews,
@@ -10,7 +12,7 @@ import {
 } from "../../API/services/NewsService";
 
 
-import {App, Breadcrumb, Button, Col, Flex, FloatButton, Modal, Popconfirm, Row, Tooltip, Typography} from "antd";
+import {App, Breadcrumb, Button, Col, Flex, FloatButton, Popconfirm, Row, Tooltip, Typography} from "antd";
 import {INews, INewsImage} from "../../domain/NewsInt";
 import './NewsPage.css'
 import {
@@ -28,6 +30,8 @@ import {useAuth0} from "@auth0/auth0-react";
 import {AuthContext} from "../../context/AuthContext";
 import EditMainTextModal from "./EditMainTextModal";
 import NewsImageCarousel from "./NewsImageCarousel";
+import NewsComments from "../../components/NewsComments/NewsComments";
+import NewsNewCommentInput from "../../components/NewsNewCommentInput/NewsNewCommentInput";
 
 const {  Title } = Typography;
 interface NewsPageProps {
@@ -284,6 +288,12 @@ const NewsPage : FC<NewsPageProps> = ({isPreview}) => {
                 <span style={{display: "block"}} className={"newsPageViews"}>{news?.views} переглядів</span>
                 <div style={{borderTop: "solid #c0c0bf 1px", margin: "20px 0"}}></div>
 
+                {id &&
+                    <Flex vertical style={{paddingBottom: 40}}>
+                        <NewsComments newsId={Number(id)}/>
+                        <NewsNewCommentInput newsId={Number(id)}/>
+                    </Flex>
+                }
 
                 <Flex justify={"space-between"} wrap={"wrap"} gap={20}>
                     <Button onClick={() => nav("/newsFeed")} size={"large"} style={{fontSize: 18, height:"fit-content"}}>Новини громади</Button>
@@ -302,7 +312,7 @@ const NewsPage : FC<NewsPageProps> = ({isPreview}) => {
 
                 <Flex justify={"center"} wrap={"wrap"} gap={20}>
                     {additionalNews.map((n) =>
-                        <NewsCard  className={"whiteNewsCard AllNewsPageCard"} news={n} key={"newsCa-" + n.id}/>
+                        <NewsCard  className={[mainPageClasses.wideNewsCard, newsCardClasses.wideNewsCard].join(' ')} news={n} key={"newsCa-" + n.id}/>
                     )}
                 </Flex>
             </Flex>

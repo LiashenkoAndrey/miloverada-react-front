@@ -16,6 +16,17 @@
 }
 
 
+.isHighlighted {
+    background-color: rgba(33, 27, 26, 0.34);
+    transition: background-color 1100ms;
+}
+
+.stopHighlight {
+    transition: background-color 1500ms;
+    background-color: rgba(0, 0, 0, 0)!important;
+}
+
+
 
 .imageWithPlaceholder {
     text-align: center;

@@ -39,8 +39,7 @@ const AllNewsPage = () => {
                 </Flex>
 
 
-                    {news.length > 0
-                        ?
+                    {news.length > 0 &&
                         <Flex align={"center"}
                               justify={"center"}
                               className={classes.topNewsListWrapper}
@@ -60,11 +59,7 @@ const AllNewsPage = () => {
                                               key={"newsTop-" + newsItem.id}/>
                                 )}
                             </div>
-
-
                         </Flex>
-                        :
-                        <></>
                     }
 
                 <div className={classes.bottomNewsList} >

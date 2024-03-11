@@ -16,6 +16,31 @@ export function toDateShort(date : Array<string>) {
     return new Date(date.toString()).toLocaleString().split(",")[0]
 }
 
+export function isValidEmail(email : string) {
+    // Regular expression for validating email addresses
+    var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    // Test if the string matches the email regular expression
+    return emailRegex.test(email);
+}
+
+export function isWoman(nameStr: string | undefined) {
+    if (!nameStr) return false;
+    const name = nameStr.split(" ")[0]
+    if (name.endsWith('а') || name.endsWith('я') || name.endsWith('ов') || name.endsWith('ов')) {
+        return true;
+    }
+    return false;
+}
+
+export  function containsCyrillicCharacters(str : string) {
+    if (str === "") return true;
+    // Regular expression to match Cyrillic characters
+    var cyrillicRegex = /^[а-яА-ЯіЇ]+$/;
+
+    // Test if the string contains Cyrillic characters
+    return cyrillicRegex.test(str);
+}
 export function getFileUploadUrl(isLarge : boolean | undefined, id : string | undefined) {
     if (isLarge === undefined || id === undefined) {
         console.error("is undefined")

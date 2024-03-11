@@ -1,0 +1,93 @@
+
+
+.Wrapper {
+    /*opacity: 0;*/
+    /*background-color: #E6E7EF;*/
+    border-radius: 10px;
+    /*border: solid #2B2D42 2px;*/
+    padding: 10px 10px;
+    /*margin: 20px 5px;*/
+}
+.reply {
+    animation: anim 300ms;
+}
+
+@keyframes anim {
+    0%    { opacity: 0; }
+    100%  { opacity: 1; }
+}
+
+.showAllRepliesBtn {
+    color: #2f2d2d;
+    cursor: pointer;
+    transition: color 200ms;
+}
+.showAllRepliesBtn:hover {
+    color: #675e5e;
+}
+
+.showAllRepliesBtn:active {
+    color: #a69b9b;
+}
+
+.authorWrapper {
+
+}
+
+.dateOfPublication {
+    align-self: end;
+    user-select: none;
+    color: rgba(66, 66, 66, 0.43);
+    transition: color 200ms;
+}
+
+.ManageBar {
+    display: none;
+}
+
+.Wrapper2:hover .ManageBar {
+    display: flex;
+}
+
+.ReplyBtn {
+    user-select: none;
+    cursor: pointer;
+    color: rgba(205, 224, 246, 0);
+    transition: color 300ms, text-shadow 200ms;
+    font-weight: 500;
+    font-family: 'Source Serif 4', serif;
+}
+
+.ReplyBtn:hover {
+    text-shadow: #1ac203 1px 0 10px;
+}
+.ReplyBtn:active {
+    text-shadow: #31ff0d 1px 0 10px;
+}
+
+.Wrapper2:hover .ReplyBtn {
+    color: #107c00;
+}
+
+
+.dateOfPublication:hover {
+    color: #000000;
+}
+
+.authorName {
+    font-family: 'Source Serif 4', serif;
+    font-weight: 500;
+    font-size: 15px;
+    white-space: pre-wrap;
+}
+
+.authorImg {
+    border-radius: 20px;
+}
+
+.text {
+    font-size: 16px;
+    font-weight: 400;
+    font-family: 'Libre Baskerville', serif;
+
+}

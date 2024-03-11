@@ -1,0 +1,17 @@
+
+
+.Wrapper {
+
+    border-radius: 10px;
+    /*border: solid rgba(47, 47, 47, 0.3) 2px;*/
+    padding: 15px 10px;
+    margin: 20px 5px;
+}
+
+.title {
+    user-select: none;
+    font-family: 'Source Serif 4', serif;
+    font-weight: 400;
+    font-size: 22px;
+}
+
