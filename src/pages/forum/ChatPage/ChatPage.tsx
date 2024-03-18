@@ -1,7 +1,7 @@
 import React, {useCallback, useEffect, useState} from 'react';
 import {Flex} from "antd";
 import './ChatPage.css'
-import {useLocation, useParams} from "react-router-dom";
+import {useParams} from "react-router-dom";
 import ChatWindow from "../../../components/ChatWindow/ChatWindow";
 import {StompSessionProvider} from "react-stomp-hooks";
 import {useActions} from "../../../hooks/useActions";
@@ -9,9 +9,7 @@ import {IChat} from "../../../API/services/forum/ForumInterfaces";
 import {getChatById} from "../../../API/services/forum/ChatService";
 import classes from "../AllTopicsPage/AllForumTopicsPage.module.css";
 import ContentList from "../AllTopicsPage/ContentList/ContentList";
-import {useTypedSelector} from "../../../hooks/useTypedSelector";
 import {useAuth0} from "@auth0/auth0-react";
-import { throttle } from 'lodash';
 
 const ChatPage = () => {
     const {setChatId, setHasPreviousMessages} = useActions()
@@ -150,26 +148,9 @@ const ChatPage = () => {
                      onMouseLeave={handleSliderMouseLeave}
                      onMouseMove={handleSliderMouseMove}
                      style={{cursor: isDragging ? 'grabbing' : 'grab'}}
-
                 >
                     <div style={{opacity : (isDraggingSlider || isDragging) ? 1 : 0}} className={"bodyChangeLine"}/>
                 </div>
-                {/*<div*/}
-                {/*    className={"grab"}*/}
-                {/*    style={{*/}
-                {/*        position: 'absolute',*/}
-                {/*        width: 200,*/}
-                {/*        height: 200,*/}
-                {/*        backgroundColor: "red",*/}
-                {/*        top: position.y,*/}
-                {/*        left: position.x,*/}
-                {/*        cursor: isDragging ? 'grabbing' : 'grab',*/}
-                {/*    }}*/}
-                {/*    onMouseDown={handleMouseDown}*/}
-                {/*    // onMouseMove={handleMouseMove}*/}
-                {/*>*/}
-                {/*    Drag me*/}
-                {/*</div>*/}
 
                 <StompSessionProvider url={'http://localhost:6060/ws-endpoint'}>
                     <ChatWindow chat={chat}/>

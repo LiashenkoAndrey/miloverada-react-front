@@ -8,6 +8,8 @@ import {LeftOutlined} from "@ant-design/icons";
 import {useNavigate} from "react-router-dom";
 import ChatSettings from "../../ChatSettings/ChatSettings";
 
+// @ts-ignore
+import leftArrImg from '../../../assets/leftArr/arrow-left-2827.svg'
 interface ChatHeaderProps {
     chat? : IChat,
     typingUsers : Array<TypingUser>
@@ -42,50 +44,50 @@ const ChatHeader: FC<ChatHeaderProps> = ({
     return chat
         ?
         (<Flex vertical className={classes.chatHeader} >
-            <Button onClick={() => nav(-1)}
-                    style={{maxWidth: 100, color: "black", padding: 0}}
-                    icon={<LeftOutlined/>}
-                    type={"text"}>
-                Назад
-            </Button>
-            <Flex justify={"space-between"}>
-
-
-                <Flex gap={20} align={"center"}>
+            <Flex justify={"space-between"} align={"center"}>
+                <Flex vertical>
+                    <img className={classes.backBtn}
+                         height={30}
+                         width={60}
+                         src={leftArrImg}
+                         onClick={() => nav(-1)}
+                    />
                     <span className={classes.chatName}>{chat.name}</span>
+                    <span style={{ color:"var(--forum-primary-text-color)"}}>{chat.description}</span>
                 </Flex>
-                <Image preview={false}
-                       onClick={() => setIsSettingsActive(true)}
-                       className={"nonSelect " + classes.chatPicture}
-                       width={40}
-                       height={40}
-                       src={chat.picture}
-                />
+
+                <Flex style={{height: "100%"}} gap={5}>
+                    <span className={classes.chatMessagesAmount}>{chat.totalMessagesAmount} повідомлень</span>
+
+                    <img
+                           onClick={() => setIsSettingsActive(true)}
+                           className={"nonSelect " + classes.chatPicture}
+                           width={75}
+                           height={75}
+                           src={chat.picture}
+                    />
+
+                </Flex>
             </Flex>
+
 
             <Flex justify={"space-between"}>
                 <Flex>
-                    {typingUsers.length > 0
-                        ?
+                    {typingUsers.length > 0 &&
                         <div className={classes.typing}>
                             <div className={classes.dot}></div>
                             <div className={classes.dot}></div>
                             <div className={classes.dot}></div>
                             <Flex>
-                                {typingUsers.length > 0
-                                    ?
+                                {typingUsers.length > 0 &&
                                     typingUsers.map((user) =>
                                         <span key={"typingUser-" + user.id}>{user.firstName} пише...</span>
                                     )
-                                    : <></>
                                 }
                             </Flex>
                         </div>
-                        :
-                        <div></div>
                     }
                 </Flex>
-                <span>{chat.totalMessagesAmount} повідомлень</span>
             </Flex>
 
             {isSettingsActive &&
