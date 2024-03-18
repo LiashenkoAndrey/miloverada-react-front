@@ -14,7 +14,6 @@ import UserPicture from "../../../components/UserPicture/UserPicture";
 interface MessageProps {
     message: Message
     observer: IntersectionObserver
-    chat?: IChat,
     onEditMessage: (message: Message) => void
     editMessage?: Message
     onReplyMessage: (message: Message) => void
@@ -25,7 +24,6 @@ interface MessageProps {
 
 const MessageListItem: FC<MessageProps> = ({
                                                message,
-                                               chat,
                                                observer,
                                                onEditMessage,
                                                editMessage,
@@ -159,7 +157,6 @@ const MessageListItem: FC<MessageProps> = ({
 
                             <MessageImages
                                 message={message}
-                                chat={chat}
                             />
 
                             {message.fileDtoList

@@ -1,21 +1,21 @@
 import React, {FC, useContext} from 'react';
 import {App, Dropdown, Image, MenuProps} from "antd";
 import PhotoAlbum, {Photo} from "react-photo-album";
-import {IChat, DeleteMessageImageDto, Message, MessageImage} from "../../../../API/services/forum/ForumInterfaces";
+import {DeleteMessageImageDto, Message, MessageImage} from "../../../../API/services/forum/ForumInterfaces";
 import {getForumImageUrl} from "../../../../API/services/ImageService";
 import {useAuth0} from "@auth0/auth0-react";
 import {deleteMessageImageById} from "../../../../API/services/forum/MessageImageService";
 import {AuthContext} from "../../../../context/AuthContext";
 import {useStompClient} from "react-stomp-hooks";
+import {useTypedSelector} from "../../../../hooks/useTypedSelector";
 
 interface MessageImagesProps {
     message : Message
-    chat?: IChat,
 }
 
 
-const MessageImages : FC<MessageImagesProps> = ({message, chat}) => {
-
+const MessageImages : FC<MessageImagesProps> = ({message}) => {
+    const {chatId} = useTypedSelector(state => state.chat)
     const {isAuthenticated} = useAuth0()
     const {jwt} = useContext(AuthContext)
     const {notification} = App.useApp();
@@ -60,11 +60,11 @@ const MessageImages : FC<MessageImagesProps> = ({message, chat}) => {
     }
 
     const notifyThatMessageImageWasDeleted = (messageId : number, imageId : string) => {
-        if (stompClient && chat?.id) {
+        if (stompClient && chatId) {
             const body : DeleteMessageImageDto = {
                 messageId : messageId,
                 imageId : imageId,
-                chatId : chat?.id
+                chatId : chatId
             }
 
             stompClient.publish({

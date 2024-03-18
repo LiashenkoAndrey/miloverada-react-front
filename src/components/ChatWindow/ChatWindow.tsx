@@ -28,13 +28,11 @@ import {getChatMetadata, getMessagesByChatIdAndLastReadMessage} from "../../API/
 import {MESSAGE_LOAD_PORTION_SIZE, MESSAGES_LIST_DEFAULT_SIZE} from "../../Constants";
 
 interface ChatProps {
-    chat? : IChat
 }
 
-const ChatWindow: FC<ChatProps> = ({ chat
-                                   }) => {
+const ChatWindow: FC<ChatProps> = () => {
 
-    const {messages, unreadMessagesCount, chatId} = useTypedSelector(state => state.chat)
+    const {messages, unreadMessagesCount, chatId, chatInfo} = useTypedSelector(state => state.chat)
     const {setMsg, setUnreadMessagesCount, setHasPreviousMessages, setHasNextMessages, setLastReadMessageId} = useActions()
     const stompClient = useStompClient()
     const {user, isAuthenticated} = useAuth0()
@@ -211,8 +209,8 @@ const ChatWindow: FC<ChatProps> = ({ chat
 
         setInput('')
         let msg = messages === undefined ? [] : messages;
-        if (chat !== undefined) {
-            chat.totalMessagesAmount  = chat?.totalMessagesAmount + 1;
+        if (chatInfo !== null) {
+            chatInfo.totalMessagesAmount  = chatInfo?.totalMessagesAmount + 1;
         }
         setMsg([...msg, data])
     }
@@ -264,10 +262,10 @@ const ChatWindow: FC<ChatProps> = ({ chat
     }, [editMessage]);
 
     const notifyThatMessageWasDeleted = (messageId : number) => {
-        if (stompClient && chat?.id) {
+        if (stompClient && chatInfo?.id) {
             const body : DeleteMessageDto = {
                 messageId : messageId,
-                chatId : chat?.id
+                chatId : chatInfo?.id
             }
 
             stompClient.publish({
@@ -297,13 +295,11 @@ const ChatWindow: FC<ChatProps> = ({ chat
             <ChatHeader typingUsers={typingUsers}
                         chatId={chatId}
                         setTypingUsers={setTypingUsers}
-                        chat={chat}
                         filterTypingUsers={filterTypingUsers}
             />
             <Flex style={{backgroundColor: "black", overflowY: "hidden", flexGrow: 1}}>
                 <Flex vertical={true} className={chat_classes.chat} justify={"space-between"}>
                     <MessageList
-                                 chat={chat}
                                  saveLastReadMessageId={saveLastReadMessageId}
                                  onEditMessage={onEditMessage}
                                  editMessage={editMessage}

@@ -15,7 +15,6 @@ import {
 import helloGif from '../../../assets/hello.gif'
 
 interface MessageListProps {
-    chat?: IChat,
     saveLastReadMessageId(messageId: number): void
     onEditMessage : (message : Message) => void
     editMessage? : Message
@@ -25,7 +24,6 @@ interface MessageListProps {
 }
 
 const MessageList: FC<MessageListProps> = ({
-                                               chat,
                                                saveLastReadMessageId,
                                                onEditMessage,
                                                editMessage,
@@ -144,7 +142,6 @@ const MessageList: FC<MessageListProps> = ({
                             onEditMessage={onEditMessage}
                             replyMessage={replyMessage}
                             onReplyMessage={onReplyMessage}
-                            chat={chat}
                             observer={readMessagesObserver}
                             key={"msg-" + msg.id}
                             message={msg}

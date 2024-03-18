@@ -50,8 +50,10 @@ const StoriesList:FC<StoriesListProps> = ({isPost}) => {
         setIsNewPostModalOpen(true)
     }
 
+
+
     return (
-        <Flex className={classes.wrapper} align={"center"} gap={10} style={{marginLeft: 10, marginBottom: 3}}>
+        <Flex className={classes.wrapper} align={"center"} gap={10} style={{marginBottom: 3}}>
             {(isPost && isAuthenticated && !location.pathname.includes("/chat/")) &&
                 <Flex className={classes.btn} vertical gap={2} align={"center"} style={{cursor: "pointer"}}
                       onClick={onNewStory}>
@@ -92,8 +94,8 @@ const StoriesList:FC<StoriesListProps> = ({isPost}) => {
                 {stories.map((e) =>
                     <Flex key={"story-" + e.id} vertical>
                         <Image
-                            style={{border: "solid 2px", borderColor: "#389a3b", borderRadius: 10, position: "relative"}}
                             height={50}
+                            className={classes.storyImg}
                             src={getImageV2Url(e.imageId)}
                         />
                         <span style={{color: "#B1B8BEFF", whiteSpace: "nowrap"}}>

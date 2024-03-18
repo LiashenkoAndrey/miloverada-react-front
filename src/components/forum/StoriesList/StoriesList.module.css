@@ -12,6 +12,12 @@
     color: #545675;
 }
 
+.storyImg {
+    border: solid 2px #389a3b;
+    border-radius: 10px;
+    position: relative;
+}
+
 .toolbarWrapper span:active {
     color: #292a3a;
 }

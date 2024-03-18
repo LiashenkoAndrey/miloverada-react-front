@@ -6,7 +6,7 @@ import {AuthContext} from "../../../context/AuthContext";
 import {useAuth0} from "@auth0/auth0-react";
 import {Avatar, List} from "antd";
 import classes from './ChatList.module.css'
-import {createSearchParams, useNavigate} from "react-router-dom";
+import {createSearchParams, useLocation, useNavigate} from "react-router-dom";
 
 export enum Modes {
     CHATS = "CHATS",
@@ -15,12 +15,13 @@ export enum Modes {
 }
 
 const ChatsList = () => {
-    const {chats, contentMode} = useTypedSelector(state => state.forum)
+    const {chats} = useTypedSelector(state => state.forum)
     const {setChats} = useActions()
     const {user} = useAuth0()
     const {jwt} = useContext(AuthContext)
     const nav = useNavigate();
-
+    const location = useLocation()
+    const {setChatInfo} = useActions()
     const getAll = async () => {
         if (jwt && user?.sub) {
             const {data} = await getUserVisitedChats(decodeURIComponent(user.sub), jwt)
@@ -33,11 +34,14 @@ const ChatsList = () => {
 
     const onSelectChat = (chatId: number, topicId?: number) => {
         const params = createSearchParams(topicId ? {topicId: String(topicId)} : {}).toString()
-        console.log(`/forum/chat/` + chatId)
         nav({
             pathname: `/forum/chat/` + chatId,
             search: params
         })
+        if (location.pathname.includes("/chat/")) {
+            console.log("SET NULL")
+            setChatInfo(null)
+        }
     }
 
     useEffect(() => {

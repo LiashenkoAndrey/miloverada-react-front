@@ -1,8 +1,9 @@
-import {Message} from "../API/services/forum/ForumInterfaces";
+import {IChat, Message} from "../API/services/forum/ForumInterfaces";
 
 export interface ChatState {
     messages: Message[]
-    chatId: number
+    chatId: number,
+    chatInfo: IChat | null
     hasPreviousMessages: boolean
     hasNextMessages: boolean
     unreadMessagesCount : number
@@ -11,6 +12,7 @@ export interface ChatState {
 
 export enum ChatActionTypes {
     SET_MESSAGES = "SET_MESSAGES",
+    SET_CHAT_INFO = "SET_CHAT_INFO",
     FETCH_PREVIOUS_MESSAGES = "FETCH_PREVIOUS_MESSAGES",
     FETCH_NEXT_MESSAGES = "FETCH_NEXT_MESSAGES",
     SET_CHAT_ID = "SET_CHAT_ID",
@@ -24,6 +26,11 @@ export enum ChatActionTypes {
 interface SetMessagesAction {
     type: ChatActionTypes.SET_MESSAGES
     payload: Message[]
+}
+
+interface SetChatInfoAction {
+    type: ChatActionTypes.SET_CHAT_INFO
+    payload: IChat
 }
 
 interface SetUnreadMessagesCountAction {
@@ -72,3 +79,4 @@ export type ChatAction =
     | FetchNextMessagesAction
     | SetUnreadMessagesCountAction
     | SetLastReadMessageIdAction
+    | SetChatInfoAction

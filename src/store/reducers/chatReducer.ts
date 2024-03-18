@@ -4,6 +4,7 @@ import {ChatAction, ChatActionTypes, ChatState} from "../../types/chat";
 const initState: ChatState = {
     messages: [],
     chatId: -1,
+    chatInfo : null,
     hasPreviousMessages: true,
     hasNextMessages: false,
     lastReadMessageId : -1,
@@ -28,6 +29,8 @@ export const chatReducer = (state = initState, action: ChatAction): ChatState =>
             return {...state, lastReadMessageId: action.payload}
         case ChatActionTypes.SET_IS_UNREAD_MESSAGES_COUNT:
             return {...state, unreadMessagesCount: action.payload}
+        case ChatActionTypes.SET_CHAT_INFO:
+            return {...state, chatInfo: action.payload}
         default :
             return state
     }

@@ -17,7 +17,7 @@ const PrivateChatPage = () => {
     const {user, isAuthenticated} = useAuth0()
     const {jwt} = useContext(AuthContext)
     const {chatId} = useTypedSelector(state => state.chat)
-    const [chat, setChat] = useState<IChat>();
+    const {setChatInfo} = useActions()
     const [privateChat, setPrivateChat] = useState<PrivateChat>();
 
     const initChat = async (chatId: number, privateChat : PrivateChat) => {
@@ -34,7 +34,7 @@ const PrivateChatPage = () => {
                     chat.name = privateChat.user2.firstName
                 }
             }
-            setChat(chat)
+            setChatInfo(chat)
         }
         if (error) throw error;
     }
@@ -84,7 +84,7 @@ const PrivateChatPage = () => {
 
                 {isAuthenticated &&
                     <StompSessionProvider url={'https://v2.miloverada.gov.ua:8443/ws-endpoint'}>
-                        <ChatWindow chat={chat}/>
+                        <ChatWindow />
                     </StompSessionProvider>
                 }
 

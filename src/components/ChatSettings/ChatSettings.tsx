@@ -1,51 +1,62 @@
 import React, {FC, useEffect} from 'react';
-import {Button, Descriptions, Flex, Image} from "antd";
+import {Descriptions, Drawer, Flex, Image} from "antd";
 import classes from './ChatSettings.module.css'
-import {IChat} from "../../API/services/forum/ForumInterfaces";
 import {CloseCircleOutlined} from "@ant-design/icons";
-import {toDate, toTime} from "../../API/Util";
+import {toDate} from "../../API/Util";
+import {useTypedSelector} from "../../hooks/useTypedSelector";
 
 interface ChatSettingsProps {
-    chat? : IChat
-    setIsSettingsActive :  React.Dispatch<React.SetStateAction<boolean>>
+    open : boolean
+    setOpen: React.Dispatch<React.SetStateAction<boolean>>
 }
 
-const ChatSettings :FC<ChatSettingsProps> = ({chat, setIsSettingsActive}) => {
-    console.log(chat)
+const ChatSettings :FC<ChatSettingsProps> = ({ open, setOpen}) => {
+    const {chatInfo} = useTypedSelector(state => state.chat)
+
+
     useEffect(() => {
-        console.log(chat?.createdOn)
-    }, [chat]);
+        console.log("OPEN")
+    }, [open]);
+    const onClose = () => {
+        setOpen(false);
+    };
 
     return (
-        <Flex vertical className={classes.ChatSettings}>
-            <Flex justify={"space-between"}>
-                <Flex>
-                    <Image preview={false}
-                           onClick={() => setIsSettingsActive(true)}
-                           className={"nonSelect " + classes.chatPicture}
-                           width={150}
-                           height={150}
-                           src={chat?.picture}
-                    />
+        <Drawer
+            title={chatInfo?.name}
+            placement={'top'}
+            closable
+            onClose={onClose}
+            open={open}
+            getContainer={false}
+            key={"placement"}
+        >
+            <Flex vertical >
+                <Flex justify={"space-between"}>
+                    <Flex>
+                        <Image preview={false}
+                               className={"nonSelect " + classes.chatPicture}
+                               width={150}
+                               height={150}
+                               src={chatInfo?.picture}
+                        />
+                    </Flex>
                 </Flex>
-                <CloseCircleOutlined
-                    style={{fontSize: 25, height: "fit-content"}}
-                    onClick={() => setIsSettingsActive(false)}
-                />
+                <p className={classes.chatDescription}>{chatInfo?.description}</p>
+                <Descriptions layout={"horizontal"} title={false}>
 
+                    {chatInfo?.owner &&
+                        <Descriptions.Item label={<span style={{color: "black"}}>Створив</span>}><span className={classes.userLink}>{chatInfo.owner.firstName}</span></Descriptions.Item>
+                    }
+
+                    {chatInfo?.createdOn &&
+                        <Descriptions.Item label={<span style={{color: "black"}}>Чат створено</span>}><span>{toDate(chatInfo.createdOn)}</span></Descriptions.Item>
+                    }
+                </Descriptions>
             </Flex>
-            <p className={classes.chatDescription}>{chat?.description}</p>
-            <Descriptions layout={"horizontal"} title={false}>
+        </Drawer>
 
-                {chat?.owner &&
-                    <Descriptions.Item label={<span style={{color: "black"}}>Створив</span>}><span className={classes.userLink}>{chat.owner.firstName}</span></Descriptions.Item>
-                }
 
-                {chat?.createdOn &&
-                    <Descriptions.Item label={<span style={{color: "black"}}>Чат створено</span>}><span>{toDate(chat.createdOn)}</span></Descriptions.Item>
-                }
-            </Descriptions>
-        </Flex>
     );
 };
 
