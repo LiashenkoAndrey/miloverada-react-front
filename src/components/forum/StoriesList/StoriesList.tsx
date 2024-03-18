@@ -16,11 +16,13 @@ import {IPost} from "../../../API/services/forum/PostService";
 import {useTypedSelector} from "../../../hooks/useTypedSelector";
 import {useActions} from "../../../hooks/useActions";
 import {useAuth0} from "@auth0/auth0-react";
+import {useLocation} from "react-router-dom";
 
 interface StoriesListProps {
     isPost : boolean
 }
 const StoriesList:FC<StoriesListProps> = ({isPost}) => {
+    const  location = useLocation()
     const [stories, setStories] = useState<Story[]>([])
     const [isNewStoryModalOpen, setIsNewStoryModalOpen] = useState<boolean>(false)
     const [isNewPostModalOpen, setIsNewPostModalOpen] = useState<boolean>(false)
@@ -50,7 +52,7 @@ const StoriesList:FC<StoriesListProps> = ({isPost}) => {
 
     return (
         <Flex className={classes.wrapper} align={"center"} gap={10} style={{marginLeft: 10, marginBottom: 3}}>
-            {(isPost && isAuthenticated) &&
+            {(isPost && isAuthenticated && !location.pathname.includes("/chat/")) &&
                 <Flex className={classes.btn} vertical gap={2} align={"center"} style={{cursor: "pointer"}}
                       onClick={onNewStory}>
                     <PlusCircleTwoTone twoToneColor={"#191a24"} style={{fontSize: 30}}/>
@@ -58,7 +60,7 @@ const StoriesList:FC<StoriesListProps> = ({isPost}) => {
                 </Flex>
             }
            
-            {isAuthenticated &&
+            {(isAuthenticated && !location.pathname.includes("/chat/")) &&
                 <Flex className={classes.btn} vertical gap={2} align={"center"} style={{cursor: "pointer"}}
                       onClick={onNewPost}>
                     <PlusCircleTwoTone twoToneColor={"#191a24"} style={{fontSize: 30}}/>
@@ -94,7 +96,9 @@ const StoriesList:FC<StoriesListProps> = ({isPost}) => {
                             height={50}
                             src={getImageV2Url(e.imageId)}
                         />
-                        <span style={{color: "#B1B8BEFF"}}>{e.author.firstName}</span>
+                        <span style={{color: "#B1B8BEFF", whiteSpace: "nowrap"}}>
+                            {e.author.firstName}
+                        </span>
                     </Flex>
                 )}
             </Image.PreviewGroup>
