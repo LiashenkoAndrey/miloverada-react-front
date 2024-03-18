@@ -68,7 +68,7 @@
 
     .chatWrapper {
         display: flex;
-        max-width: 90vw;
+        /*max-width: 90vw;*/
         width: 100%;
     }
 }

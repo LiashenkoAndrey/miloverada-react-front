@@ -8,19 +8,23 @@ import {Avatar, List} from "antd";
 import classes from './ChatList.module.css'
 import {createSearchParams, useNavigate} from "react-router-dom";
 
+export enum Modes {
+    CHATS = "CHATS",
+    POSTS = "POSTS",
+    TOPICS = "TOPICS"
+}
+
 const ChatsList = () => {
-    const {chats} = useTypedSelector(state => state.forum)
+    const {chats, contentMode} = useTypedSelector(state => state.forum)
     const {setChats} = useActions()
     const {user} = useAuth0()
     const {jwt} = useContext(AuthContext)
     const nav = useNavigate();
 
-
     const getAll = async () => {
         if (jwt && user?.sub) {
             const {data} = await getUserVisitedChats(decodeURIComponent(user.sub), jwt)
             if (data) {
-                console.log(data)
                 setChats(data)
             }
 
@@ -29,15 +33,16 @@ const ChatsList = () => {
 
     const onSelectChat = (chatId: number, topicId?: number) => {
         const params = createSearchParams(topicId ? {topicId: String(topicId)} : {}).toString()
+        console.log(`/forum/chat/` + chatId)
         nav({
-            pathname: "/chat/" + chatId,
+            pathname: `/forum/chat/` + chatId,
             search: params
         })
     }
 
     useEffect(() => {
         getAll()
-    }, []);
+    }, [jwt]);
 
     return (
         <List key={"chatList-" }
@@ -51,19 +56,24 @@ const ChatsList = () => {
               itemLayout="horizontal"
               dataSource={chats}
               renderItem={(item, index) => (
-                  <List.Item className={classes.chatWrapper} key={"chat-" + item.chat.id} style={{paddingLeft: 10}}>
+                  <List.Item className={classes.chatWrapper} key={"chat-" + item.chat.id}
+                             style={{paddingLeft: 10}}
+                             onClick={() => onSelectChat(item.chat.id)}
+                  >
                       <List.Item.Meta
                           avatar={<Avatar size={"large"} src={item.chat.picture}/>}
                           title={
                               <span
-                                  style={{color: "#B1B8BEFF", textDecoration: "underline", cursor: "pointer"}}
-                                  onClick={() => onSelectChat(item.chat.id)}>
+                                  style={{color: "#B1B8BEFF", textDecoration: "underline", cursor: "pointer"}}>
                                             {item.chat.name}
                                         </span>
                           }
                           description={<span style={{color: "#B1B8BEFF"}}>{item.chat.description}</span>}
                       />
-                      <span className={classes.unreadMessagesCount}>{item.chatMetadata.unread_messages_count}</span>
+                      {item.chatMetadata.unread_messages_count > 0 &&
+                          <span className={classes.unreadMessagesCount}>{item.chatMetadata.unread_messages_count}</span>
+
+                      }
                   </List.Item>
               )}
         />

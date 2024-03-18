@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import './App.css';
-import {Route, Routes} from "react-router-dom";
+import {Route, Routes, Navigate } from "react-router-dom";
 import Header from "./components/Header/Header";
 import MainPage from "./pages/MainPage/MainPage";
 import Footer from "./components/Footer/Footer";
@@ -93,17 +93,16 @@ function App() {
                           <Route path={"/documentGroup/:id/subGroup/:subGroupId"} element={<DocumentPage/>}/>
                           <Route path={"/documentGroup/:id"} element={<DocumentPage/>}/>
 
-                          <Route path={"/chat/:id"} element={<ChatPage/>}/>
-                          <Route path={"/topic/:id"} element={<TopicPage/>}/>
                           <Route path={"/contacts"} element={<ContactsPage/>}/>
                           <Route path={"/institutions"} element={<AllInstitutionsPage/>}/>
                           <Route path={"/institution/:id"} element={<InstitutionPage/>}/>
 
+                          <Route path={"/forum/chat/:id"} element={<ChatPage/>}/>
+                          <Route path={"/forum/topic/:id"} element={<TopicPage/>}/>
                           <Route path={"/forum"} element={<AllForumTopicsPage/>}/>
                           <Route path={"/resolveUser"} element={<IsRegisteredCheckPage/>}/>
                           <Route path={"/forum/user/:user1_id/chat"} element={<PrivateChatPage/>}/>
                           <Route path={"/forum/users"} element={<AllUsersPage/>}/>
-                          {/*<Route path={"/*"} element={<Navigate to={"/"}/>}/>*/}
                       </Routes>
                       <Footer/>
                   </Layout>

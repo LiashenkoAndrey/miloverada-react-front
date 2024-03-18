@@ -15,10 +15,14 @@ import { throttle } from 'lodash';
 
 const ChatPage = () => {
     const {setChatId, setHasPreviousMessages} = useActions()
-    const {id} = useParams()
+    const {id, mode} = useParams()
     const [chat, setChat] = useState<IChat>();
     const {isLoading, user} = useAuth0()
     const [leftPanelWidth, setLeftPanelWidth] = useState<number>(500)
+
+    useEffect(() => {
+        console.log(mode)
+    }, [mode]);
 
     const initChat = async (chatId: number, userId? : string) => {
         const {data, error} = await getChatById(chatId, userId);
@@ -51,30 +55,6 @@ const ChatPage = () => {
     const [clientX, setClientX] = useState<number>()
 
 
-    // const handleMouseMove = throttle((event: React.MouseEvent<HTMLDivElement>) => {
-    //     // if (!isDragging || !initialPosition) return;
-    //     console.log(isDragging, initialPosition)
-    //     if (isDragging && initialPosition) {
-    //         console.log("move", event.clientX, initialPosition.x, leftPanelWidth)
-    //
-    //         console.log(
-    //             event.clientX - initialPosition.x,
-    //             leftPanelWidth + ((event.clientX + 5) - initialPosition.x),
-    //             event.clientX
-    //         )
-    //         const dif = event.clientX - initialPosition.x
-    //         const num = 5
-    //         setLeftPanelWidth( leftPanelWidth  + (dif < 0 ? dif - num : dif + num))
-    //         setPosition({
-    //             x: event.clientX - initialPosition.x,
-    //             y: event.clientY - initialPosition.y,
-    //         });
-    //     } else {
-    //         console.log("null", initialPosition)
-    //     }
-    //
-    //
-    // }, 10); // Change 100 to adjust the throttle delay
 
 
     const test = useCallback((event: MouseEvent) => {

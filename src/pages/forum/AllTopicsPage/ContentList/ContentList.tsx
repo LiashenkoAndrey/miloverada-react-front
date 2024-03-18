@@ -1,7 +1,7 @@
-import React, {FC, useState} from 'react';
+import React, {FC, useEffect, useState} from 'react';
 import {Flex, Segmented} from "antd";
 import classes from "../AllForumTopicsPage.module.css";
-import {useNavigate} from "react-router-dom";
+import {useLocation} from "react-router-dom";
 import {UnorderedListOutlined, WechatOutlined} from "@ant-design/icons";
 import TopicsList from "../TopicsList/TopicsList";
 import StoriesList from "../../../../components/forum/StoriesList/StoriesList";
@@ -9,27 +9,47 @@ import {motion} from 'framer-motion'
 // @ts-ignore
 import posIcon from '../../../../assets/posIcon.svg'
 import PostList from "../../../../components/forum/PostList/PostList";
-import ChatsList from "../../../../components/forum/ChatsList/ChatsList";
+import ChatsList, {Modes} from "../../../../components/forum/ChatsList/ChatsList";
 import {useAuth0} from "@auth0/auth0-react";
+import {useActions} from "../../../../hooks/useActions";
+import {useTypedSelector} from "../../../../hooks/useTypedSelector";
 
 interface ChatsListProps {
 }
 
-enum Modes {
-    CHATS,
-    POSTS,
-    TOPICS
-}
 
 const ContentList: FC<ChatsListProps> = () => {
-    const nav = useNavigate()
     const {isAuthenticated} = useAuth0()
-    const [mode, setMode] = useState<Modes>(Modes.TOPICS)
+    const loc = useLocation()
+    const [iMode, setIMode] = useState<Modes>()
+    const {setContentMode} = useActions()
+    const { contentMode} = useTypedSelector(state => state.forum)
 
-    const onSelectMode = (val : string) => {
-        console.log(val)
-        setMode(Number(val))
+
+    const onSelectMode = (val: string) => {
+        const contentMode : Modes = val as Modes
+        setIMode(contentMode)
+        setContentMode(contentMode)
     }
+
+    useEffect(() => {
+        let sp = new URLSearchParams(loc.search)
+        const mode = sp.get("mode")
+        if (mode !== null) {
+            const contentMode : Modes = mode.toUpperCase() as Modes
+            setIMode(contentMode)
+            setContentMode(contentMode)
+        } else {
+            console.log(contentMode)
+            if (contentMode !== null) {
+                setIMode(contentMode)
+            } else {
+                setIMode(Modes.TOPICS)
+                setContentMode(Modes.TOPICS)
+            }
+        }
+    }, []);
+
     const anim = {
         initial : {opacity : 0.8, x : 30},
         animate : {opacity : 1, x : 0},
@@ -78,14 +98,14 @@ const ContentList: FC<ChatsListProps> = () => {
     return (
         <Flex className={classes.ContentList} vertical>
                 <Flex style={{width: "100%"}} justify={"space-between"} >
-                    <StoriesList isPost={mode === Modes.POSTS}/>
+                    <StoriesList isPost={iMode === Modes.POSTS}/>
                     <Segmented style={{backgroundColor: "#191a24"}}
-                               defaultValue={2}
                                options={getOptions()}
+                               value={iMode}
                                onChange={(e) => onSelectMode(e.toString())}
                     />
                 </Flex>
-                {mode === Modes.TOPICS &&
+                {iMode === Modes.TOPICS &&
                     <motion.div style={{flex : 1}}
                         variants={anim2}
                         initial={'initial'}
@@ -97,7 +117,7 @@ const ContentList: FC<ChatsListProps> = () => {
                     </motion.div>
                 }
 
-                {(mode === Modes.CHATS && isAuthenticated) &&
+                {(iMode === Modes.CHATS && isAuthenticated) &&
 
                     <motion.div style={{flex : 1}}
                                 variants={anim2}
@@ -111,7 +131,7 @@ const ContentList: FC<ChatsListProps> = () => {
                     </motion.div>
                 }
 
-                {mode === Modes.POSTS &&
+                {iMode === Modes.POSTS &&
                     <motion.div style={{flex : 1}}
                         variants={anim}
                         initial={'initial'}

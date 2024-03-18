@@ -77,7 +77,7 @@ const TopicsList: FC<TopicsListProps> = () => {
                     />
                 )
                 :
-                <></>
+                <h1>werwerwerwerwerwer</h1>
                 // <Flex justify={"center"} style={{width: "40vw"}}>
                 //     <Empty description={<span style={{color: "white"}}>Немає тем</span>}/>
                 // </Flex>
