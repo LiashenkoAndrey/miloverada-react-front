@@ -10,6 +10,11 @@ export interface INews {
     images? : INewsImage[]
 }
 
+export interface IImage {
+    fileName : string
+    base64Image : string
+}
+
 export interface INewsDto {
     id?: number,
     description? : string,

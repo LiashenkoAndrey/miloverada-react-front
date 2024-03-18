@@ -1,17 +1,11 @@
 import React, {useEffect, useState} from 'react';
-import {Avatar, ConfigProvider, Flex, Segmented, Skeleton, Statistic} from "antd";
-import {Topic} from "../../../API/services/forum/ForumInterfaces";
-import {getAllTopics} from "../../../API/services/forum/TopicService";
-import LatestMessagesList from "./LatestMessagesList/LatestMessagesList";
-import TopicsList from "./TopicsList/TopicsList";
+import {ConfigProvider, Flex} from "antd";
 import {useAuth0} from "@auth0/auth0-react";
 import NewTopic from "../../../components/NewTopic";
 import ForumNavbar from "../../../components/ForumNavbar/ForumNavbar";
 import classes from './AllForumTopicsPage.module.css'
 import {getActiveUsersAmount} from "../../../API/services/forum/UserService";
-import locale from "antd/es/locale/uk_UA";
-import {UnorderedListOutlined, WechatOutlined} from "@ant-design/icons";
-import ChatsList from "./ChatsList/ChatsList";
+import ContentList from "./ContentList/ContentList";
 
 const AllForumTopicsPage = () => {
 
@@ -58,7 +52,7 @@ const AllForumTopicsPage = () => {
                             <NewTopic isAuth={isAuthenticated}/>
                         </Flex>
                     </ForumNavbar>
-                    <ChatsList/>
+                    <ContentList/>
 
                 </Flex>
             </Flex>

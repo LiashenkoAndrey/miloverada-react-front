@@ -1,0 +1,49 @@
+
+
+.topicName {
+    color: var(--forum-secondary-title-color);
+    font-size: 18px;
+    font-weight: 500;
+    margin-left: 40px;
+}
+.topicName:hover {
+
+    text-decoration: underline;
+    cursor: pointer;
+    user-select: none;
+    text-decoration-thickness: 2px;
+}
+.chatName {
+    font-size: 16px;
+    color: #B1B8BEFF;
+    cursor: pointer;
+    text-decoration: underline;
+}
+
+.topicWrapper {
+}
+
+.chatDesc {
+    font-size: 14px;
+    color: #B1B8BEFF;
+}
+
+.messagesAmount {
+    color: rgba(177, 184, 190, 0.62);
+    font-size: 14px;
+}
+
+.chatWrapper {
+    padding-right: 20px!important;
+    padding-left: 20px!important;
+    cursor: pointer;
+    transition: background-color 300ms;
+}
+
+.chatWrapper:hover {
+    background-color: rgba(255, 255, 255, 0.03);
+}
+
+.chatWrapper:active {
+    background-color: rgba(255, 255, 255, 0.17);
+}

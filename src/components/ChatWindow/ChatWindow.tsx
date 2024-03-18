@@ -1,14 +1,14 @@
 import React, {FC, useCallback, useContext, useEffect, useRef, useState} from 'react';
 import {App, Badge, Flex} from "antd";
 import {
-    Chat,
     ChatMetadata,
     DeleteMessageDto,
     DeleteMessageImageDto,
+    IChat,
     LastReadMessageDto,
-    Message, TypingUser,
-    UpdateMessageDto,
-    User
+    Message,
+    TypingUser,
+    UpdateMessageDto
 } from "../../API/services/forum/ForumInterfaces";
 import {useStompClient, useSubscription} from "react-stomp-hooks";
 import MessageList from "./MessageList/MessageList";
@@ -28,7 +28,7 @@ import {getChatMetadata, getMessagesByChatIdAndLastReadMessage} from "../../API/
 import {MESSAGE_LOAD_PORTION_SIZE, MESSAGES_LIST_DEFAULT_SIZE} from "../../Constants";
 
 interface ChatProps {
-    chat? : Chat
+    chat? : IChat
 }
 
 const ChatWindow: FC<ChatProps> = ({ chat
@@ -52,7 +52,6 @@ const ChatWindow: FC<ChatProps> = ({ chat
             if (isAuthenticated) {
                 getMetadataAndLoadMessages(chatId)
             } else {
-                console.log("not auth")
                 getLatestOfChat()
             }
         }
@@ -294,7 +293,7 @@ const ChatWindow: FC<ChatProps> = ({ chat
     }
 
     return (
-        <Flex className={chat_classes.chatWindow} justify={"space-between"} vertical={true}>
+        <Flex style={{zIndex: 2}} className={chat_classes.chatWindow} justify={"space-between"} vertical={true}>
             <ChatHeader typingUsers={typingUsers}
                         chatId={chatId}
                         setTypingUsers={setTypingUsers}

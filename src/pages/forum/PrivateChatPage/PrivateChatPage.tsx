@@ -9,7 +9,7 @@ import {getChatById, getOrCreatePrivateChat} from "../../../API/services/forum/C
 import {useAuth0} from "@auth0/auth0-react";
 import {AuthContext} from "../../../context/AuthContext";
 import {useTypedSelector} from "../../../hooks/useTypedSelector";
-import {Chat, PrivateChat} from "../../../API/services/forum/ForumInterfaces";
+import {IChat, PrivateChat} from "../../../API/services/forum/ForumInterfaces";
 
 const PrivateChatPage = () => {
     const {setChatId, setHasPreviousMessages} = useActions()
@@ -17,13 +17,13 @@ const PrivateChatPage = () => {
     const {user, isAuthenticated} = useAuth0()
     const {jwt} = useContext(AuthContext)
     const {chatId} = useTypedSelector(state => state.chat)
-    const [chat, setChat] = useState<Chat>();
+    const [chat, setChat] = useState<IChat>();
     const [privateChat, setPrivateChat] = useState<PrivateChat>();
 
     const initChat = async (chatId: number, privateChat : PrivateChat) => {
         const {data, error} = await getChatById(chatId);
         if (data) {
-            const chat : Chat = data;
+            const chat : IChat = data;
             if (privateChat) {
                 if (user1_id === privateChat.user1.id) {
                     chat.picture = privateChat.user1.avatar

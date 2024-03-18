@@ -48,10 +48,11 @@
 }
 
 :root {
-    --forum-primary-bg-color : #C4BBAF;
+    --forum-primary-bg-color : #191a24;
     --forum-primary-title-color : #282A3E;
     --forum-secondary-title-color : #282A3E ;
-    --forum-secondary-bg-color : #A5978B;
+    --forum-secondary-bg-color : #2d313d;
+    --forum-primary-text-color : #B1B8BEFF;
 
     --chat-header-bg-color : #605c6c;
     --chat-bg-color : #5C4742;

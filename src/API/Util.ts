@@ -16,6 +16,11 @@ export function toDateShort(date : Array<string>) {
     return new Date(date.toString()).toLocaleString().split(",")[0]
 }
 
+export function toDateV2(date : string) {
+    const t = date.split("T")
+    return t[0]
+}
+
 export function isValidEmail(email : string) {
     // Regular expression for validating email addresses
     var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;

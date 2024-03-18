@@ -20,7 +20,6 @@ const EditMessage : FC<EditMessageProps> = ({setEditMessage, editMessage, setInp
     }
 
     useEffect(() => {
-        console.log(editMessage)
         if (inputRef.current) {
             inputRef.current.focus()
         }

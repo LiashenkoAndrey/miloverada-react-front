@@ -15,10 +15,21 @@ export const getOrCreatePrivateChat = (user1_id : string, user2_id : string, acc
     return callAndGetResult(config)
 }
 
-
-export const getChatById = (chatId : number) => {
+export const getUserVisitedChats = (userId : string, jwt : string) => {
     const config = {
-        url: `${apiServerUrl}/api/forum/chat/id/${chatId}`,
+        url: `${apiServerUrl}/api/protected/forum/user/${userId}/chats`,
+        method: "GET",
+        headers: {
+            Authorization: `Bearer ${jwt}`,
+        }
+    }
+    return callAndGetResult(config)
+}
+
+
+export const getChatById = (chatId : number, userId? : string) => {
+    const config = {
+        url: `${apiServerUrl}/api/forum/chat/id/${chatId}` + (userId ? `?encodedUserId=${userId}` : ""),
         method: "GET"
     }
     return callAndGetResult(config)

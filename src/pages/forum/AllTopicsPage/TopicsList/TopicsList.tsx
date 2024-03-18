@@ -2,8 +2,9 @@ import React, {FC, useEffect, useState} from 'react';
 import {Avatar, Empty, Flex, List} from "antd";
 import {Topic} from "../../../../API/services/forum/ForumInterfaces";
 import {createSearchParams, useNavigate} from "react-router-dom";
-import './TopicList.css'
+import classes from './TopicList.module.css'
 import {getAllTopics} from "../../../../API/services/forum/TopicService";
+import {MessageOutlined, UserOutlined} from "@ant-design/icons";
 
 interface TopicsListProps {
 }
@@ -39,9 +40,9 @@ const TopicsList: FC<TopicsListProps> = () => {
                 ?
                 topics.map((topic) =>
 
-                    <List key={"topicList-" + topic.id}
+                    <List key={"topicList-" + topic.id} className={classes.topicWrapper}
                         header={
-                            <span className={"topicName"} style={{color: "#B1B8BEFF"}}
+                            <span className={classes.topicName} style={{color: "#B1B8BEFF"}}
                                   onClick={() => nav("/topic/" + topic.id)}>
                                     {topic.name}:
                                 </span>
@@ -50,26 +51,36 @@ const TopicsList: FC<TopicsListProps> = () => {
                         itemLayout="horizontal"
                         dataSource={topic.chats}
                         renderItem={(item, index) => (
-                            <List.Item key={"topic-" + item.id} style={{marginLeft: 20}}>
+                            <List.Item onClick={() => onSelectChat(item.id, topic.id)} key={"topic-" + item.id} className={classes.chatWrapper} >
                                 <List.Item.Meta
-                                    avatar={<Avatar src={item.picture}/>}
+                                    avatar={<Avatar size={"large"} src={item.picture}/>}
                                     title={
                                         <span
-                                            style={{color: "#B1B8BEFF", textDecoration: "underline", cursor: "pointer"}}
-                                            onClick={() => onSelectChat(item.id, topic.id)}>
+                                            className={classes.chatName}>
                                             {item.name}
                                         </span>
                                     }
-                                    description={<span style={{color: "#B1B8BEFF"}}>{item.description}</span>}
+                                    description={<span className={classes.chatDesc}>{item.description}</span>}
                                 />
+                                {/*<Flex gap={5}>*/}
+                                {/*    <UserOutlined />*/}
+                                {/*    <span className={classes.messagesAmount}>2</span>*/}
+                                {/*</Flex>*/}
+                                {/*<Flex gap={5}>*/}
+                                {/*    <MessageOutlined />*/}
+                                {/*    <span className={classes.messagesAmount}>234</span>*/}
+
+                                {/*</Flex>*/}
+                                <span className={classes.messagesAmount}>234 повід. <UserOutlined /> 3</span>
                             </List.Item>
                         )}
                     />
                 )
                 :
-                <Flex justify={"center"} style={{width: "40vw"}}>
-                    <Empty description={<span style={{color: "white"}}>Немає тем</span>}/>
-                </Flex>
+                <></>
+                // <Flex justify={"center"} style={{width: "40vw"}}>
+                //     <Empty description={<span style={{color: "white"}}>Немає тем</span>}/>
+                // </Flex>
             }
         </>
     );

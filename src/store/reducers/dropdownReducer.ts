@@ -1,4 +1,4 @@
-import {DropdownAction} from "../actionCreators/dropdown";
+import {DropdownAction} from "../../types/dropdown";
 
 
 export enum DropdownReducerActionTypes {

@@ -1,21 +1,11 @@
 
 
-
-
-
 .loadNewMessagesHandler {
     height: 4px;
     background-color: red;
     position: relative;
     top: 0px;
 }
-
-
-
-
-
-
-
 
 
 .chatBarItem {
@@ -74,7 +64,7 @@
 .chatWrapper {
     width: 100%;
 }
-@media (min-width: 600px) {
+@media (min-width: 1700px) {
 
     .chatWrapper {
         display: flex;
@@ -90,11 +80,7 @@
     }
 
     .chatsWrapper {
-
         display: none;
-        /*padding: 5px;*/
-        /*margin-top: 10px!important;*/
-        /*width: 100vw!important;*/
     }
 
     .chatBarItem {
@@ -118,3 +104,44 @@
     transform: translate(-45%, -66%) !important;
 }
 
+.leftContent {
+    user-select: none;
+    scrollbar-width: thin;
+    scrollbar-color: var(--forum-secondary-bg-color) var(--forum-primary-bg-color);
+    order: 0;
+    padding-top: 10px;
+}
+
+
+.changeSizeLine {
+    position: relative;
+    transition: top 150ms, bottom 150ms, left 150ms, right 150ms;
+    user-select: none;
+    width: 5px;
+    background-color: #0a0a0a;
+}
+
+.changeSizeLine:active {
+    cursor: grabbing;
+
+}
+
+/*.changeSizeLine:hover .bodyChangeLine {*/
+/*    opacity: 1;*/
+/*}*/
+
+
+.grab {
+    user-select: none;
+    transition: top 150ms, bottom 150ms, left 150ms, right 150ms;
+}
+
+.bodyChangeLine {
+    z-index: 2147483647;
+    transition: opacity 550ms;
+    position: absolute;
+    width: 20px;
+    height: 100vh;
+    left: -10px;
+    background-color: rgba(43, 47, 63, 0.58);
+}

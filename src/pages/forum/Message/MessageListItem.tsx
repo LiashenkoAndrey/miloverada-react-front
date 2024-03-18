@@ -1,6 +1,6 @@
 import React, {FC, useCallback, useEffect, useRef} from 'react';
 import {Button, Dropdown, Flex, Image, MenuProps, Tooltip} from "antd";
-import {Chat, Message} from "../../../API/services/forum/ForumInterfaces";
+import {IChat, Message} from "../../../API/services/forum/ForumInterfaces";
 import {useAuth0} from "@auth0/auth0-react";
 import {toDate, toDateShort, toTime} from "../../../API/Util";
 import MessageImages from "./MessageImages/MessageImages";
@@ -14,7 +14,7 @@ import UserPicture from "../../../components/UserPicture/UserPicture";
 interface MessageProps {
     message: Message
     observer: IntersectionObserver
-    chat?: Chat,
+    chat?: IChat,
     onEditMessage: (message: Message) => void
     editMessage?: Message
     onReplyMessage: (message: Message) => void

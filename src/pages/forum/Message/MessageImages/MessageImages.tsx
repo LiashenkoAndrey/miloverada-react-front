@@ -1,7 +1,7 @@
 import React, {FC, useContext} from 'react';
 import {App, Dropdown, Image, MenuProps} from "antd";
 import PhotoAlbum, {Photo} from "react-photo-album";
-import {Chat, DeleteMessageImageDto, Message, MessageImage} from "../../../../API/services/forum/ForumInterfaces";
+import {IChat, DeleteMessageImageDto, Message, MessageImage} from "../../../../API/services/forum/ForumInterfaces";
 import {getForumImageUrl} from "../../../../API/services/ImageService";
 import {useAuth0} from "@auth0/auth0-react";
 import {deleteMessageImageById} from "../../../../API/services/forum/MessageImageService";
@@ -10,7 +10,7 @@ import {useStompClient} from "react-stomp-hooks";
 
 interface MessageImagesProps {
     message : Message
-    chat?: Chat,
+    chat?: IChat,
 }
 
 

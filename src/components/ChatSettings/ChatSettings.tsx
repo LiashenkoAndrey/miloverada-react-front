@@ -1,12 +1,12 @@
 import React, {FC, useEffect} from 'react';
 import {Button, Descriptions, Flex, Image} from "antd";
 import classes from './ChatSettings.module.css'
-import {Chat} from "../../API/services/forum/ForumInterfaces";
+import {IChat} from "../../API/services/forum/ForumInterfaces";
 import {CloseCircleOutlined} from "@ant-design/icons";
 import {toDate, toTime} from "../../API/Util";
 
 interface ChatSettingsProps {
-    chat? : Chat
+    chat? : IChat
     setIsSettingsActive :  React.Dispatch<React.SetStateAction<boolean>>
 }
 

@@ -1,5 +1,4 @@
-import {ChatAction, ChatActionTypes, ChatState} from "../../types/chat";
-import {ChatInputAction} from "../actionCreators/chatInput";
+import {ChatInputAction} from "../../types/chatInput";
 
 export interface ChatInputState {
     filesList : File[]

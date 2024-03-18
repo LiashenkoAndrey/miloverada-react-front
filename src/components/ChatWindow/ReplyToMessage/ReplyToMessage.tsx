@@ -24,7 +24,6 @@ const ReplyToMessage : FC<ReplyToMessageProps> = ({
     }
 
     useEffect(() => {
-        console.log(replyMessage)
         if (inputRef.current) {
             inputRef.current.focus()
         }

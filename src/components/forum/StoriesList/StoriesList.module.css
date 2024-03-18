@@ -15,3 +15,18 @@
 .toolbarWrapper span:active {
     color: #292a3a;
 }
+
+
+.btn {
+    transition: left 0.5s, right 2s;
+    animation: anim 400ms;
+}
+.wrapper {
+    animation: anim 800ms;
+
+}
+
+@keyframes anim {
+    0%    { opacity: 0; }
+    100%  { opacity: 1; }
+}

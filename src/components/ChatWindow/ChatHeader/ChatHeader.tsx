@@ -1,6 +1,6 @@
 import React, {FC, useEffect, useState} from 'react';
 import {Button, Flex, Image, Skeleton} from "antd";
-import {Chat, ForumUserDto, TypingUser, User} from "../../../API/services/forum/ForumInterfaces";
+import {IChat, ForumUserDto, TypingUser, User} from "../../../API/services/forum/ForumInterfaces";
 import classes from './ChatHeader.module.css'
 import {useSubscription} from "react-stomp-hooks";
 import {IMessage} from "@stomp/stompjs/src/i-message";
@@ -9,7 +9,7 @@ import {useNavigate} from "react-router-dom";
 import ChatSettings from "../../ChatSettings/ChatSettings";
 
 interface ChatHeaderProps {
-    chat? : Chat,
+    chat? : IChat,
     typingUsers : Array<TypingUser>
     setTypingUsers : React.Dispatch<React.SetStateAction<TypingUser[]>>
     chatId : number

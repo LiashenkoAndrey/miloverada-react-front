@@ -1,5 +1,6 @@
 import {Dispatch} from "redux";
 import {ChatInputActionTypes} from "../reducers/chatInputReducer";
+import {ChatInputAction} from "../../types/chatInput";
 
 
 export const setFilesList =  (filesList : File[]) => {
@@ -7,10 +8,3 @@ export const setFilesList =  (filesList : File[]) => {
         dispatch({type : ChatInputActionTypes.SET_FILES_LIST, payload : filesList})
     }
 }
-
-interface SetFilesList {
-    type: ChatInputActionTypes.SET_FILES_LIST
-    payload: File[]
-}
-
-export type ChatInputAction = SetFilesList

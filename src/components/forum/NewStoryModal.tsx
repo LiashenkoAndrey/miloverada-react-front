@@ -6,7 +6,7 @@ import textAreaClasses from '../../components/NewsNewCommentInput/NewsNewComment
 // @ts-ignore
 import imagePlaceholder from "../../assets/image-placeholder.svg";
 import {CloseCircleOutlined, PlusOutlined} from "@ant-design/icons";
-import {INewsImage} from "../../domain/NewsInt";
+import {IImage} from "../../domain/NewsInt";
 import {getBase64} from "../../API/Util";
 import TextareaAutosize from "react-textarea-autosize";
 import {newTopic} from "../../API/services/forum/StoryService";
@@ -19,16 +19,13 @@ interface NewStoryModalProps {
 }
 
 const NewStoryModal:FC<NewStoryModalProps> = ({isOpen, setIsOpen}) => {
-
     const [text, setText] = useState<string>('')
     const [imagesFiles, setImagesFiles] = useState<File[]>([])
-    const [newsImages, setNewsImages] = useState<INewsImage[]>([])
+    const [newsImages, setNewsImages] = useState<IImage[]>([])
     const inputFile = useRef<HTMLInputElement | null>(null)
     const [isLoading, setIsLoading] = useState<boolean>(false)
     const {jwt} = useContext(AuthContext)
     const {user} = useAuth0()
-
-
 
     const handleOk = async () => {
         if (jwt && user?.sub) {
@@ -40,9 +37,7 @@ const NewStoryModal:FC<NewStoryModalProps> = ({isOpen, setIsOpen}) => {
             setIsLoading(false)
 
             if (data) {
-                console.log(data)
                 setIsOpen(false)
-
             }
             if (error) throw error
         } else notification.warning({message : "not auth"})
@@ -60,13 +55,13 @@ const NewStoryModal:FC<NewStoryModalProps> = ({isOpen, setIsOpen}) => {
 
     const onImageLoad = (fileList: FileList | null) => {
         if (fileList !== null) {
-            const  arr : INewsImage[] = []
+            const  arr : IImage[] = []
             for (let i = 0; i < fileList.length; i++) {
                 setImagesFiles([...imagesFiles, fileList[i]])
 
                 getBase64(fileList[i], (res: string, filename : string) => {
-                    const img : INewsImage = {
-                        mongoImageId : res,
+                    const img : IImage = {
+                        base64Image : res,
                         fileName : filename
                     }
                     arr.push(img)
@@ -77,8 +72,8 @@ const NewStoryModal:FC<NewStoryModalProps> = ({isOpen, setIsOpen}) => {
             }
         }
     }
-    const onRemove = (img: INewsImage) => {
-        setNewsImages(newsImages.filter((e) => e.mongoImageId !== img.mongoImageId))
+    const onRemove = (img: IImage) => {
+        setNewsImages(newsImages.filter((e) => e.base64Image !== img.base64Image))
         setImagesFiles(imagesFiles.filter((file) => file.name !== img.fileName))
     }
 
@@ -111,7 +106,7 @@ const NewStoryModal:FC<NewStoryModalProps> = ({isOpen, setIsOpen}) => {
                         newsImages.map((img) =>
                             <div style={{position: "relative"}} className={classes2.imgWrapper}>
                                 <Image className={classes2.image}
-                                       src={img.mongoImageId}
+                                       src={img.base64Image}
                                        alt="imagePlaceholder"
                                 />
                                 <CloseCircleOutlined onClick={() => onRemove(img)}

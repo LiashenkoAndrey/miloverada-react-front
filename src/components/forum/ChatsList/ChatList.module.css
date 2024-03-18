@@ -1,0 +1,42 @@
+.name {
+    color: var(--forum-secondary-title-color);
+    font-size: 18px;
+    font-weight: 500;
+    margin-left: 20px;
+}
+.name:hover {
+
+    text-decoration: underline;
+    cursor: pointer;
+    user-select: none;
+    text-decoration-thickness: 2px;
+}
+
+
+.chatList {
+    /*padding-left: 20px;*/
+    /*padding-right: 20px;*/
+}
+.chatWrapper {
+    padding-left: 20px!important;
+    padding-right: 20px!important;
+    cursor: pointer;
+    transition: background-color 300ms;
+}
+
+.chatWrapper:hover {
+    background-color: rgba(255, 255, 255, 0.03);
+}
+
+.chatWrapper:active {
+    background-color: rgba(255, 255, 255, 0.17);
+}
+
+.unreadMessagesCount {
+    font-weight: 900;
+    color: #ffffff;
+    font-size: 13px;
+    border-radius: 5px;
+    padding: 2px 5px;
+    background-color: green;
+}

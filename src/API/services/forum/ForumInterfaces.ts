@@ -53,7 +53,7 @@ export interface PrivateChat {
     user2 : User
 }
 
-export interface Chat {
+export interface IChat {
     id : number,
     name : string,
     description : string,
@@ -64,6 +64,11 @@ export interface Chat {
 }
 
 
+export interface IChatWithMeta {
+    chat : IChat
+    chatMetadata : ChatMetadata
+}
+
 export interface MessageImageDto {
     base64Image : string
 }
@@ -71,6 +76,7 @@ export interface MessageImageDto {
 export interface ChatMetadata {
     last_read_message_id : number
     unread_messages_count : number
+    is_member : boolean
 }
 
 export interface LastReadMessageDto {
@@ -128,7 +134,7 @@ export interface Topic {
     id? : number,
     name? : string,
     description? : string,
-    chats? : Array<Chat>
+    chats? : Array<IChat>
 }
 
 

@@ -1,6 +1,6 @@
 import React, {FC, useEffect, useRef, useState} from 'react';
 import {Empty, Flex} from "antd";
-import {Chat, Message} from "../../../API/services/forum/ForumInterfaces";
+import {IChat, Message} from "../../../API/services/forum/ForumInterfaces";
 import MessageListItem from "../../../pages/forum/Message/MessageListItem";
 import {useAuth0} from "@auth0/auth0-react";
 import classes from './MessageList.module.css'
@@ -11,9 +11,11 @@ import {
     observeNextMessagesLoadingTrigger,
     observePreviousMessagesLoadingTrigger
 } from "../../../API/services/forum/MessageService";
+// @ts-ignore
+import helloGif from '../../../assets/hello.gif'
 
 interface MessageListProps {
-    chat?: Chat,
+    chat?: IChat,
     saveLastReadMessageId(messageId: number): void
     onEditMessage : (message : Message) => void
     editMessage? : Message
@@ -150,7 +152,10 @@ const MessageList: FC<MessageListProps> = ({
                         />
                 )
                 :
-                <Empty style={{marginTop: "5vh"}} description={"Поки немає обрговорень. Почніть першим)!"}/>
+                <Flex justify={"center"}>
+                    <Empty image={<img src={helloGif} alt=""/>} style={{marginTop: "5vh"}} description={<span style={{color :"white", fontSize: 16}}>Поки немає обрговорень. Почніть першим)!</span>}/>
+
+                </Flex>
             }
 
             <div style={{float: "left", clear: "both"}} id={"chatBottom"}></div>

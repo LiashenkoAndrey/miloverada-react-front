@@ -1,0 +1,50 @@
+
+
+.likeBtn {
+    font-size: 27px;
+    color: #263465FF;
+    height: 30px;
+    cursor: pointer;
+    transition: color 300ms;
+}
+
+.likeBtn:hover {
+    color: red;
+}
+
+.likeBtn:active {
+    color: #ab0909;
+}
+
+.commentsAmount {
+    cursor: pointer;
+    color:  var(--forum-primary-text-color);
+}
+
+.buttons {
+    margin-top: 10px;
+}
+.image2 {
+    border-radius: 10px;
+    width: 100% !important;
+    height: 100% !important;
+}
+.image {
+    object-fit: cover;
+    object-position: center;
+    /*width: 100% !important;*/
+    /*height: 100% !important;*/
+    min-height: 400px;
+    max-height: 500px;
+    border-radius: 10px;
+    animation: anim 400ms;
+}
+
+
+@keyframes anim {
+    0%    { opacity: 0; }
+    30%    { opacity: 0.3; }
+    60%    { opacity: 0.6; }
+    100%  { opacity: 1; }
+}
+

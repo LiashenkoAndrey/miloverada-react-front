@@ -1,4 +1,4 @@
-import {UserAction, UserActionTypes, UserState} from "../actionCreators/user";
+import {UserAction, UserActionTypes, UserState} from "../../types/user";
 
 const initState: UserState = {
     appUser : null,

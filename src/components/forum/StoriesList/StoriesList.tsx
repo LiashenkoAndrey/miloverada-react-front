@@ -1,23 +1,36 @@
-import React, {ReactNode, useEffect, useState} from 'react';
+import React, {FC, useEffect, useState} from 'react';
 import {getLatestStories, Story} from "../../../API/services/forum/StoryService";
-import {Avatar, Flex, Image, Space} from "antd";
-import {PlusCircleTwoTone,
+import {Flex, Image} from "antd";
+import {
     DownloadOutlined,
+    PlusCircleTwoTone,
     RotateLeftOutlined,
-    RotateRightOutlined,
-    SwapOutlined,
     ZoomInOutlined,
     ZoomOutOutlined,
 } from "@ant-design/icons";
 import classes from './StoriesList.module.css'
 import NewStoryModal from "../NewStoryModal";
 import {getImageV2Url} from "../../../API/services/ImageService";
+import NewPostModal from "../NewPostModal";
+import {IPost} from "../../../API/services/forum/PostService";
+import {useTypedSelector} from "../../../hooks/useTypedSelector";
+import {useActions} from "../../../hooks/useActions";
+import {useAuth0} from "@auth0/auth0-react";
 
-
-const StoriesList = () => {
+interface StoriesListProps {
+    isPost : boolean
+}
+const StoriesList:FC<StoriesListProps> = ({isPost}) => {
     const [stories, setStories] = useState<Story[]>([])
     const [isNewStoryModalOpen, setIsNewStoryModalOpen] = useState<boolean>(false)
+    const [isNewPostModalOpen, setIsNewPostModalOpen] = useState<boolean>(false)
+    const {posts} = useTypedSelector(state => state.forum)
+    const {setPosts} = useActions()
+    const {isAuthenticated} = useAuth0()
 
+    const addNewPost = (post : IPost) => {
+        setPosts([post, ...posts])
+    }
     const getAll = async () => {
         const {data} = await getLatestStories();
         if (data) setStories(data)
@@ -31,60 +44,66 @@ const StoriesList = () => {
         setIsNewStoryModalOpen(true)
     }
 
-    const onDownload = (imgIndex : number) => {
-        fetch(getImageV2Url(stories[imgIndex].imageId))
-            .then((response) => response.blob())
-            .then((blob) => {
-                const url = URL.createObjectURL(new Blob([blob]));
-                const link = document.createElement('a');
-                link.href = url;
-                document.body.appendChild(link);
-                link.click();
-                URL.revokeObjectURL(url);
-                link.remove();
-            });
-    };
+    const onNewPost = () => {
+        setIsNewPostModalOpen(true)
+    }
 
     return (
-        <Flex align={"center"} gap={10} style={{marginLeft: 10, marginBottom: 3}}>
-            <Flex vertical gap={2} align={"center"} style={{cursor: "pointer"}} onClick={onNewStory}>
-                <PlusCircleTwoTone twoToneColor={"#191a24"} style={{fontSize: 30}} />
-                <span style={{color: "#B1B8BEFF"}}>Ваша історія </span>
-            </Flex>
-            <Image.PreviewGroup       preview={{
+        <Flex className={classes.wrapper} align={"center"} gap={10} style={{marginLeft: 10, marginBottom: 3}}>
+            {(isPost && isAuthenticated) &&
+                <Flex className={classes.btn} vertical gap={2} align={"center"} style={{cursor: "pointer"}}
+                      onClick={onNewStory}>
+                    <PlusCircleTwoTone twoToneColor={"#191a24"} style={{fontSize: 30}}/>
+                    <span style={{color: "#B1B8BEFF"}}>Ваша історія </span>
+                </Flex>
+            }
+           
+            {isAuthenticated &&
+                <Flex className={classes.btn} vertical gap={2} align={"center"} style={{cursor: "pointer"}}
+                      onClick={onNewPost}>
+                    <PlusCircleTwoTone twoToneColor={"#191a24"} style={{fontSize: 30}}/>
+                    <span style={{color: "#B1B8BEFF"}}>Новий пост </span>
+                </Flex>
+            }
+
+            <Image.PreviewGroup key={333} preview={{
                 toolbarRender: (
                     _,
                     {
-
-                        transform: { scale },
-                        actions: { onFlipY, onFlipX, onRotateLeft, onRotateRight, onZoomOut, onZoomIn },
+                        transform: {scale},
+                        actions: {onRotateLeft, onZoomOut, onZoomIn},
                         current
                     },
                 ) => (
                     <Flex gap={25} className={classes.toolbarWrapper}>
-                        <a href={getImageV2Url(stories[current].imageId)} style={{color: "white", textDecoration: "none"}}>
-                            <DownloadOutlined style={{color: "white"}}  />
+                        <a href={getImageV2Url(stories[current].imageId)}
+                           style={{color: "white", textDecoration: "none"}}>
+                            <DownloadOutlined style={{color: "white"}}/>
 
                         </a>
-                        <RotateLeftOutlined onClick={onRotateLeft} />
-                        <ZoomOutOutlined disabled={scale === 1} onClick={onZoomOut} />
-                        <ZoomInOutlined disabled={scale === 50} onClick={onZoomIn} />
+                        <RotateLeftOutlined onClick={onRotateLeft}/>
+                        <ZoomOutOutlined disabled={scale === 1} onClick={onZoomOut}/>
+                        <ZoomInOutlined disabled={scale === 50} onClick={onZoomIn}/>
                     </Flex>
                 ),
-            }} >
+            }}>
                 {stories.map((e) =>
                     <Flex key={"story-" + e.id} vertical>
-                        <Image style={{border: "solid 2px", borderColor: "#389a3b", borderRadius: 10, position: "relative"}}
-                               height={50}
-                               src={getImageV2Url(e.imageId)}
+                        <Image
+                            style={{border: "solid 2px", borderColor: "#389a3b", borderRadius: 10, position: "relative"}}
+                            height={50}
+                            src={getImageV2Url(e.imageId)}
                         />
                         <span style={{color: "#B1B8BEFF"}}>{e.author.firstName}</span>
                     </Flex>
-
                 )}
             </Image.PreviewGroup>
 
 
+            <NewPostModal addNewPost={addNewPost}
+                          isOpen={isNewPostModalOpen}
+                          setIsOpen={setIsNewPostModalOpen}
+            />
             <NewStoryModal isOpen={isNewStoryModalOpen} setIsOpen={setIsNewStoryModalOpen}/>
         </Flex>
     );

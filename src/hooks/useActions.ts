@@ -6,6 +6,7 @@ import * as DropdownActionCreators from '../store/actionCreators/dropdown'
 import * as NewsPreviewActionCreators from '../store/actionCreators/newsPreview'
 import * as UserActionCreators from '../store/actionCreators/user'
 import * as NewsCommentsActionCreators from '../store/actionCreators/newsComments'
+import * as ForumActionCreators from '../store/actionCreators/forum'
 
 export const useActions = () => {
     const dispatch = useDispatch()
@@ -16,6 +17,7 @@ export const useActions = () => {
         DropdownActionCreators,
         NewsPreviewActionCreators,
         UserActionCreators,
-        NewsCommentsActionCreators
+        NewsCommentsActionCreators,
+        ForumActionCreators
     ), dispatch)
 }
