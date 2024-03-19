@@ -131,13 +131,24 @@ const MessageList: FC<MessageListProps> = ({
         return () => loadNextMessagesObserver.disconnect()
     }, [messages]);
 
+    const [isEnableSelection, setIsEnableSelection] = useState<boolean>(false)
+    const [selectedMessages, setSelectedMessages] = useState<Message[]>([])
 
+    useEffect(() => {
+        if (selectedMessages.length === 0) {
+            setIsEnableSelection(false)
+        }
+    }, [selectedMessages]);
     return (
         <Flex id={"msgWrapper"} className={classes.messagesWrapper} vertical={true}>
             {messages.length > 0
                 ?
                 messages.map((msg, index) =>
                         <MessageListItem
+                            isEnableSelection={isEnableSelection}
+                            setIsEnableSelection={setIsEnableSelection}
+                            selectedMessages={selectedMessages}
+                            setSelectedMessages={setSelectedMessages}
                             index={index}
                             onDeleteMessage={onDeleteMessage}
                             onEditMessage={onEditMessage}

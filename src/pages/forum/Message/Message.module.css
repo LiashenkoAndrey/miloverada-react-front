@@ -5,6 +5,7 @@
     padding-left: 5px;
 }
 .messageWrapper2 {
+    position: relative;
     max-width: 800px;
     width: 100%;
 }
@@ -38,7 +39,31 @@
     }
 }
 
+.dropDownOptionIcon {
+    font-size: 20px!important;
+}
+
+
+.dropDownOptionTitle {
+    font-size: 17px;
+}
+
+.messageCheckBox {
+    scale: 1.5;
+}
+.selectable {
+    transition: background-color 330ms;
+}
+
+.selected {
+    background-color: rgba(21, 20, 20, 0.49);
+    transition: background-color 330ms;
+}
+.selectable:hover {
+    background-color: rgba(21, 20, 20, 0.11);
+}
 .message {
+    margin: 2px 0;
     position: relative;
     max-width: 600px;
     transition: display 1s;

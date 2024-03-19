@@ -1,5 +1,5 @@
 import React, {FC, useCallback, useEffect, useRef} from 'react';
-import {Dropdown, Flex, MenuProps} from "antd";
+import {Checkbox, ConfigProvider, Dropdown, Flex, MenuProps} from "antd";
 import {Message} from "../../../API/services/forum/ForumInterfaces";
 import {useAuth0} from "@auth0/auth0-react";
 import {generateContrastColor2, toTime} from "../../../API/Util";
@@ -15,9 +15,14 @@ import UserPicture from "../../../components/UserPicture/UserPicture";
 import refrenceArrowIcon from '../../../assets/back-arrow-svgrepo-com.svg'
 // @ts-ignore
 import refrenceArrowIconBlack from '../../../assets/back-arrow-black.svg'
-import {CopyOutlined} from "@ant-design/icons";
+import {CheckCircleOutlined, CopyOutlined, DeleteOutlined, EditOutlined} from "@ant-design/icons";
+import locale from "antd/es/locale/uk_UA";
 
 interface MessageProps {
+    isEnableSelection: boolean
+    setIsEnableSelection: React.Dispatch<React.SetStateAction<boolean>>
+    selectedMessages: Message[]
+    setSelectedMessages: React.Dispatch<React.SetStateAction<Message[]>>
     index : number
     message: Message
     observer: IntersectionObserver
@@ -37,28 +42,34 @@ class MessageBtn {
         this.id = messageId
     }
 
-
+    select = {
+        icon: <CheckCircleOutlined className={classes.dropDownOptionIcon}/>,
+        label: <span className={classes.dropDownOptionTitle}>Виділити</span>,
+        key: 'select-' + this.id,
+    }
     reply = {
-        label: 'Відповісти',
+        icon: <img src={refrenceArrowIconBlack} height={20} width={20} alt="" />,
+        label: <span className={classes.dropDownOptionTitle}>Відповісти</span>,
         key: 'reply-' + this.id,
     }
     copyText = {
-        icon : <CopyOutlined />,
-        label: 'Копіювати текст',
+        icon: <CopyOutlined className={classes.dropDownOptionIcon}/>,
+        label: <span className={classes.dropDownOptionTitle}>Копіювати текст</span>,
         key: 'copy-' + this.id,
     }
     forward = {
-        icon :  <img  src={refrenceArrowIconBlack} height={10}
-                     width={10} alt=""/>,
-        label: 'Переслати',
+        icon: <img src={refrenceArrowIconBlack} height={20} width={20} alt=""  style={{rotate : "180deg"}}/>,
+        label: <span className={classes.dropDownOptionTitle}>Переслати</span>,
         key: 'forward-' + this.id,
     }
     edit = {
-        label: 'Редагувати',
+        icon :<EditOutlined  className={classes.dropDownOptionIcon}/>,
+        label: <span className={classes.dropDownOptionTitle}>Редагувати</span>,
         key: 'edit-' + this.id,
     }
     delete = {
-        label: 'Видалити',
+        icon : <DeleteOutlined className={classes.dropDownOptionIcon} />,
+        label: <span className={classes.dropDownOptionTitle}>Видалити</span>,
         key: 'delete-' + this.id,
         danger: true
     }
@@ -73,12 +84,15 @@ const MessageListItem: FC<MessageProps> = ({
                                                replyMessage,
                                                onReplyMessage,
                                                onDeleteMessage,
-                                               index
+                                               index,
+                                               isEnableSelection,
+                                               setIsEnableSelection,
+                                               selectedMessages,
+                                               setSelectedMessages
                                            }) => {
     const messageRef = useRef<HTMLDivElement>(null)
     const {isAuthenticated, user} = useAuth0()
     const {lastReadMessageId, messages} = useTypedSelector(state => state.chat)
-    const {isFileDropdownActive} = useTypedSelector(state => state.dropdown)
 
     useEffect(() => {
         if (isAuthenticated) {
@@ -94,9 +108,9 @@ const MessageListItem: FC<MessageProps> = ({
     const messageMenuItems: MenuProps['items'] =
         isMine(message.sender.id)
             ?
-            [btns.reply, btns.copyText, btns.forward, btns.edit, btns.delete]
+            [btns.reply, btns.copyText, btns.forward, btns.edit, btns.select, btns.delete]
             :
-            [btns.reply, btns.copyText, btns.forward]
+            [btns.reply, btns.copyText, btns.forward, btns.select]
 
 
 
@@ -111,6 +125,9 @@ const MessageListItem: FC<MessageProps> = ({
             case 'delete':
                 onDeleteMessage(messageId)
                 break
+            case 'select' :
+                setIsEnableSelection(true)
+                setSelectedMessages([...selectedMessages, message])
         }
     }
 
@@ -199,25 +216,43 @@ const MessageListItem: FC<MessageProps> = ({
             return newColor
         }
     }
+    // const onChangeCheckbox = (checked : boolean) => {
+    //     if (checked) {
+    //         setSelectedMessages([...selectedMessages, message])
+    //     } else {
+    //         setSelectedMessages([...selectedMessages.filter((e) => e.id !== message.id)])
+    //     }
+    // }
 
-
+    const onMessageClick = () => {
+        if (selectedMessages.includes(message)) {
+            setSelectedMessages([...selectedMessages.filter((e) => e.id !== message.id)])
+        } else {
+            setSelectedMessages([...selectedMessages, message])
+        }
+    }
 
     return (
-        <Flex data-index={messages.indexOf(message)}
+        <Dropdown
+            disabled={isEnableSelection}
+            menu={{items: messageMenuItems, onClick: onSelectAction}}
+            trigger={['contextMenu']}
+        >
+        <Flex onClick={onMessageClick}
+              style={{cursor : isEnableSelection ? "pointer" : "initial", margin : isPrevMsgHasTheSameSender() ? "0px 3em 0px 0" : "9px 3em 0px 0"}}
+              data-index={messages.indexOf(message)}
               justify={"center"}
-              className={[isHighlighted(), classes.messageMainWrapper].join(' ')}
+              className={[isHighlighted(), classes.messageMainWrapper, (isEnableSelection && !selectedMessages.includes(message)) ? classes.selectable : "", selectedMessages.includes(message) ? classes.selected  : ""].join(' ')}
               id={"msgWrapper-" + message.id}
         >
+
             <Flex className={classes.messageWrapper2}
                   justify={isMine(message.sender.id) ? "flex-end" : "flex-start"}
             >
-                <Dropdown
-                    menu={{items: messageMenuItems, onClick: onSelectAction}}
-                    trigger={['contextMenu']}
-                >
+
                     <Flex ref={messageRef}
                           className={classes.message}
-                          style={{backgroundColor: isMyMessage(user?.sub, message.sender.id) ? "#8d654c" : "var(--message-bg-color)", margin : isPrevMsgHasTheSameSender() ? "0px 3em 5px 0" : "5px 3em 5px 0"}}
+                          style={{backgroundColor: isMyMessage(user?.sub, message.sender.id) ? "#8d654c" : "var(--message-bg-color)"}}
                           id={"msgId-" + message.id}
                           gap={8}
                     >
@@ -285,19 +320,45 @@ const MessageListItem: FC<MessageProps> = ({
                                     </div>
                                 }
                             </>
-
-
                         }
+
 
                         {isPrevMsgHasTheSameSender() &&
                             <img style={{position: "absolute", bottom: 3, right: 5}} src={refrenceArrowIcon} height={10}
                                  width={10} alt=""/>
                         }
-                    </Flex>
-                </Dropdown>
-            </Flex>
 
+                    </Flex>
+
+                <ConfigProvider theme={{
+                    components : {
+                        Checkbox : {
+                            borderRadiusSM : 20,
+                            colorBgContainer : 'rgba(113,9,44,0)'
+                        }
+                    }
+                }}>
+                    {isEnableSelection &&
+                        <div style={{
+                            position: "absolute",
+                            bottom: 10,
+                            left : -80
+                        }}>
+                            <Checkbox
+                                      checked={selectedMessages.includes(message)}
+                                      className={classes.messageCheckBox}
+                            />
+                        </div>
+
+                    }
+
+                </ConfigProvider>
+
+
+            </Flex>
         </Flex>
+</Dropdown>
+
     );
 };
 
