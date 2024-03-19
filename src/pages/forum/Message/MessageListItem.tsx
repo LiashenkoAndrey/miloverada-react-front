@@ -13,6 +13,9 @@ import UserPicture from "../../../components/UserPicture/UserPicture";
 
 // @ts-ignore
 import refrenceArrowIcon from '../../../assets/back-arrow-svgrepo-com.svg'
+// @ts-ignore
+import refrenceArrowIconBlack from '../../../assets/back-arrow-black.svg'
+import {CopyOutlined} from "@ant-design/icons";
 
 interface MessageProps {
     index : number
@@ -27,6 +30,40 @@ interface MessageProps {
 
 const colorMap = new Map()
 
+class MessageBtn {
+    public id: number = 0;
+
+    constructor(messageId: number) {
+        this.id = messageId
+    }
+
+
+    reply = {
+        label: 'Відповісти',
+        key: 'reply-' + this.id,
+    }
+    copyText = {
+        icon : <CopyOutlined />,
+        label: 'Копіювати текст',
+        key: 'copy-' + this.id,
+    }
+    forward = {
+        icon :  <img  src={refrenceArrowIconBlack} height={10}
+                     width={10} alt=""/>,
+        label: 'Переслати',
+        key: 'forward-' + this.id,
+    }
+    edit = {
+        label: 'Редагувати',
+        key: 'edit-' + this.id,
+    }
+    delete = {
+        label: 'Видалити',
+        key: 'delete-' + this.id,
+        danger: true
+    }
+
+}
 
 const MessageListItem: FC<MessageProps> = ({
                                                message,
@@ -52,21 +89,16 @@ const MessageListItem: FC<MessageProps> = ({
         }
     }, [isAuthenticated]);
 
-    const messageMenuItems: MenuProps['items'] = [
-        {
-            label: 'Відповісти',
-            key: 'reply-' + message.id,
-        },
-        {
-            label: 'Редагувати',
-            key: 'edit-' + message.id,
-        },
-        {
-            label: 'Видалити',
-            key: 'delete-' + message.id,
-            danger: true
-        },
-    ];
+    const btns : MessageBtn = new MessageBtn(message.id)
+
+    const messageMenuItems: MenuProps['items'] =
+        isMine(message.sender.id)
+            ?
+            [btns.reply, btns.copyText, btns.forward, btns.edit, btns.delete]
+            :
+            [btns.reply, btns.copyText, btns.forward]
+
+
 
     async function doAction(action: string, messageId: number) {
         switch (action) {
