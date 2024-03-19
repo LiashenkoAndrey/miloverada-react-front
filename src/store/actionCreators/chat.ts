@@ -24,6 +24,18 @@ export const setChatInfo =  (chatInfo : IChat) => {
     }
 }
 
+export const setIsSelectionEnabled =  (isSelectionEnabled : boolean) => {
+    return async (dispatch : Dispatch<ChatAction>) => {
+        dispatch({type : ChatActionTypes.SET_IS_SELECTION_ENABLED, payload : isSelectionEnabled})
+    }
+}
+
+export const setSelectedMessages =  (messages : Message[]) => {
+    return async (dispatch : Dispatch<ChatAction>) => {
+        dispatch({type : ChatActionTypes.SET_SELECTED_MESSAGES, payload : messages})
+    }
+}
+
 export const setPrivateChatInfo =  (privateChatInfo : PrivateChat) => {
     return async (dispatch : Dispatch<ChatAction>) => {
         dispatch({type : ChatActionTypes.SET_PRIVATE_CHAT_INFO, payload : privateChatInfo})

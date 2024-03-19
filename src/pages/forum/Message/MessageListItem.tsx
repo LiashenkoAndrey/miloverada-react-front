@@ -1,5 +1,5 @@
 import React, {FC, useCallback, useEffect, useRef} from 'react';
-import {Checkbox, ConfigProvider, Dropdown, Flex, MenuProps} from "antd";
+import {Checkbox, ConfigProvider, Dropdown, Flex, MenuProps, message as antdMessage} from "antd";
 import {Message} from "../../../API/services/forum/ForumInterfaces";
 import {useAuth0} from "@auth0/auth0-react";
 import {generateContrastColor2, toTime} from "../../../API/Util";
@@ -15,14 +15,11 @@ import UserPicture from "../../../components/UserPicture/UserPicture";
 import refrenceArrowIcon from '../../../assets/back-arrow-svgrepo-com.svg'
 // @ts-ignore
 import refrenceArrowIconBlack from '../../../assets/back-arrow-black.svg'
-import {CheckCircleOutlined, CopyOutlined, DeleteOutlined, EditOutlined} from "@ant-design/icons";
-import locale from "antd/es/locale/uk_UA";
+import {CheckCircleOutlined, CheckOutlined, CopyOutlined, DeleteOutlined, EditOutlined} from "@ant-design/icons";
+import {useActions} from "../../../hooks/useActions";
+import {setSelectedMessages} from "../../../store/actionCreators/chat";
 
 interface MessageProps {
-    isEnableSelection: boolean
-    setIsEnableSelection: React.Dispatch<React.SetStateAction<boolean>>
-    selectedMessages: Message[]
-    setSelectedMessages: React.Dispatch<React.SetStateAction<Message[]>>
     index : number
     message: Message
     observer: IntersectionObserver
@@ -85,14 +82,11 @@ const MessageListItem: FC<MessageProps> = ({
                                                onReplyMessage,
                                                onDeleteMessage,
                                                index,
-                                               isEnableSelection,
-                                               setIsEnableSelection,
-                                               selectedMessages,
-                                               setSelectedMessages
                                            }) => {
     const messageRef = useRef<HTMLDivElement>(null)
     const {isAuthenticated, user} = useAuth0()
-    const {lastReadMessageId, messages} = useTypedSelector(state => state.chat)
+    const {lastReadMessageId, messages, isSelectionEnabled, selectedMessages} = useTypedSelector(state => state.chat)
+    const {setIsSelectionEnabled, setSelectedMessages} = useActions()
 
     useEffect(() => {
         if (isAuthenticated) {
@@ -126,8 +120,13 @@ const MessageListItem: FC<MessageProps> = ({
                 onDeleteMessage(messageId)
                 break
             case 'select' :
-                setIsEnableSelection(true)
+                setIsSelectionEnabled(true)
                 setSelectedMessages([...selectedMessages, message])
+                break
+            case 'copy' :
+                await navigator.clipboard.writeText(message.text)
+                antdMessage.success({content : "Текст скопійовано", icon : <CheckOutlined />})
+                break
         }
     }
 
@@ -216,35 +215,35 @@ const MessageListItem: FC<MessageProps> = ({
             return newColor
         }
     }
-    // const onChangeCheckbox = (checked : boolean) => {
-    //     if (checked) {
-    //         setSelectedMessages([...selectedMessages, message])
-    //     } else {
-    //         setSelectedMessages([...selectedMessages.filter((e) => e.id !== message.id)])
-    //     }
-    // }
+
 
     const onMessageClick = () => {
-        if (selectedMessages.includes(message)) {
-            setSelectedMessages([...selectedMessages.filter((e) => e.id !== message.id)])
-        } else {
-            setSelectedMessages([...selectedMessages, message])
+        if (isSelectionEnabled) {
+            if (selectedMessages.includes(message)) {
+                setSelectedMessages([...selectedMessages.filter((e) => e.id !== message.id)])
+            } else {
+                setSelectedMessages([...selectedMessages, message])
+            }
         }
     }
 
     return (
         <Dropdown
-            disabled={isEnableSelection}
+            disabled={isSelectionEnabled}
             menu={{items: messageMenuItems, onClick: onSelectAction}}
             trigger={['contextMenu']}
         >
-        <Flex onClick={onMessageClick}
-              style={{cursor : isEnableSelection ? "pointer" : "initial", margin : isPrevMsgHasTheSameSender() ? "0px 3em 0px 0" : "9px 3em 0px 0"}}
-              data-index={messages.indexOf(message)}
-              justify={"center"}
-              className={[isHighlighted(), classes.messageMainWrapper, (isEnableSelection && !selectedMessages.includes(message)) ? classes.selectable : "", selectedMessages.includes(message) ? classes.selected  : ""].join(' ')}
-              id={"msgWrapper-" + message.id}
-        >
+            <Flex onClick={onMessageClick}
+                  style={{
+                      cursor: isSelectionEnabled ? "pointer" : "initial",
+                      margin: isPrevMsgHasTheSameSender() ? "0px 3em 0px 0" : "9px 3em 0px 0"
+                  }}
+                  data-index={messages.indexOf(message)}
+                  justify={"center"}
+                  onDoubleClick={() => onEditMessage(message)}
+                  className={[isHighlighted(), classes.messageMainWrapper, (isSelectionEnabled && !selectedMessages.includes(message)) ? classes.selectable : "", selectedMessages.includes(message) ? classes.selected : ""].join(' ')}
+                  id={"msgWrapper-" + message.id}
+            >
 
             <Flex className={classes.messageWrapper2}
                   justify={isMine(message.sender.id) ? "flex-end" : "flex-start"}
@@ -338,7 +337,7 @@ const MessageListItem: FC<MessageProps> = ({
                         }
                     }
                 }}>
-                    {isEnableSelection &&
+                    {isSelectionEnabled &&
                         <div style={{
                             position: "absolute",
                             bottom: 10,
@@ -353,8 +352,6 @@ const MessageListItem: FC<MessageProps> = ({
                     }
 
                 </ConfigProvider>
-
-
             </Flex>
         </Flex>
 </Dropdown>

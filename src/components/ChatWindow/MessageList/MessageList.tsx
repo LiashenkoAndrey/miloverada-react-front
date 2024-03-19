@@ -13,6 +13,8 @@ import {
 } from "../../../API/services/forum/MessageService";
 // @ts-ignore
 import helloGif from '../../../assets/hello.gif'
+import {setSelectedMessages} from "../../../store/actionCreators/chat";
+
 
 interface MessageListProps {
     saveLastReadMessageId(messageId: number): void
@@ -33,10 +35,10 @@ const MessageList: FC<MessageListProps> = ({
                                            }) => {
 
     const {isAuthenticated} = useAuth0()
-    const {messages, chatId, hasPreviousMessages, hasNextMessages, unreadMessagesCount, lastReadMessageId} = useTypedSelector(state => state.chat)
+    const {messages, chatId, hasPreviousMessages, hasNextMessages, unreadMessagesCount, lastReadMessageId, selectedMessages, isSelectionEnabled} = useTypedSelector(state => state.chat)
     const [newSeenMessageId, setNewSeenMessageId] = useState<number>()
     const [oldSeenMsgID, setOldSeenMsgID] = useState<number>()
-    const {fetchPreviousMessages, fetchNextMessages, setUnreadMessagesCount, setLastReadMessageId} = useActions()
+    const {fetchPreviousMessages, fetchNextMessages, setUnreadMessagesCount, setLastReadMessageId, setIsSelectionEnabled} = useActions()
 
     useEffect(() => {
         if (newSeenMessageId === undefined) {
@@ -131,12 +133,10 @@ const MessageList: FC<MessageListProps> = ({
         return () => loadNextMessagesObserver.disconnect()
     }, [messages]);
 
-    const [isEnableSelection, setIsEnableSelection] = useState<boolean>(false)
-    const [selectedMessages, setSelectedMessages] = useState<Message[]>([])
 
     useEffect(() => {
         if (selectedMessages.length === 0) {
-            setIsEnableSelection(false)
+            setIsSelectionEnabled(false)
         }
     }, [selectedMessages]);
     return (
@@ -145,10 +145,6 @@ const MessageList: FC<MessageListProps> = ({
                 ?
                 messages.map((msg, index) =>
                         <MessageListItem
-                            isEnableSelection={isEnableSelection}
-                            setIsEnableSelection={setIsEnableSelection}
-                            selectedMessages={selectedMessages}
-                            setSelectedMessages={setSelectedMessages}
                             index={index}
                             onDeleteMessage={onDeleteMessage}
                             onEditMessage={onEditMessage}
@@ -167,7 +163,7 @@ const MessageList: FC<MessageListProps> = ({
                 </Flex>
             }
 
-            <div style={{float: "left", clear: "both"}} id={"chatBottom"}></div>
+            <div style={{float: "left", clear: "both", marginBottom: isSelectionEnabled ? 60 : 20}} id={"chatBottom"}></div>
         </Flex>
     );
 };

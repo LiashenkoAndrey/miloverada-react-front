@@ -1,10 +1,9 @@
 import React, {FC, useCallback, useContext, useEffect, useRef, useState} from 'react';
-import {App, Badge, Flex} from "antd";
+import {App, Badge, Button, ConfigProvider, Flex} from "antd";
 import {
     ChatMetadata,
     DeleteMessageDto,
     DeleteMessageImageDto,
-    IChat,
     LastReadMessageDto,
     Message,
     TypingUser,
@@ -16,7 +15,7 @@ import ChatInput from "./ChatInput/ChatInput";
 import ChatHeader from "./ChatHeader/ChatHeader";
 import {IMessage} from "@stomp/stompjs/src/i-message";
 import {useAuth0} from "@auth0/auth0-react";
-import {DownOutlined} from "@ant-design/icons";
+import {CloseOutlined, DeleteOutlined, DownOutlined} from "@ant-design/icons";
 import {deleteMessageById, getLatestMessagesOfChat} from "../../API/services/forum/MessageService";
 import {AuthContext} from "../../context/AuthContext";
 import chat_classes from './ChatWindow.module.css'
@@ -26,13 +25,17 @@ import {isMyMessage} from "../../API/services/forum/UserService";
 import {MessageFileDto} from "../../API/services/forum/MessageDto";
 import {getChatMetadata, getMessagesByChatIdAndLastReadMessage} from "../../API/services/forum/ChatService";
 import {MESSAGE_LOAD_PORTION_SIZE, MESSAGES_LIST_DEFAULT_SIZE} from "../../Constants";
+import {CSSTransition, TransitionGroup} from "react-transition-group";
+// @ts-ignore
+import refrenceArrowIconBlack from "../../assets/back-arrow-svgrepo-com.svg";
+import SelectionToolbar from "../forum/SelectionToolbar/SelectionToolbar";
 
 interface ChatProps {
 }
 
 const ChatWindow: FC<ChatProps> = () => {
 
-    const {messages, unreadMessagesCount, chatId, chatInfo} = useTypedSelector(state => state.chat)
+    const {messages, unreadMessagesCount, chatId, chatInfo, isSelectionEnabled} = useTypedSelector(state => state.chat)
     const {setMsg, setUnreadMessagesCount, setHasPreviousMessages, setHasNextMessages, setLastReadMessageId} = useActions()
     const stompClient = useStompClient()
     const {user, isAuthenticated} = useAuth0()
@@ -289,7 +292,6 @@ const ChatWindow: FC<ChatProps> = () => {
             }
         }
     }
-
     return (
         <Flex style={{zIndex: 2}} className={chat_classes.chatWindow} justify={"space-between"} vertical={true}>
             <ChatHeader typingUsers={typingUsers}
@@ -300,30 +302,42 @@ const ChatWindow: FC<ChatProps> = () => {
             <Flex style={{backgroundColor: "black", overflowY: "hidden", flexGrow: 1}}>
                 <Flex vertical={true} className={chat_classes.chat} justify={"space-between"}>
                     <MessageList
-                                 saveLastReadMessageId={saveLastReadMessageId}
-                                 onEditMessage={onEditMessage}
-                                 editMessage={editMessage}
-                                 onReplyMessage={onReplyMessage}
-                                 replyMessage={replyMessage}
-                                 onDeleteMessage={onDeleteMessage}
+                        saveLastReadMessageId={saveLastReadMessageId}
+                        onEditMessage={onEditMessage}
+                        editMessage={editMessage}
+                        onReplyMessage={onReplyMessage}
+                        replyMessage={replyMessage}
+                        onDeleteMessage={onDeleteMessage}
                     />
-                    <Flex style={{display: isScrollDownButtonActive ? "flex" : "none"}} onClick={toBottom} className={"unreadMessagesFloatButtonWrapper"}>
+
+                    <SelectionToolbar onDeleteMessage={onDeleteMessage}/>
+
+                    <Flex style={{display: isScrollDownButtonActive ? "flex" : "none"}} onClick={toBottom}
+                          className={"unreadMessagesFloatButtonWrapper"}>
                         <Badge count={unreadMessagesCount} color={"#8f4c58"}>
-                            <DownOutlined className={"unreadMessagesFloatButton"} />
+                            <DownOutlined className={"unreadMessagesFloatButton"}/>
                         </Badge>
                     </Flex>
                 </Flex>
             </Flex>
-            <ChatInput chatId={chatId}
-                       input={input}
-                       setInput={setInput}
-                       stompClient={stompClient}
-                       filterTypingUsers={filterTypingUsers}
-                       editMessage={editMessage}
-                       setEditMessage={setEditMessage}
-                       replyMessage={replyMessage}
-                       setReplyMessage={setReplyMessage}
-            />
+            <div
+                 className={chat_classes.chatBottomWrapper}
+            >
+                {!isSelectionEnabled &&
+                    <ChatInput chatId={chatId}
+                               input={input}
+                               setInput={setInput}
+                               stompClient={stompClient}
+                               filterTypingUsers={filterTypingUsers}
+                               editMessage={editMessage}
+                               setEditMessage={setEditMessage}
+                               replyMessage={replyMessage}
+                               setReplyMessage={setReplyMessage}
+                    />
+                }
+
+            </div>
+
         </Flex>
     );
 };

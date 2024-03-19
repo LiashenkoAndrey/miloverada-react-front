@@ -5,6 +5,8 @@ const initState: ChatState = {
     messages: [],
     chatId: -1,
     chatInfo : null,
+    isSelectionEnabled : false,
+    selectedMessages : [],
     privateChatInfo : null,
     hasPreviousMessages: true,
     hasNextMessages: false,
@@ -34,6 +36,10 @@ export const chatReducer = (state = initState, action: ChatAction): ChatState =>
             return {...state, chatInfo: action.payload}
         case ChatActionTypes.SET_PRIVATE_CHAT_INFO:
             return {...state, privateChatInfo: action.payload}
+        case ChatActionTypes.SET_IS_SELECTION_ENABLED:
+            return {...state, isSelectionEnabled: action.payload}
+        case ChatActionTypes.SET_SELECTED_MESSAGES:
+            return {...state, selectedMessages: action.payload}
         default :
             return state
     }

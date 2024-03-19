@@ -4,6 +4,8 @@ export interface ChatState {
     messages: Message[]
     chatId: number,
     chatInfo: IChat | null
+    isSelectionEnabled : boolean
+    selectedMessages : Message[]
     privateChatInfo : PrivateChat | null
     hasPreviousMessages: boolean
     hasNextMessages: boolean
@@ -15,6 +17,8 @@ export enum ChatActionTypes {
     SET_MESSAGES = "SET_MESSAGES",
     SET_CHAT_INFO = "SET_CHAT_INFO",
     SET_PRIVATE_CHAT_INFO = "SET_PRIVATE_CHAT_INFO",
+    SET_IS_SELECTION_ENABLED = "SET_IS_SELECTION_ENABLED" ,
+    SET_SELECTED_MESSAGES = "SET_SELECTED_MESSAGES" ,
     FETCH_PREVIOUS_MESSAGES = "FETCH_PREVIOUS_MESSAGES",
     FETCH_NEXT_MESSAGES = "FETCH_NEXT_MESSAGES",
     SET_CHAT_ID = "SET_CHAT_ID",
@@ -29,6 +33,17 @@ interface SetMessagesAction {
     type: ChatActionTypes.SET_MESSAGES
     payload: Message[]
 }
+
+interface SetSelectedMessagesAction {
+    type: ChatActionTypes.SET_SELECTED_MESSAGES
+    payload: Message[]
+}
+
+interface SetIsSelectionEnabledAction {
+    type: ChatActionTypes.SET_IS_SELECTION_ENABLED
+    payload: boolean
+}
+
 
 interface SetPrivateChatInfoAction {
     type: ChatActionTypes.SET_PRIVATE_CHAT_INFO
@@ -88,3 +103,5 @@ export type ChatAction =
     | SetLastReadMessageIdAction
     | SetChatInfoAction
     | SetPrivateChatInfoAction
+    | SetIsSelectionEnabledAction
+    | SetSelectedMessagesAction
