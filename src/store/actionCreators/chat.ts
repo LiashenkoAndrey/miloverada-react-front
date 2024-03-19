@@ -1,6 +1,6 @@
 import {Dispatch} from "redux";
 import {ChatAction, ChatActionTypes} from "../../types/chat";
-import {IChat, Message} from "../../API/services/forum/ForumInterfaces";
+import {IChat, Message, PrivateChat} from "../../API/services/forum/ForumInterfaces";
 import {getNextMessagesOfChat, getPreviousMessagesOfChat} from "../../API/services/forum/MessageService";
 import {MESSAGE_LOAD_PORTION_SIZE} from "../../Constants";
 
@@ -21,6 +21,12 @@ export const setChatId =  (chatId : number) => {
 export const setChatInfo =  (chatInfo : IChat) => {
     return async (dispatch : Dispatch<ChatAction>) => {
         dispatch({type : ChatActionTypes.SET_CHAT_INFO, payload : chatInfo})
+    }
+}
+
+export const setPrivateChatInfo =  (privateChatInfo : PrivateChat) => {
+    return async (dispatch : Dispatch<ChatAction>) => {
+        dispatch({type : ChatActionTypes.SET_PRIVATE_CHAT_INFO, payload : privateChatInfo})
     }
 }
 

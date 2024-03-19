@@ -140,7 +140,6 @@ const MessageListItem: FC<MessageProps> = ({
                           gap={8}
                     >
 
-                        <UserPicture user={message.sender}/>
 
                         <Flex vertical={true}>
                             <Flex style={{position: "relative"}}
@@ -149,14 +148,18 @@ const MessageListItem: FC<MessageProps> = ({
                                   align={"center"}
                                   justify={"space-between"}
                             >
-                                <span className={classes.senderName}>{message.sender.firstName}</span>
-                                <span className={classes.messageDate} style={{margin: 0, alignSelf: "flex-end"}}>
-                            {toTime(message.createdOn)}
-                        </span>
+                                <Flex gap={5} align={"center"}>
+                                    <UserPicture user={message.sender}/>
+
+
+                                    <span className={classes.senderName}>{message.sender.firstName}</span>
+                                </Flex>
+                                <span className={classes.messageDate} style={{margin: 0}}>
+                                    {toTime(message.createdOn)}
+                                </span>
                             </Flex>
                             <Flex vertical style={{marginTop: 3}}>
                                 <span style={{fontWeight: "bold", display: "none"}}>{message.id}</span>
-
 
                                 {message.repliedMessage &&
                                     <Flex onClick={onRepliedMessageLinkClick}
@@ -165,20 +168,16 @@ const MessageListItem: FC<MessageProps> = ({
                                     </Flex>
                                 }
 
-                                <MessageImages
-                                    message={message}
-                                />
+                                <MessageImages message={message}/>
 
                                 {message.fileDtoList
                                     &&
                                     <FileDtoList files={message.fileDtoList}/>
-
                                 }
 
                                 {message.filesList
                                     &&
                                     <FileList messageFiles={message.filesList}/>
-
                                 }
 
                                 <pre className={classes.messageText} style={{margin: 0, alignSelf: "flex-end"}}>

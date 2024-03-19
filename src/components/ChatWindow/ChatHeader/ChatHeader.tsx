@@ -24,7 +24,7 @@ const ChatHeader: FC<ChatHeaderProps> = ({
                                              chatId,
                                              filterTypingUsers
                                          }) => {
-    const {chatInfo} = useTypedSelector(state => state.chat)
+    const {chatInfo, privateChatInfo} = useTypedSelector(state => state.chat)
     const [isSettingsActive, setIsSettingsActive] = useState<boolean>(false)
     const nav = useNavigate()
     const onUsersStartTyping = (message : IMessage) => {
@@ -58,16 +58,21 @@ const ChatHeader: FC<ChatHeaderProps> = ({
                          src={leftArrImg}
                          onClick={() => nav(-1)}
                     />
-                    {chatInfo ?
+                    {chatInfo &&
                         <span className={classes.chatName}>{chatInfo.name}</span>
-                        :
+                    }
+
+                    {privateChatInfo &&
+                        <span className={classes.chatName}>{privateChatInfo.user2.firstName} {privateChatInfo.user2.lastName}</span>
+                    }
+                    {!chatInfo && !privateChatInfo &&
                         <Flex vertical gap={3} style={{marginBottom: 2}} >
                             <Skeleton.Input active/>
                             <Skeleton.Input  size={"small"} active/>
 
                         </Flex>
                     }
-                    {chatInfo &&
+                    {(chatInfo && privateChatInfo === null) &&
                         <span style={{ color:"var(--forum-primary-text-color)"}} >{chatInfo.description}</span>
                     }
                 </Flex>
@@ -87,9 +92,10 @@ const ChatHeader: FC<ChatHeaderProps> = ({
                             className={"nonSelect " + classes.chatPicture}
                             width={75}
                             height={75}
-                            src={chatInfo.picture}
+                            src={privateChatInfo ? privateChatInfo.user2.avatar : chatInfo.picture}
                         />
                         :
+
                         <Skeleton.Image style={{height: "100%"}} active/>
                     }
 

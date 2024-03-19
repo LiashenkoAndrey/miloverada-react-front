@@ -240,7 +240,7 @@ const ChatInput: FC<ChatInputProps> = ({
     const inputRef = useRef<HTMLTextAreaElement | null>(null)
 
     return (
-        <Flex vertical>
+        <Flex vertical >
             <FileUpload
                 isFileUploadActive={isFileUploadActive}
                 setIsFileUploadActive={setIsFileUploadActive}

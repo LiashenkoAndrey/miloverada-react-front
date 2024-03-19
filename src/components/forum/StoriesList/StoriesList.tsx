@@ -54,7 +54,7 @@ const StoriesList:FC<StoriesListProps> = ({isPost}) => {
 
     return (
         <Flex className={classes.wrapper} align={"center"} gap={10} style={{marginBottom: 3}}>
-            {(isPost && isAuthenticated && !location.pathname.includes("/chat/")) &&
+            {(isPost && isAuthenticated && !location.pathname.includes("chat")) &&
                 <Flex className={classes.btn} vertical gap={2} align={"center"} style={{cursor: "pointer"}}
                       onClick={onNewStory}>
                     <PlusCircleTwoTone twoToneColor={"#191a24"} style={{fontSize: 30}}/>
@@ -62,7 +62,7 @@ const StoriesList:FC<StoriesListProps> = ({isPost}) => {
                 </Flex>
             }
            
-            {(isAuthenticated && !location.pathname.includes("/chat/")) &&
+            {(isAuthenticated && !location.pathname.includes("chat")) &&
                 <Flex className={classes.btn} vertical gap={2} align={"center"} style={{cursor: "pointer"}}
                       onClick={onNewPost}>
                     <PlusCircleTwoTone twoToneColor={"#191a24"} style={{fontSize: 30}}/>

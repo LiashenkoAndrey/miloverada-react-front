@@ -28,6 +28,7 @@ export const getUserVisitedChats = (userId : string, jwt : string) => {
 
 
 export const getChatById = (chatId : number, userId? : string) => {
+    console.log("get chat", chatId, `${apiServerUrl}/api/forum/chat/id/${chatId}` + (userId ? `?encodedUserId=${userId}` : ""))
     const config = {
         url: `${apiServerUrl}/api/forum/chat/id/${chatId}` + (userId ? `?encodedUserId=${userId}` : ""),
         method: "GET"

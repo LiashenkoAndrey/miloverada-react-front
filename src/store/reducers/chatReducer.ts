@@ -5,6 +5,7 @@ const initState: ChatState = {
     messages: [],
     chatId: -1,
     chatInfo : null,
+    privateChatInfo : null,
     hasPreviousMessages: true,
     hasNextMessages: false,
     lastReadMessageId : -1,
@@ -31,6 +32,8 @@ export const chatReducer = (state = initState, action: ChatAction): ChatState =>
             return {...state, unreadMessagesCount: action.payload}
         case ChatActionTypes.SET_CHAT_INFO:
             return {...state, chatInfo: action.payload}
+        case ChatActionTypes.SET_PRIVATE_CHAT_INFO:
+            return {...state, privateChatInfo: action.payload}
         default :
             return state
     }
