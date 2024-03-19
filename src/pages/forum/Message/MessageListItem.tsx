@@ -1,8 +1,8 @@
 import React, {FC, useCallback, useEffect, useRef} from 'react';
-import {Button, Dropdown, Flex, Image, MenuProps, Tooltip} from "antd";
-import {IChat, Message} from "../../../API/services/forum/ForumInterfaces";
+import {Dropdown, Flex, MenuProps} from "antd";
+import {Message} from "../../../API/services/forum/ForumInterfaces";
 import {useAuth0} from "@auth0/auth0-react";
-import {toDate, toDateShort, toTime} from "../../../API/Util";
+import {generateContrastColor2, toTime} from "../../../API/Util";
 import MessageImages from "./MessageImages/MessageImages";
 import classes from './Message.module.css'
 import {useTypedSelector} from "../../../hooks/useTypedSelector";
@@ -11,7 +11,11 @@ import FileList from "../../../components/Files/FileList";
 import FileDtoList from "../../../components/Files/FileDtoList";
 import UserPicture from "../../../components/UserPicture/UserPicture";
 
+// @ts-ignore
+import refrenceArrowIcon from '../../../assets/back-arrow-svgrepo-com.svg'
+
 interface MessageProps {
+    index : number
     message: Message
     observer: IntersectionObserver
     onEditMessage: (message: Message) => void
@@ -21,6 +25,8 @@ interface MessageProps {
     onDeleteMessage: (messageId: number) => void
 }
 
+const colorMap = new Map()
+
 
 const MessageListItem: FC<MessageProps> = ({
                                                message,
@@ -29,7 +35,8 @@ const MessageListItem: FC<MessageProps> = ({
                                                editMessage,
                                                replyMessage,
                                                onReplyMessage,
-                                               onDeleteMessage
+                                               onDeleteMessage,
+                                               index
                                            }) => {
     const messageRef = useRef<HTMLDivElement>(null)
     const {isAuthenticated, user} = useAuth0()
@@ -119,6 +126,49 @@ const MessageListItem: FC<MessageProps> = ({
         return false;
     }
 
+    /**
+     * Checks if sender of previous message is the same as in this message
+     */
+    function isPrevMsgHasTheSameSender() {
+        const elem = messages[index - 1];
+        if (elem) {
+            return messages[index -1].sender.id === message.sender.id
+        }
+        return false;
+    }
+
+    /**
+     * Checks if sender of next message is the same as in this message
+     */
+    function isNextMsgHasTheSameSender() {
+        const elem = messages[index + 1];
+        if (elem) {
+            return messages[index + 1].sender.id !== message.sender.id
+        } else {
+            return isPrevMsgHasTheSameSender();
+        }
+    }
+
+
+    /**
+     * generates random colors and saves is to map as value and message sender id as key
+     */
+    function generateContrastColor() {
+        const id = message.sender.id
+
+        // get color from map by sender id
+        if (colorMap.has(id)) {
+            return colorMap.get(id)
+
+        } else {
+            // generate new color and set it to map as value and user id as key
+            const newColor = generateContrastColor2()
+            colorMap.set(id, newColor)
+            return newColor
+        }
+    }
+
+
 
     return (
         <Flex data-index={messages.indexOf(message)}
@@ -135,28 +185,31 @@ const MessageListItem: FC<MessageProps> = ({
                 >
                     <Flex ref={messageRef}
                           className={classes.message}
-                          style={{backgroundColor: isMyMessage(user?.sub, message.sender.id) ? "#8d654c" : "var(--message-bg-color)"}}
+                          style={{backgroundColor: isMyMessage(user?.sub, message.sender.id) ? "#8d654c" : "var(--message-bg-color)", margin : isPrevMsgHasTheSameSender() ? "0px 3em 5px 0" : "5px 3em 5px 0"}}
                           id={"msgId-" + message.id}
                           gap={8}
                     >
 
 
-                        <Flex vertical={true}>
+                        <Flex vertical={true} style={{paddingBottom: 3}}>
                             <Flex style={{position: "relative"}}
                                   className={"nonSelect"}
-                                  gap={5}
+                                  gap={8}
                                   align={"center"}
                                   justify={"space-between"}
                             >
                                 <Flex gap={5} align={"center"}>
-                                    <UserPicture user={message.sender}/>
+                                    <div></div>
+                                    {!isPrevMsgHasTheSameSender() &&
+                                        <span className={classes.senderName} style={{color: generateContrastColor()}}>{message.sender.firstName}</span>
+                                    }
 
-
-                                    <span className={classes.senderName}>{message.sender.firstName}</span>
                                 </Flex>
+
                                 <span className={classes.messageDate} style={{margin: 0}}>
                                     {toTime(message.createdOn)}
                                 </span>
+
                             </Flex>
                             <Flex vertical style={{marginTop: 3}}>
                                 <span style={{fontWeight: "bold", display: "none"}}>{message.id}</span>
@@ -183,8 +236,31 @@ const MessageListItem: FC<MessageProps> = ({
                                 <pre className={classes.messageText} style={{margin: 0, alignSelf: "flex-end"}}>
                                     {message.text}
                                 </pre>
+
                             </Flex>
+
                         </Flex>
+                        {(isNextMsgHasTheSameSender()) &&
+                            <>
+                                {isMine(message.sender.id)
+                                    ?
+                                    <div style={{position: "absolute", bottom: 3, right: -40}}>
+                                        <UserPicture user={message.sender}/>
+                                    </div>
+                                    :
+                                    <div style={{position: "absolute", bottom: 3, left: -40}}>
+                                        <UserPicture user={message.sender}/>
+                                    </div>
+                                }
+                            </>
+
+
+                        }
+
+                        {isPrevMsgHasTheSameSender() &&
+                            <img style={{position: "absolute", bottom: 3, right: 5}} src={refrenceArrowIcon} height={10}
+                                 width={10} alt=""/>
+                        }
                     </Flex>
                 </Dropdown>
             </Flex>

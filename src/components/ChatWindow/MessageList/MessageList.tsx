@@ -136,8 +136,9 @@ const MessageList: FC<MessageListProps> = ({
         <Flex id={"msgWrapper"} className={classes.messagesWrapper} vertical={true}>
             {messages.length > 0
                 ?
-                messages.map((msg) =>
+                messages.map((msg, index) =>
                         <MessageListItem
+                            index={index}
                             onDeleteMessage={onDeleteMessage}
                             onEditMessage={onEditMessage}
                             replyMessage={replyMessage}

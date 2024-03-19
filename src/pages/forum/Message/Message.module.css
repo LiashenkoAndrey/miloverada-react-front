@@ -39,19 +39,21 @@
 }
 
 .message {
+    position: relative;
     max-width: 600px;
     transition: display 1s;
     width: fit-content;
     padding: 0 10px 10px 10px;
     color: #FFF;
-    border-radius: 2px;
-    margin: 5px 3em 5px 0;
+    /*color: rgba(255, 255, 255, 0.45);*/
+    border-radius: 4px;
+    /*margin: 5px 3em 5px 0;*/
     font-family: 'Libre Baskerville', serif;
 }
 
 .messageImg {
+    border-radius: 4px;
     min-width: 35px;
-    border-radius: 5px;
 }
 
 .messageText {
@@ -64,8 +66,9 @@
 }
 
 .messageDate {
+    align-self: flex-start;
     position: relative;
-    top: -2px;
+    /*top: -2px;*/
     color: rgba(189, 189, 189, 0.94);
     font-size: 12px;
     font-weight: 400;
