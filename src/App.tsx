@@ -98,6 +98,7 @@ function App() {
                           <Route path={"/institution/:id"} element={<InstitutionPage/>}/>
 
                           <Route path={"/forum/chat/:id"} element={<ChatPage/>}/>
+                          <Route path={"/forum/chatWith/:id"} element={<ChatPage/>}/>
                           <Route path={"/forum/topic/:id"} element={<TopicPage/>}/>
                           <Route path={"/forum"} element={<AllForumTopicsPage/>}/>
                           <Route path={"/resolveUser"} element={<IsRegisteredCheckPage/>}/>

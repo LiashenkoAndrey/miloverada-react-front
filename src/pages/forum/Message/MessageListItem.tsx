@@ -45,7 +45,6 @@ const MessageListItem: FC<MessageProps> = ({
         }
     }, [isAuthenticated]);
 
-
     const messageMenuItems: MenuProps['items'] = [
         {
             label: 'Відповісти',
@@ -113,72 +112,85 @@ const MessageListItem: FC<MessageProps> = ({
         }
     }
 
+    function isMine(id: string) {
+        if (user?.sub) {
+            return user.sub === id
+        }
+        return false;
+    }
+
+
     return (
-        <div style={{width: "100%", paddingLeft: 5}}
-             data-index={messages.indexOf(message)}
-             className={isHighlighted()}
-             id={"msgWrapper-" + message.id}
+        <Flex data-index={messages.indexOf(message)}
+              justify={"center"}
+              className={[isHighlighted(), classes.messageMainWrapper].join(' ')}
+              id={"msgWrapper-" + message.id}
         >
-            <Dropdown
-                      menu={{items: messageMenuItems, onClick: onSelectAction}}
-                      trigger={['contextMenu']}
+            <Flex className={classes.messageWrapper2}
+                  justify={isMine(message.sender.id) ? "flex-end" : "flex-start"}
             >
-                <Flex ref={messageRef}
-                      className={classes.message}
-                      style={{backgroundColor: isMyMessage(user?.sub, message.sender.id) ? "#8d654c" : "var(--message-bg-color)"}}
-                      id={"msgId-" + message.id}
-                      gap={8}
+                <Dropdown
+                    menu={{items: messageMenuItems, onClick: onSelectAction}}
+                    trigger={['contextMenu']}
                 >
+                    <Flex ref={messageRef}
+                          className={classes.message}
+                          style={{backgroundColor: isMyMessage(user?.sub, message.sender.id) ? "#8d654c" : "var(--message-bg-color)"}}
+                          id={"msgId-" + message.id}
+                          gap={8}
+                    >
 
-                    <UserPicture user={message.sender}/>
+                        <UserPicture user={message.sender}/>
 
-                    <Flex vertical={true}>
-                        <Flex style={{position: "relative"}}
-                              className={"nonSelect"}
-                              gap={5}
-                              align={"center"}
-                              justify={"space-between"}
-                        >
-                            <span className={classes.senderName}>{message.sender.firstName}</span>
-                            <span className={classes.messageDate} style={{margin: 0, alignSelf: "flex-end"}}>
+                        <Flex vertical={true}>
+                            <Flex style={{position: "relative"}}
+                                  className={"nonSelect"}
+                                  gap={5}
+                                  align={"center"}
+                                  justify={"space-between"}
+                            >
+                                <span className={classes.senderName}>{message.sender.firstName}</span>
+                                <span className={classes.messageDate} style={{margin: 0, alignSelf: "flex-end"}}>
                             {toTime(message.createdOn)}
                         </span>
-                        </Flex>
-                        <Flex vertical style={{marginTop: 3}}>
-                            <span style={{fontWeight: "bold", display: "none"}}>{message.id}</span>
+                            </Flex>
+                            <Flex vertical style={{marginTop: 3}}>
+                                <span style={{fontWeight: "bold", display: "none"}}>{message.id}</span>
 
 
+                                {message.repliedMessage &&
+                                    <Flex onClick={onRepliedMessageLinkClick}
+                                          className={classes.repliedMessage + " nonSelect"} vertical>
+                                        <span>{message.repliedMessage.text}</span>
+                                    </Flex>
+                                }
 
-                            {message.repliedMessage &&
-                                <Flex onClick={onRepliedMessageLinkClick} className={classes.repliedMessage + " nonSelect"} vertical>
-                                    <span>{message.repliedMessage.text}</span>
-                                </Flex>
-                            }
+                                <MessageImages
+                                    message={message}
+                                />
 
-                            <MessageImages
-                                message={message}
-                            />
+                                {message.fileDtoList
+                                    &&
+                                    <FileDtoList files={message.fileDtoList}/>
 
-                            {message.fileDtoList
-                                &&
-                                <FileDtoList files={message.fileDtoList}/>
+                                }
 
-                            }
+                                {message.filesList
+                                    &&
+                                    <FileList messageFiles={message.filesList}/>
 
-                            {message.filesList
-                                &&
-                                <FileList messageFiles={message.filesList}/>
+                                }
 
-                            }
-
-                            <pre className={classes.messageText} style={{margin: 0, alignSelf: "flex-end"}}>
-                                {message.text}
-                            </pre>
+                                <pre className={classes.messageText} style={{margin: 0, alignSelf: "flex-end"}}>
+                                    {message.text}
+                                </pre>
+                            </Flex>
                         </Flex>
                     </Flex>
-                </Flex>
-            </Dropdown>
-        </div>
+                </Dropdown>
+            </Flex>
+
+        </Flex>
     );
 };
 

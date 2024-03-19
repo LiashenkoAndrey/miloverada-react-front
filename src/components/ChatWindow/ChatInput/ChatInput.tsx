@@ -279,12 +279,27 @@ const ChatInput: FC<ChatInputProps> = ({
                     />
                 </Tooltip>
                 <Flex align={"flex-end"}>
-                    <Flex style={{margin: "0 5px"}} gap={3}>
-                        <Button className={"toolBtn"}  onClick={openFileUpload} disabled={isBtnsActive()}  icon={<FileAddOutlined  style={{fontSize: 22}}  />}/>
-                        <Button className={"toolBtn"} onClick={openImageUpload} disabled={isBtnsActive()} icon={<FileImageOutlined style={{fontSize: 22}} />}/>
-                        <Button className={"toolBtn"} disabled={isBtnsActive()} icon={<GlobalOutlined style={{fontSize: 22}} />}/>
+                    <Flex style={{height: "100%"}}>
+                        <Button className={"toolBtn"} onClick={openFileUpload}
+                                disabled={isBtnsActive()}
+                                icon={<FileAddOutlined style={{fontSize: 25}}/>}
+                        />
+                        <Button className={"toolBtn"} onClick={openImageUpload}
+                                disabled={isBtnsActive()}
+                                icon={<FileImageOutlined style={{fontSize: 25}}/>}
+                        />
+                        <Button className={"toolBtn"}
+                                disabled={isBtnsActive()}
+                                icon={<GlobalOutlined style={{fontSize: 25}}/>}
+                        />
                     </Flex>
-                    <Button style={{border: "none"}} disabled={!isAuthenticated} onClick={() => editMessage !== undefined ? updateMsg() : onSend()} type={"primary"} className={btnClass} icon={<RightOutlined />}>{btnText}</Button>
+                    <Button style={{border: "none", }}
+                            disabled={!isAuthenticated}
+                            onClick={() => editMessage !== undefined ? updateMsg() : onSend()}
+                            type={"primary"} className={[btnClass, "chatSubmitBtn"].join(' ')} icon={<RightOutlined/>}
+                    >
+                        {btnText}
+                    </Button>
                 </Flex>
             </Flex>
         </Flex>

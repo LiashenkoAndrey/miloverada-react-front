@@ -96,7 +96,7 @@ export interface NewChat {
 
 export interface User {
     registeredOn? : string[]
-    id? : string,
+    id : string,
     firstName : string,
     lastName : string,
     avatar : string

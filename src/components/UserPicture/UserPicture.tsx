@@ -16,9 +16,15 @@ const UserPicture: FC<UserPictureProps> = ({user}) => {
 
     const onUserStartChatButtonClick = () => {
         if (auth0.user?.sub) {
-
-            nav("/forum/user/" + user.id + "/chat")
+            nav(`/forum/chatWith/${user.id}`)
         } else console.log("user sub null")
+    }
+
+    function isMine(id : string) {
+        if (auth0.user?.sub) {
+            return auth0.user.sub === id
+        }
+        return false;
     }
 
     return (
@@ -39,10 +45,13 @@ const UserPicture: FC<UserPictureProps> = ({user}) => {
                     }
                 </Flex>
                 <Flex>
-
-                    <Button disabled={!auth0.isAuthenticated}
-                        onClick={onUserStartChatButtonClick}
-                    >Написати</Button>
+                    {!isMine(user.id) &&
+                        <Button disabled={!auth0.isAuthenticated}
+                                onClick={onUserStartChatButtonClick}
+                        >
+                            Написати
+                        </Button>
+                    }
                 </Flex>
             </Flex>
         </Flex>}

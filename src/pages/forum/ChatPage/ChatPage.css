@@ -43,17 +43,14 @@
 
 .unreadMessagesFloatButton {
     color: var(--chat-float-button-border-color);
-    border: solid 3px var(--chat-float-button-border-color);
+    border: solid 3px rgba(196, 187, 175, 0.23);
     background-color: var(--chat-float-button-bg-color);
     border-radius: 30px;
     padding: 10px;
     cursor: pointer;
+    transition: background-color 1000ms, border-color 200ms;
 }
 
-.unreadMessagesFloatButton:not(:active) {
-    /*animation: example 1s ease-in;*/
-    transition: background-color 1000ms;
-}
 
 .unreadMessagesFloatButton:hover {
     border: solid 3px rgba(196, 187, 175, 0.6);

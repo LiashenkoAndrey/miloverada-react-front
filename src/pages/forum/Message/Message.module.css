@@ -1,5 +1,13 @@
 
 
+.messageMainWrapper {
+    width: 100%;
+    padding-left: 5px;
+}
+.messageWrapper2 {
+    max-width: 700px;
+    width: 100%;
+}
 
 .isHighlighted {
     background-color: rgba(33, 27, 26, 0.34);
@@ -31,6 +39,7 @@
 }
 
 .message {
+    max-width: 500px;
     transition: display 1s;
     width: fit-content;
     padding: 0 10px 10px 10px;
@@ -46,6 +55,7 @@
 }
 
 .messageText {
+    font-size: 18px;
     white-space: pre-wrap;
     color: #FFF;
     font-weight: 400;
