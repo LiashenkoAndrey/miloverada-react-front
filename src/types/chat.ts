@@ -4,7 +4,8 @@ export interface ChatState {
     messages: Message[]
     chatId: number,
     chatInfo: IChat | null
-    isSelectionEnabled : boolean
+    isSelectionEnabled : boolean,
+    isSelectChatToForwardMessageModalActive : boolean
     selectedMessages : Message[]
     privateChatInfo : PrivateChat | null
     hasPreviousMessages: boolean
@@ -19,6 +20,7 @@ export enum ChatActionTypes {
     SET_PRIVATE_CHAT_INFO = "SET_PRIVATE_CHAT_INFO",
     SET_IS_SELECTION_ENABLED = "SET_IS_SELECTION_ENABLED" ,
     SET_SELECTED_MESSAGES = "SET_SELECTED_MESSAGES" ,
+    SET_IS_SELECT_CHAT_TO_FORWARD_MESSAGE_MODAL_ACTIVE = "SET_IS_SELECT_CHAT_TO_FORWARD_MESSAGE_MODAL_ACTIVE",
     FETCH_PREVIOUS_MESSAGES = "FETCH_PREVIOUS_MESSAGES",
     FETCH_NEXT_MESSAGES = "FETCH_NEXT_MESSAGES",
     SET_CHAT_ID = "SET_CHAT_ID",
@@ -32,6 +34,11 @@ export enum ChatActionTypes {
 interface SetMessagesAction {
     type: ChatActionTypes.SET_MESSAGES
     payload: Message[]
+}
+
+interface SetIsSelectChatToForwardMessageModalActive {
+    type: ChatActionTypes.SET_IS_SELECT_CHAT_TO_FORWARD_MESSAGE_MODAL_ACTIVE
+    payload: boolean
 }
 
 interface SetSelectedMessagesAction {
@@ -105,3 +112,4 @@ export type ChatAction =
     | SetPrivateChatInfoAction
     | SetIsSelectionEnabledAction
     | SetSelectedMessagesAction
+    | SetIsSelectChatToForwardMessageModalActive

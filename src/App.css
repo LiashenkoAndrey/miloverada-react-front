@@ -47,8 +47,14 @@
     font-family: 'Source Serif 4', serif;;
 }
 
+.forumStyledScrollBar {
+    scrollbar-width: thin;
+    scrollbar-color: var(--forum-secondary-bg-color) var(--forum-primary-bg-color);
+}
+
 :root {
     --forum-primary-bg-color : #191a24;
+    /*--forum-primary-bg-color : #191a24;*/
     --forum-primary-title-color : #282A3E;
     --forum-secondary-title-color : #282A3E ;
     --forum-secondary-bg-color : #2d313d;

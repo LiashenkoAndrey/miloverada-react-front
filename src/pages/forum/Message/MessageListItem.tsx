@@ -3,21 +3,24 @@ import {Checkbox, ConfigProvider, Dropdown, Flex, MenuProps, message as antdMess
 import {Message} from "../../../API/services/forum/ForumInterfaces";
 import {useAuth0} from "@auth0/auth0-react";
 import {generateContrastColor2, toTime} from "../../../API/Util";
-import MessageImages from "./MessageImages/MessageImages";
 import classes from './Message.module.css'
 import {useTypedSelector} from "../../../hooks/useTypedSelector";
 import {isMyMessage} from "../../../API/services/forum/UserService";
-import FileList from "../../../components/Files/FileList";
-import FileDtoList from "../../../components/Files/FileDtoList";
 import UserPicture from "../../../components/UserPicture/UserPicture";
 
+
 // @ts-ignore
-import refrenceArrowIcon from '../../../assets/back-arrow-svgrepo-com.svg'
+import referenceArrowIconSilver from '../../../assets/back-arrow-svgrepo-com.svg'
 // @ts-ignore
 import refrenceArrowIconBlack from '../../../assets/back-arrow-black.svg'
+
+
+// @ts-ignore
+import forwardIcon from '../../../assets/forwardIcon.svg'
+
 import {CheckCircleOutlined, CheckOutlined, CopyOutlined, DeleteOutlined, EditOutlined} from "@ant-design/icons";
 import {useActions} from "../../../hooks/useActions";
-import {setSelectedMessages} from "../../../store/actionCreators/chat";
+import MessageContent from "./MessageContent";
 
 interface MessageProps {
     index : number
@@ -86,7 +89,7 @@ const MessageListItem: FC<MessageProps> = ({
     const messageRef = useRef<HTMLDivElement>(null)
     const {isAuthenticated, user} = useAuth0()
     const {lastReadMessageId, messages, isSelectionEnabled, selectedMessages} = useTypedSelector(state => state.chat)
-    const {setIsSelectionEnabled, setSelectedMessages} = useActions()
+    const {setIsSelectionEnabled, setSelectedMessages, setIsSelectChatToForwardMessageModalActive} = useActions()
 
     useEffect(() => {
         if (isAuthenticated) {
@@ -117,7 +120,7 @@ const MessageListItem: FC<MessageProps> = ({
                 onEditMessage(message)
                 break
             case 'delete':
-                onDeleteMessage(messageId)
+                onDeleteMessage(message.id)
                 break
             case 'select' :
                 setIsSelectionEnabled(true)
@@ -126,6 +129,10 @@ const MessageListItem: FC<MessageProps> = ({
             case 'copy' :
                 await navigator.clipboard.writeText(message.text)
                 antdMessage.success({content : "Текст скопійовано", icon : <CheckOutlined />})
+                break
+            case 'forward':
+                setSelectedMessages([message])
+                setIsSelectChatToForwardMessageModalActive(true)
                 break
         }
     }
@@ -145,27 +152,6 @@ const MessageListItem: FC<MessageProps> = ({
         return ""
     }, [editMessage, message.id, replyMessage]);
 
-    const onRepliedMessageLinkClick = () => {
-        let msg = document.getElementById("msgWrapper-" + message.repliedMessage.id)
-        if (msg !== undefined) {
-            let highlightedClass = classes.isHighlighted;
-            let stopHighlightClass = classes.stopHighlight;
-            msg?.classList.add(highlightedClass)
-            setTimeout(() => {
-                msg?.classList.remove(highlightedClass)
-                msg?.classList.add(stopHighlightClass)
-
-                setTimeout(() => {
-                    msg?.classList.remove(stopHighlightClass)
-                }, 200)
-            }, 1200)
-
-            setTimeout(() => {
-                msg?.classList.remove("stopHighlight", "isHighlighted")
-            }, 1600)
-            msg?.scrollIntoView({behavior: "smooth", inline: "start", block: "nearest"})
-        }
-    }
 
     function isMine(id: string) {
         if (user?.sub) {
@@ -248,15 +234,12 @@ const MessageListItem: FC<MessageProps> = ({
             <Flex className={classes.messageWrapper2}
                   justify={isMine(message.sender.id) ? "flex-end" : "flex-start"}
             >
-
                     <Flex ref={messageRef}
                           className={classes.message}
                           style={{backgroundColor: isMyMessage(user?.sub, message.sender.id) ? "#8d654c" : "var(--message-bg-color)"}}
                           id={"msgId-" + message.id}
                           gap={8}
                     >
-
-
                         <Flex vertical={true} style={{paddingBottom: 3}}>
                             <Flex style={{position: "relative"}}
                                   className={"nonSelect"}
@@ -266,10 +249,20 @@ const MessageListItem: FC<MessageProps> = ({
                             >
                                 <Flex gap={5} align={"center"}>
                                     <div></div>
-                                    {!isPrevMsgHasTheSameSender() &&
+                                    {(!isPrevMsgHasTheSameSender() && message.sender) &&
                                         <span className={classes.senderName} style={{color: generateContrastColor()}}>{message.sender.firstName}</span>
                                     }
 
+                                    {message.forwardedMessage &&
+                                        <Flex gap={5}>
+                                            <img src={forwardIcon} height={25} width={25} alt="" style={{
+                                                rotate: "180deg",
+                                                transform: "scaleY(-1)", position: "relative", top: -2
+                                            }}/>
+                                            <span className={classes.senderName} style={{color: generateContrastColor()}}>{message.forwardedMessage.sender.firstName}</span>
+
+                                        </Flex>
+                                    }
                                 </Flex>
 
                                 <span className={classes.messageDate} style={{margin: 0}}>
@@ -280,29 +273,11 @@ const MessageListItem: FC<MessageProps> = ({
                             <Flex vertical style={{marginTop: 3}}>
                                 <span style={{fontWeight: "bold", display: "none"}}>{message.id}</span>
 
-                                {message.repliedMessage &&
-                                    <Flex onClick={onRepliedMessageLinkClick}
-                                          className={classes.repliedMessage + " nonSelect"} vertical>
-                                        <span>{message.repliedMessage.text}</span>
-                                    </Flex>
+                                <MessageContent message={message}/>
+
+                                {message.forwardedMessage &&
+                                    <MessageContent message={message.forwardedMessage}/>
                                 }
-
-                                <MessageImages message={message}/>
-
-                                {message.fileDtoList
-                                    &&
-                                    <FileDtoList files={message.fileDtoList}/>
-                                }
-
-                                {message.filesList
-                                    &&
-                                    <FileList messageFiles={message.filesList}/>
-                                }
-
-                                <pre className={classes.messageText} style={{margin: 0, alignSelf: "flex-end"}}>
-                                    {message.text}
-                                </pre>
-
                             </Flex>
 
                         </Flex>
@@ -323,7 +298,7 @@ const MessageListItem: FC<MessageProps> = ({
 
 
                         {isPrevMsgHasTheSameSender() &&
-                            <img style={{position: "absolute", bottom: 3, right: 5}} src={refrenceArrowIcon} height={10}
+                            <img style={{position: "absolute", bottom: 3, right: 5}} src={referenceArrowIconSilver} height={10}
                                  width={10} alt=""/>
                         }
 

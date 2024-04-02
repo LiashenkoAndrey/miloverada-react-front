@@ -1,5 +1,5 @@
 import React, {FC, useCallback, useContext, useEffect, useRef, useState} from 'react';
-import {App, Badge, Button, ConfigProvider, Flex} from "antd";
+import {App, Badge, Flex} from "antd";
 import {
     ChatMetadata,
     DeleteMessageDto,
@@ -15,7 +15,7 @@ import ChatInput from "./ChatInput/ChatInput";
 import ChatHeader from "./ChatHeader/ChatHeader";
 import {IMessage} from "@stomp/stompjs/src/i-message";
 import {useAuth0} from "@auth0/auth0-react";
-import {CloseOutlined, DeleteOutlined, DownOutlined} from "@ant-design/icons";
+import {DownOutlined} from "@ant-design/icons";
 import {deleteMessageById, getLatestMessagesOfChat} from "../../API/services/forum/MessageService";
 import {AuthContext} from "../../context/AuthContext";
 import chat_classes from './ChatWindow.module.css'
@@ -25,10 +25,11 @@ import {isMyMessage} from "../../API/services/forum/UserService";
 import {MessageFileDto} from "../../API/services/forum/MessageDto";
 import {getChatMetadata, getMessagesByChatIdAndLastReadMessage} from "../../API/services/forum/ChatService";
 import {MESSAGE_LOAD_PORTION_SIZE, MESSAGES_LIST_DEFAULT_SIZE} from "../../Constants";
-import {CSSTransition, TransitionGroup} from "react-transition-group";
 // @ts-ignore
 import refrenceArrowIconBlack from "../../assets/back-arrow-svgrepo-com.svg";
 import SelectionToolbar from "../forum/SelectionToolbar/SelectionToolbar";
+import SelectChatModalToForwardMessages
+    from "../forum/SelectChatModalToForwradMessages/SelectChatModalToForwardMessages";
 
 interface ChatProps {
 }
@@ -210,12 +211,20 @@ const ChatWindow: FC<ChatProps> = () => {
             scrollToLastMessage()
         }
 
-        setInput('')
-        let msg = messages === undefined ? [] : messages;
+        // setInput('')
         if (chatInfo !== null) {
             chatInfo.totalMessagesAmount  = chatInfo?.totalMessagesAmount + 1;
         }
-        setMsg([...msg, data])
+        setMsg([...messages, data])
+    }
+
+    const onForwardMessagesEvent = (dto: IMessage) => {
+        const forwardedMessages : Message[] = JSON.parse(dto.body)
+        console.log("forwardedMessagesEvent", forwardedMessages)
+        if (chatInfo !== null) {
+            chatInfo.totalMessagesAmount  = chatInfo?.totalMessagesAmount + forwardedMessages.length;
+        }
+        setMsg([...messages, ...forwardedMessages])
     }
 
     const saveLastReadMessageId = (messageId : number) => {
@@ -236,6 +245,7 @@ const ChatWindow: FC<ChatProps> = () => {
     }
 
     useSubscription(`/chat/` + chatId, onChatMessagesSubscribe)
+    useSubscription(`/chat/${chatId}/newForwardedMessagesEvent`, onForwardMessagesEvent)
 
     const filterTypingUsers = (userId : string | undefined) => {
         if (userId) {
@@ -292,6 +302,8 @@ const ChatWindow: FC<ChatProps> = () => {
             }
         }
     }
+
+
     return (
         <Flex style={{zIndex: 2}} className={chat_classes.chatWindow} justify={"space-between"} vertical={true}>
             <ChatHeader typingUsers={typingUsers}
@@ -311,6 +323,8 @@ const ChatWindow: FC<ChatProps> = () => {
                     />
 
                     <SelectionToolbar onDeleteMessage={onDeleteMessage}/>
+
+                    <SelectChatModalToForwardMessages/>
 
                     <Flex style={{display: isScrollDownButtonActive ? "flex" : "none"}} onClick={toBottom}
                           className={"unreadMessagesFloatButtonWrapper"}>

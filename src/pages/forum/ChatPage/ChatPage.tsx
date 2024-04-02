@@ -88,7 +88,7 @@ const ChatPage = () => {
             <Flex className={"chatWrapper"}
                   justify={"center"}
             >
-                <Flex className={"leftContent"}
+                <Flex className={"leftContent forumStyledScrollBar"}
                       style={{overflowY: "scroll", height: "100vh", width: leftPanelWidth}}
                 >
                     <ContentList/>

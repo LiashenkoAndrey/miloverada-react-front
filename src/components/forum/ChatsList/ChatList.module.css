@@ -1,5 +1,5 @@
 .name {
-    color: var(--forum-secondary-title-color);
+    color: #B1B8BEFF;
     font-size: 18px;
     font-weight: 500;
     margin-left: 20px;
@@ -12,13 +12,24 @@
     text-decoration-thickness: 2px;
 }
 
+.chatTitle {
+    color: #B1B8BEFF;
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+.chatDesc {
+    color: #B1B8BEFF;
+
+}
 
 .chatList {
-    /*padding-left: 20px;*/
-    /*padding-right: 20px;*/
+    background-color: var(--forum-primary-bg-color);
+    height: 100%;
+    width: 100%;
 }
 .chatWrapper {
-    padding-left: 20px!important;
+    padding-left: 10px!important;
     padding-right: 20px!important;
     cursor: pointer;
     transition: background-color 300ms;

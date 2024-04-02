@@ -51,28 +51,17 @@ const ChatsList = () => {
     return (
         <List key={"chatList-" }
               className={classes.chatList}
-              header={
-                  <span className={classes.name} style={{color: "#B1B8BEFF"}}>
-                                    Мої чати
-                                </span>
-              }
-              style={{backgroundColor: "#191a24", height: "100%"}}
+              header={<span className={classes.name}>Мої чати</span>}
               itemLayout="horizontal"
               dataSource={chats}
               renderItem={(item, index) => (
                   <List.Item className={classes.chatWrapper} key={"chat-" + item.chat.id}
-                             style={{paddingLeft: 10}}
                              onClick={() => onSelectChat(item.chat.id)}
                   >
                       <List.Item.Meta
                           avatar={<Avatar size={"large"} src={item.chat.picture}/>}
-                          title={
-                              <span
-                                  style={{color: "#B1B8BEFF", textDecoration: "underline", cursor: "pointer"}}>
-                                            {item.chat.name}
-                                        </span>
-                          }
-                          description={<span style={{color: "#B1B8BEFF"}}>{item.chat.description}</span>}
+                          title={<span className={classes.chatTitle}>{item.chat.name}</span>}
+                          description={<span className={classes.chatDesc}>{item.chat.description}</span>}
                       />
                       {item.chatMetadata.unread_messages_count > 0 &&
                           <span className={classes.unreadMessagesCount}>{item.chatMetadata.unread_messages_count}</span>

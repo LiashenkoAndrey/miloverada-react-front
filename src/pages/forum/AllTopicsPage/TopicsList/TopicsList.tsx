@@ -28,7 +28,7 @@ const TopicsList: FC<TopicsListProps> = () => {
     const onSelectChat = (chatId: number, topicId: number | undefined) => {
         const params = createSearchParams({topicId: String(topicId)}).toString()
         nav({
-            pathname: "/chat/" + chatId,
+            pathname: "/forum/chat/" + chatId,
             search: params
         })
     }

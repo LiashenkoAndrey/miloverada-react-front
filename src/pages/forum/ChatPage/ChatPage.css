@@ -103,11 +103,11 @@
 
 .leftContent {
     user-select: none;
-    scrollbar-width: thin;
-    scrollbar-color: var(--forum-secondary-bg-color) var(--forum-primary-bg-color);
     order: 0;
     /*padding-top: 10px;*/
 }
+
+
 
 
 .changeSizeLine {

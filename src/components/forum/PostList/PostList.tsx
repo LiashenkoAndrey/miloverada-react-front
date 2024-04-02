@@ -22,7 +22,7 @@ const PostList = () => {
             getAll()
         }
     }, []);
-    const { pathname } = useLocation();
+
     return (
         <Flex vertical gap={10} className={classes.Wrapper} >
             {posts.length > 0

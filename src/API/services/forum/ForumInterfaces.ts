@@ -12,6 +12,7 @@ export interface Message {
     imagesList : MessageImage[]
     filesList : MessageFile[]
     fileDtoList : MessageFileDto[]
+    forwardedMessage : Message
 }
 
 

@@ -6,6 +6,7 @@ const initState: ChatState = {
     chatId: -1,
     chatInfo : null,
     isSelectionEnabled : false,
+    isSelectChatToForwardMessageModalActive : false,
     selectedMessages : [],
     privateChatInfo : null,
     hasPreviousMessages: true,
@@ -40,6 +41,8 @@ export const chatReducer = (state = initState, action: ChatAction): ChatState =>
             return {...state, isSelectionEnabled: action.payload}
         case ChatActionTypes.SET_SELECTED_MESSAGES:
             return {...state, selectedMessages: action.payload}
+        case ChatActionTypes.SET_IS_SELECT_CHAT_TO_FORWARD_MESSAGE_MODAL_ACTIVE:
+            return {...state, isSelectChatToForwardMessageModalActive: action.payload}
         default :
             return state
     }

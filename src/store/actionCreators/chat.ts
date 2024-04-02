@@ -30,6 +30,13 @@ export const setIsSelectionEnabled =  (isSelectionEnabled : boolean) => {
     }
 }
 
+export const setIsSelectChatToForwardMessageModalActive =  (isActive : boolean) => {
+    return async (dispatch : Dispatch<ChatAction>) => {
+        dispatch({type : ChatActionTypes.SET_IS_SELECT_CHAT_TO_FORWARD_MESSAGE_MODAL_ACTIVE, payload : isActive})
+    }
+}
+
+
 export const setSelectedMessages =  (messages : Message[]) => {
     return async (dispatch : Dispatch<ChatAction>) => {
         dispatch({type : ChatActionTypes.SET_SELECTED_MESSAGES, payload : messages})

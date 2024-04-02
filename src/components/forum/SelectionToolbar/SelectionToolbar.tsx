@@ -16,7 +16,7 @@ interface SelectionToolbarProps {
 
 const SelectionToolbar: FC<SelectionToolbarProps> = ({onDeleteMessage}) => {
     const {isSelectionEnabled, selectedMessages} = useTypedSelector(state => state.chat)
-    const {setIsSelectionEnabled, setSelectedMessages} = useActions()
+    const {setIsSelectionEnabled, setSelectedMessages, setIsSelectChatToForwardMessageModalActive} = useActions()
     const {user} = useAuth0()
     const onDisableSelection = () => {
         setSelectedMessages([])
@@ -34,6 +34,12 @@ const SelectionToolbar: FC<SelectionToolbarProps> = ({onDeleteMessage}) => {
             setSelectedMessages([])
             setIsSelectionEnabled(false)
         }
+    }
+
+
+    const onReplyAll = () => {
+        console.log("enable forward modal")
+        setIsSelectChatToForwardMessageModalActive(true)
     }
 
     function hasMyMessages() {
@@ -71,7 +77,7 @@ const SelectionToolbar: FC<SelectionToolbarProps> = ({onDeleteMessage}) => {
                             }
 
 
-                            <div className={classes.btn} style={{padding: "1px 5px"}}>
+                            <div onClick={onReplyAll} className={classes.btn} style={{padding: "1px 5px"}}>
                                 <img src={referenceArrowIconBlack} height={30} width={30} alt="" style={{
                                     rotate: "180deg",
                                     transform: "scaleY(-1)", position: "relative", top: -2
