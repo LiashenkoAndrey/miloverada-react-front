@@ -10,15 +10,26 @@ export const getAllUsers = () => {
     return callAndGetResult(config)
 }
 
-
-export const newUser = (user : NewUserDto, accessToken : string) => {
+export const getForumUserByAppUserId = (userId : string, jwt : string) => {
     const config = {
-        url: `${apiServerUrl}/api/protected/user/new`,
-        method: "POST",
+        url: `${apiServerUrl}/api/protected/forum/user/${encodeURIComponent(userId)}`,
         headers: {
-            Authorization: `Bearer ${accessToken}`,
+            Authorization: `Bearer ${jwt}`,
         },
-        data: user
+        method: "GET",
+    }
+    return callAndGetResult(config)
+}
+
+
+export const saveNewForumUser = (data : FormData, appUserId : string, jwt : string) => {
+    const config = {
+        url: `${apiServerUrl}/api/protected/forum/user/new?encodedAppUserId=${appUserId}`,
+        method: "POST",
+        data : data,
+        headers: {
+            Authorization: `Bearer ${jwt}`,
+        }
     }
     return callAndGetResult(config)
 }

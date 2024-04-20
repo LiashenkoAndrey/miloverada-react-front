@@ -4,9 +4,10 @@ import {useActions} from "../../../hooks/useActions";
 import {getUserVisitedChats} from "../../../API/services/forum/ChatService";
 import {AuthContext} from "../../../context/AuthContext";
 import {useAuth0} from "@auth0/auth0-react";
-import {Avatar, List} from "antd";
+import {Avatar, Empty, Flex, List} from "antd";
 import classes from './ChatList.module.css'
 import {createSearchParams, useLocation, useNavigate} from "react-router-dom";
+import ChatImage from "../../ChatImage/ChatImage";
 
 export enum Modes {
     CHATS = "CHATS",
@@ -48,8 +49,10 @@ const ChatsList = () => {
         getAll()
     }, [jwt]);
 
-    return (
+    return chats.length > 0  ?
+        (
         <List key={"chatList-" }
+
               className={classes.chatList}
               header={<span className={classes.name}>Мої чати</span>}
               itemLayout="horizontal"
@@ -59,7 +62,7 @@ const ChatsList = () => {
                              onClick={() => onSelectChat(item.chat.id)}
                   >
                       <List.Item.Meta
-                          avatar={<Avatar size={"large"} src={item.chat.picture}/>}
+                          avatar={<ChatImage image={item.chat.picture} chatName={item.chat.name}/>}
                           title={<span className={classes.chatTitle}>{item.chat.name}</span>}
                           description={<span className={classes.chatDesc}>{item.chat.description}</span>}
                       />
@@ -70,7 +73,11 @@ const ChatsList = () => {
                   </List.Item>
               )}
         />
-    );
+    ) :
+        <Flex justify={'center'}  style={{width: "100%", height : '100%', backgroundColor : "var(--forum-primary-bg-color)", paddingTop : "5vh"}} >
+            <Empty description={<p style={{color: 'white'}}>Почніть новий чат!</p>} />;
+
+        </Flex>
 };
 
 export default ChatsList;

@@ -11,6 +11,7 @@ export interface IPost {
     imageId : string
 }
 
+
 export const getLatestPosts = () => {
     const config = {
         url: `${apiServerUrl}/api/forum/posts/latest`,

@@ -4,6 +4,8 @@ import {Modes} from "../../components/forum/ChatsList/ChatsList";
 const initState : ForumState = {
     chats : [],
     posts : [],
+    topics : [],
+    stories : [],
     contentMode : null
 }
 
@@ -15,6 +17,10 @@ export const forumReducer = (state = initState, action: ForumAction): ForumState
             return {...state, posts: action.payload}
         case ForumActionTypes.SET_CONTENT_MODE :
             return {...state, contentMode: action.payload}
+        case ForumActionTypes.SET_TOPICS :
+            return {...state, topics: action.payload}
+        case ForumActionTypes.SET_STORIES :
+            return {...state, stories: action.payload}
         default :
             return state
     }

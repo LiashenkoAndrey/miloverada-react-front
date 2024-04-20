@@ -90,7 +90,7 @@ export interface LastReadMessageDto {
 export interface NewChat {
     name : string,
     description : string,
-    picture : string,
+    picture? : string,
     ownerId : string,
     topicId : number
 }
@@ -108,7 +108,19 @@ export interface TypingUser {
     firstName : string,
 }
 
+export interface NewForumUserDto {
+    nickname : string,
+    avatar : string
+    aboutMe : string
+}
 
+export interface ForumUser {
+    id : number,
+    appUserId : string,
+    registeredOn : string,
+    nickname : string,
+    avatar : string
+}
 export interface AppUser {
     id? : string,
     firstName? : string,
@@ -138,4 +150,11 @@ export interface Topic {
     chats? : Array<IChat>
 }
 
+
+export interface ITopic {
+    id : number,
+    name : string,
+    description : string,
+    chats : IChat[]
+}
 

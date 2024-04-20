@@ -3,7 +3,7 @@ import {callAndGetResult} from "../ExternalApiService";
 import {apiServerUrl} from "../../Constants";
 
 
-export interface Story {
+export interface IStory {
     id : number
     createdOn : string
     text : string

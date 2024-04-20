@@ -5,37 +5,41 @@ import useInput from "../API/hooks/useInput";
 import {newTopic} from "../API/services/forum/TopicService";
 import {Topic} from "../API/services/forum/ForumInterfaces";
 import {AuthContext} from "../context/AuthContext";
+import {useActions} from "../hooks/useActions";
+import {useTypedSelector} from "../hooks/useTypedSelector";
 
 interface NewTopicProps {
-    isAuth? : boolean
+    isOpen : boolean
+    setIsOpen :  React.Dispatch<React.SetStateAction<boolean>>
 }
 
-const NewTopic: FC<NewTopicProps> = ({isAuth}) => {
-
-    const [isModalOpen, setIsModalOpen] = useState(false);
+const NewTopic: FC<NewTopicProps> = ({ isOpen, setIsOpen}) => {
     const { notification } = App.useApp();
     const {jwt} = useContext(AuthContext)
-    const showModal = () => {
-        setIsModalOpen(true);
-    };
-
+    const {topics} = useTypedSelector(state => state.forum)
+    const {setTopics} = useActions()
+    const [isLoading, setIsLoading] = useState<boolean>(false)
 
     const handleCancel = () => {
-        setIsModalOpen(false);
+        setIsOpen(false);
     };
 
     const topicName = useInput()
     const topicDesc = useInput()
 
     const onFinish = async (values: any) => {
-        setIsModalOpen(false);
+        setIsOpen(false);
         const topic : Topic = {name: topicName.value, description : topicDesc.value}
 
         if (jwt) {
+            setIsLoading(true)
             const {data, error} = await newTopic(topic, jwt)
+            setIsLoading(false)
 
             if (data) {
+                console.log(data)
                 notification.success({message: "Успішно створено."})
+                setTopics([...topics, data])
             }
 
             if (error) {
@@ -49,13 +53,9 @@ const NewTopic: FC<NewTopicProps> = ({isAuth}) => {
 
     };
 
-
-
-    return isAuth ?
-      <>
-          <Button  onClick={showModal}  ghost icon={<PlusCircleOutlined />}>Нова тема</Button>
-
-          <Modal title="Нова тема" open={isModalOpen}  onCancel={handleCancel} footer={false} >
+    return (
+        <>
+          <Modal title="Нова тема" open={isOpen}  onCancel={handleCancel} footer={false} >
               <Form
                   name="basic"
                   labelCol={{ span: 8 }}
@@ -81,7 +81,7 @@ const NewTopic: FC<NewTopicProps> = ({isAuth}) => {
 
 
                   <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
-                      <Button type="primary" htmlType="submit">
+                      <Button loading={isLoading} type="primary" htmlType="submit">
                           Створити
                       </Button>
                   </Form.Item>
@@ -91,10 +91,7 @@ const NewTopic: FC<NewTopicProps> = ({isAuth}) => {
               </Form>
           </Modal>
       </>
-        :
-        <Tooltip title="Вам потрібно авторизуватися" placement="topLeft">
-            <Button ghost  onClick={showModal} icon={<PlusCircleOutlined/>}>Нова тема</Button>
-        </Tooltip>
+    )
 };
 
 export default NewTopic;

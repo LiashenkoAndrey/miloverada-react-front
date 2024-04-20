@@ -1,6 +1,6 @@
 
 import {callAndGetResult} from "./ExternalApiService";
-import {AppUser} from "./forum/ForumInterfaces";
+import {AppUser, NewUserDto} from "./forum/ForumInterfaces";
 
 const apiServerUrl = process.env.REACT_APP_API_SERVER_URL;
 
@@ -26,6 +26,18 @@ export const getUserAvatar = (url : string) => {
     return callAndGetResult(config)
 }
 
+
+export const newUser = (user : NewUserDto, accessToken : string) => {
+    const config = {
+        url: `${apiServerUrl}/api/protected/user/new`,
+        method: "POST",
+        headers: {
+            Authorization: `Bearer ${accessToken}`,
+        },
+        data: user
+    }
+    return callAndGetResult(config)
+}
 
 export const updateAdminMeta = (adminMeta : AdminMetadata, jwt : string) => {
     const config = {

@@ -2,7 +2,8 @@ import {UserAction, UserActionTypes, UserState} from "../../types/user";
 
 const initState: UserState = {
     appUser : null,
-    adminMetadata : null
+    adminMetadata : null,
+    forumUser : null
 }
 
 export const userReducer = (state = initState, action: UserAction): UserState => {
@@ -11,6 +12,8 @@ export const userReducer = (state = initState, action: UserAction): UserState =>
             return {...state, appUser: action.payload}
         case UserActionTypes.SET_ADMIN_METADATA :
             return {...state, adminMetadata : action.payload}
+        case UserActionTypes.SET_FORUM_USER :
+            return {...state, forumUser : action.payload}
         default :
             return state
     }

@@ -4,10 +4,10 @@ import {useNavigate, useSearchParams} from "react-router-dom";
 import {useAuth0} from "@auth0/auth0-react";
 import {Button, Flex} from "antd";
 import {AuthContext} from "../context/AuthContext";
-import {newUser, userIsRegistered} from "../API/services/forum/UserService";
+import {userIsRegistered} from "../API/services/forum/UserService";
 import {AppUser, NewUserDto} from "../API/services/forum/ForumInterfaces";
 import {checkPermission, getBase642} from "../API/Util";
-import { getUserAvatar, UserDto} from "../API/services/UserService";
+import {getUserAvatar, newUser, UserDto} from "../API/services/UserService";
 import {useActions} from "../hooks/useActions";
 import {setAdminMetadata, setUser} from "../store/actionCreators/user";
 
@@ -42,6 +42,7 @@ const IsRegisteredCheckPage = () => {
             }
 
             const getAvatarAndThenSaveUser = async () => {
+                console.log("getAvatarAndThenSaveUser ", user)
                 if (user.picture) {
                     const {data, error} = await getUserAvatar(user.picture)
                     if (data) {

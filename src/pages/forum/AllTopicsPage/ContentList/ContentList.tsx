@@ -4,8 +4,7 @@ import classes from "../AllForumTopicsPage.module.css";
 import {useLocation} from "react-router-dom";
 import {UnorderedListOutlined, WechatOutlined} from "@ant-design/icons";
 import TopicsList from "../TopicsList/TopicsList";
-import StoriesList from "../../../../components/forum/StoriesList/StoriesList";
-import {motion} from 'framer-motion'
+import CreateContentBtnsAndStoriesList from "../../../../components/forum/StoriesList/CreateContentBtnsAndStoriesList";
 // @ts-ignore
 import posIcon from '../../../../assets/posIcon.svg'
 import PostList from "../../../../components/forum/PostList/PostList";
@@ -98,7 +97,7 @@ const ContentList: FC<ChatsListProps> = () => {
     return (
         <Flex className={classes.ContentList} vertical>
                 <Flex style={{width: "100%"}} justify={"space-between"} >
-                    <StoriesList isPost={iMode === Modes.POSTS}/>
+                    <CreateContentBtnsAndStoriesList isPost={iMode === Modes.POSTS} isTopic={iMode === Modes.TOPICS}/>
                     <Segmented style={{backgroundColor: "#191a24"}}
                                options={getOptions()}
                                value={iMode}
@@ -106,41 +105,16 @@ const ContentList: FC<ChatsListProps> = () => {
                     />
                 </Flex>
                 {iMode === Modes.TOPICS &&
-                    <motion.div style={{flex : 1}}
-                        variants={anim2}
-                        initial={'initial'}
-                        exit={'exit'}
-                        animate={"animate"}
-                        transition={{duration : 0.3}}
-                    >
                         <TopicsList />
-                    </motion.div>
                 }
 
                 {(iMode === Modes.CHATS && isAuthenticated) &&
+                    <ChatsList/>
 
-                    <motion.div style={{flex : 1}}
-                                variants={anim2}
-                                initial={'initial'}
-                                exit={'exit'}
-                                animate={"animate"}
-                                transition={{duration : 0.3}}
-                    >
-                        <ChatsList/>
-
-                    </motion.div>
                 }
 
                 {iMode === Modes.POSTS &&
-                    <motion.div style={{flex : 1}}
-                        variants={anim}
-                        initial={'initial'}
-                        exit={'exit'}
-                        animate={"animate"}
-                        transition={{duration : 0.3}}
-                    >
                         <PostList/>
-                    </motion.div>
                 }
         </Flex>
     )

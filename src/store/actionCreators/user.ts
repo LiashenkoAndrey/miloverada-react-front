@@ -1,5 +1,5 @@
 import {Dispatch} from "redux";
-import {AppUser} from "../../API/services/forum/ForumInterfaces";
+import {AppUser, ForumUser} from "../../API/services/forum/ForumInterfaces";
 import {AdminMetadata} from "../../API/services/UserService";
 import {UserAction, UserActionTypes} from "../../types/user";
 
@@ -18,3 +18,8 @@ export const setAdminMetadata =  (metadata : AdminMetadata) => {
     }
 }
 
+export const setForumUser =  (forumUser : ForumUser) => {
+    return async (dispatch : Dispatch<UserAction>) => {
+        dispatch({type : UserActionTypes.SET_FORUM_USER, payload : forumUser})
+    }
+}

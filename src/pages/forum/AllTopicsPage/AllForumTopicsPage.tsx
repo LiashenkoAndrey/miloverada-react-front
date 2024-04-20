@@ -41,16 +41,15 @@ const AllForumTopicsPage = () => {
                   justify={"center"}
                   className={[classes.wrapper,  classes.forumBg].join(' ')}
             >
-                <Flex wrap={"wrap"}
+                <Flex
                       className={classes.pageWrapper}
                       gap={10}
-                      justify={"center"}
                 >
                     <ForumNavbar>
-                        <Flex vertical>
-                            <span  style={{color: "black", fontSize: 20, marginBottom: 5}}>Теми</span>
-                            <NewTopic isAuth={isAuthenticated}/>
-                        </Flex>
+                        {/*<Flex vertical>*/}
+                        {/*    <span  style={{color: "black", fontSize: 20, marginBottom: 5}}>Теми</span>*/}
+                        {/*    <NewTopic isAuth={isAuthenticated}/>*/}
+                        {/*</Flex>*/}
                     </ForumNavbar>
                     <ContentList/>
 

@@ -1,6 +1,6 @@
 
 .toolbarWrapper {
-    padding: 8px 15px;
+    padding: 0px 15px 8px 15px;
     border-radius: 20px;
     background-color: rgba(0, 0, 0, 0.36);
 }
@@ -24,10 +24,19 @@
 
 
 .btn {
+    flex-direction: row;
+    align-items: center;
+    gap: 2px;
     transition: left 0.5s, right 2s;
     animation: anim 400ms;
 }
+
+.btn span {
+    text-align: center;
+    color: #B1B8BEFF;
+}
 .wrapper {
+    width: 100%;
     padding-top: 5px;
     padding-right: 5px;
     animation: anim 800ms;

@@ -12,6 +12,8 @@ import TextareaAutosize from "react-textarea-autosize";
 import {newTopic} from "../../API/services/forum/StoryService";
 import {AuthContext} from "../../context/AuthContext";
 import {useAuth0} from "@auth0/auth0-react";
+import {useTypedSelector} from "../../hooks/useTypedSelector";
+import {useActions} from "../../hooks/useActions";
 
 interface NewStoryModalProps {
     isOpen : boolean
@@ -26,6 +28,8 @@ const NewStoryModal:FC<NewStoryModalProps> = ({isOpen, setIsOpen}) => {
     const [isLoading, setIsLoading] = useState<boolean>(false)
     const {jwt} = useContext(AuthContext)
     const {user} = useAuth0()
+    const {stories} = useTypedSelector(state => state.forum)
+    const {setStories} = useActions()
 
     const handleOk = async () => {
         if (jwt && user?.sub) {
@@ -37,7 +41,9 @@ const NewStoryModal:FC<NewStoryModalProps> = ({isOpen, setIsOpen}) => {
             setIsLoading(false)
 
             if (data) {
+                console.log(data)
                 setIsOpen(false)
+                setStories([...stories, data])
             }
             if (error) throw error
         } else notification.warning({message : "not auth"})

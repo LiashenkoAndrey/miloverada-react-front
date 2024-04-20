@@ -5,7 +5,6 @@ import {Topic} from "../../../API/services/forum/ForumInterfaces";
 import {getTopicById} from "../../../API/services/forum/TopicService";
 import ForumNavbar from "../../../components/ForumNavbar/ForumNavbar";
 import {Button, Flex} from "antd";
-import ContentList from "../AllTopicsPage/ContentList/ContentList";
 import {LeftOutlined} from "@ant-design/icons";
 import './TopicPage.css'
 import NewChatModal from "../../../components/NewChatModal";
@@ -49,8 +48,6 @@ const TopicPage = () => {
                         <h3>{topic?.name}</h3>
                         <h3>{topic?.description}</h3>
                     </Flex>
-
-                    <NewChatModal topicId={Number(id)}/>
 
                 </Flex>
 

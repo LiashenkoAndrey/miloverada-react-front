@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import './App.css';
-import {Route, Routes, Navigate } from "react-router-dom";
+import {Route, Routes, Navigate, useLocation} from "react-router-dom";
 import Header from "./components/Header/Header";
 import MainPage from "./pages/MainPage/MainPage";
 import Footer from "./components/Footer/Footer";
@@ -25,13 +25,43 @@ import 'dayjs/locale/uk'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import DocumentPage from "./pages/DocumentPage/DocumentPage";
 import {useActions} from "./hooks/useActions";
-import {setAdminMetadata} from "./store/actionCreators/user";
 import { getAppUser, UserDto} from "./API/services/UserService";
+import {getForumUserByAppUserId} from "./API/services/forum/UserService";
+import CreateNewForumUserProfileModal from "./components/CreateNewForumUserProfileModal/CreateNewForumUserProfileModal";
+import {useTypedSelector} from "./hooks/useTypedSelector";
 
 function App() {
     const [jwt, setJwt] = useState<string>()
     const {getAccessTokenSilently, isAuthenticated, user} = useAuth0()
     const {setAdminMetadata, setUser} = useActions()
+    const {pathname} = useLocation()
+    const {setForumUser} = useActions()
+    // const {forumUser} = useTypedSelector(state => state.user)
+    const [isForumUserRegistered, setIsForumUserRegistered] = useState<boolean | null>(null)
+
+    const getForumUser = async (userId : string, jwt : string) => {
+        const {data} = await getForumUserByAppUserId(userId, jwt)
+        if (data) {
+            console.log(data, data.isRegistered)
+            if  (data.isRegistered == false) {
+                console.log("forum user is not registered ")
+                setIsForumUserRegistered(false);
+            } else {
+                console.log(data.forumUser)
+                setForumUser(data.forumUser)
+                console.log("forum user is registered")
+
+            }
+        }
+        console.log("forum user", data)
+    }
+
+    useEffect(() => {
+        if (pathname.includes('forum') && user?.sub && jwt) {
+            console.log("load forum user ", user.sub)
+            getForumUser(user.sub, jwt)
+        }
+    }, [pathname, user?.sub, jwt]);
 
     const getJwt = async () => {
         const token = await getAccessTokenSilently();
@@ -83,6 +113,9 @@ function App() {
 
                   <Layout>
                       <Header/>
+                      {isForumUserRegistered !== null && !isForumUserRegistered &&
+                          <CreateNewForumUserProfileModal/>
+                      }
                       <Routes>
                           <Route path={"/"} element={<MainPage/>}/>
                           <Route path={"/newsFeed/:id"} element={<NewsPage isPreview={false}/>}/>

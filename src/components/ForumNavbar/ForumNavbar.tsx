@@ -1,4 +1,4 @@
-import React, {FC} from 'react';
+import React, {FC, useEffect} from 'react';
 import {Button, Flex, Image} from "antd";
 import {
     HomeOutlined,
@@ -11,6 +11,9 @@ import {
 import {useAuth0} from "@auth0/auth0-react";
 import './ForumNavbar.css'
 import {useNavigate} from "react-router-dom";
+import {useTypedSelector} from "../../hooks/useTypedSelector";
+import ForumUserSettings from "../ForumUserSettings/ForumUserSettings";
+import {getImageV2Url} from "../../API/services/ImageService";
 interface ForumNavbarProps {
     children?: React.ReactNode;
 }
@@ -18,6 +21,8 @@ interface ForumNavbarProps {
 const ForumNavbar : FC<ForumNavbarProps> = (props) => {
     const {isAuthenticated, loginWithRedirect, user, logout} = useAuth0()
     const nav = useNavigate()
+    const {forumUser, appUser} = useTypedSelector(state => state.user)
+
     const onLogin = async () => {
         await loginWithRedirect({
             appState: {
@@ -37,8 +42,6 @@ const ForumNavbar : FC<ForumNavbarProps> = (props) => {
         });
     }
 
-
-
     return (
         <Flex className={"ForumNavbarWrapper"} vertical gap={40}>
 
@@ -53,23 +56,28 @@ const ForumNavbar : FC<ForumNavbarProps> = (props) => {
 
 
             <Flex vertical>
-                <span style={{color: "black", fontSize: 20, marginBottom: 5}}>Профіль</span>
+                <span style={{color: "white", fontSize: 20, marginBottom: 5}}>Профіль</span>
 
-                {isAuthenticated
+                {(isAuthenticated && forumUser)
                     ?
                     <Flex gap={10} vertical>
                         <Flex gap={5} vertical={true}>
-                            <Image width={110} src={user?.picture}/>
+                            {forumUser.avatar.includes("http") ?
+                                <Image style={{maxWidth: 170, width: "100%"}} src={forumUser.avatar}/>
+                                :
+                                <Image style={{maxWidth: 170, width: "100%"}} src={getImageV2Url(forumUser.avatar)}/>
+                            }
                             <span style={{color: "black"}}>{user?.name}</span>
                             {/*<span>{user?.sub}</span>*/}
                         </Flex>
 
                         <Flex gap={5} vertical>
-                            <Button ghost  icon={<SettingOutlined /> } >Налаштування</Button>
+                           <ForumUserSettings user={forumUser}/>
                             <Button ghost icon={<LoginOutlined /> } onClick={onLogout}>Вихід</Button>
                         </Flex>
                     </Flex>
                     :
+                    !isAuthenticated &&
                     <Button ghost  icon={<LoginOutlined /> } onClick={onLogin}>Вхід</Button>
                 }
             </Flex>
