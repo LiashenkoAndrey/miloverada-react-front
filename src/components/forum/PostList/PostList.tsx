@@ -39,7 +39,6 @@ const PostList = () => {
                 <Flex gap={5} vertical align={'center'} className={classes.postListPlaceholder}>
                     <p>Жодний з користувачів не додав пост</p>
                     <p>Станьте першим!</p>
-                    <Button style={{width : "fit-content"}}>Новий пост</Button>
                 </Flex>
                 :
                 posts.length > 0

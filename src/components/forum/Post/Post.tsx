@@ -27,7 +27,7 @@ const Post:FC<PostProps> = ({post}) => {
         <Flex vertical gap={10} style={{maxWidth: 600, maxHeight: 700}}>
 
             <Flex align={"center"} gap={5}>
-                <Image height={40} style={{borderRadius: 20}} src={post.author.avatar}/>
+                <Image height={40} style={{borderRadius: 20}} src={post.author.avatar.includes("http") ? post.author.avatar : getImageV2Url(post.author.avatar)}/>
                 <span style={{color: "white"}}>{post.author.firstName}</span>
             </Flex>
             <Flex vertical>
@@ -35,7 +35,7 @@ const Post:FC<PostProps> = ({post}) => {
                     <img className={classes.image2} src={placeholder} alt="placeholder"/>
                     }
                        className={classes.image}
-                       src={getImageV2Url(post.imageId)}
+                       src={ getImageV2Url(post.imageId)}
                 />
                 <Flex vertical style={{color: "white"}}>
                     <span>{post.text}</span>

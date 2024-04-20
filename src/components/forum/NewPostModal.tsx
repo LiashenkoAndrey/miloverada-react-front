@@ -13,14 +13,16 @@ import {newTopic} from "../../API/services/forum/StoryService";
 import {AuthContext} from "../../context/AuthContext";
 import {useAuth0} from "@auth0/auth0-react";
 import {IPost, newPost} from "../../API/services/forum/PostService";
+import {useTypedSelector} from "../../hooks/useTypedSelector";
+import {useActions} from "../../hooks/useActions";
 
 interface NewStoryModalProps {
     isOpen : boolean
     setIsOpen :  React.Dispatch<React.SetStateAction<boolean>>
-    addNewPost : (post: IPost) => void
+
 }
 
-const NewStoryModal:FC<NewStoryModalProps> = ({isOpen, setIsOpen, addNewPost}) => {
+const NewStoryModal:FC<NewStoryModalProps> = ({isOpen, setIsOpen}) => {
     const [text, setText] = useState<string>('')
     const [imagesFiles, setImagesFiles] = useState<File[]>([])
     const [newsImages, setNewsImages] = useState<IImage[]>([])
@@ -28,6 +30,8 @@ const NewStoryModal:FC<NewStoryModalProps> = ({isOpen, setIsOpen, addNewPost}) =
     const [isLoading, setIsLoading] = useState<boolean>(false)
     const {jwt} = useContext(AuthContext)
     const {user} = useAuth0()
+    const {posts} = useTypedSelector(state => state.forum)
+    const {setPosts} = useActions()
 
     const handleOk = async () => {
         if (jwt && user?.sub) {
@@ -40,7 +44,7 @@ const NewStoryModal:FC<NewStoryModalProps> = ({isOpen, setIsOpen, addNewPost}) =
 
             if (data) {
                 console.log(data)
-                addNewPost(data)
+                setPosts([...posts, data])
                 setIsOpen(false)
             }
             if (error) throw error

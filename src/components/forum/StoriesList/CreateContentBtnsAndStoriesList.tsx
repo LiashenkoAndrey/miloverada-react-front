@@ -33,13 +33,9 @@ const CreateContentBtnsAndStoriesList:FC<StoriesListProps> = ({isPost, isTopic})
     const [isNewStoryModalOpen, setIsNewStoryModalOpen] = useState<boolean>(false)
     const [isNewPostModalOpen, setIsNewPostModalOpen] = useState<boolean>(false)
     const [isNewTopicModalOpen, setIsNewTopicModalOpen] = useState<boolean>(false)
-    const {posts} = useTypedSelector(state => state.forum)
-    const {setPosts} = useActions()
     const {isAuthenticated} = useAuth0()
 
-    const addNewPost = (post : IPost) => {
-        setPosts([post, ...posts])
-    }
+
     const getAll = async () => {
         const {data} = await getLatestStories();
         if (data) setStories(data)
@@ -139,8 +135,7 @@ const CreateContentBtnsAndStoriesList:FC<StoriesListProps> = ({isPost, isTopic})
             </Image.PreviewGroup>
 
 
-            <NewPostModal addNewPost={addNewPost}
-                          isOpen={isNewPostModalOpen}
+            <NewPostModal isOpen={isNewPostModalOpen}
                           setIsOpen={setIsNewPostModalOpen}
             />
             <NewTopic isOpen={isNewTopicModalOpen} setIsOpen={setIsNewTopicModalOpen}/>
