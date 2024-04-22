@@ -9,13 +9,27 @@ export interface IPost {
     text : string
     author : User
     imageId : string
+    isUserLikedPost : boolean
+    likesAmount : number
 }
 
 
-export const getLatestPosts = () => {
+export const getLatestPosts = (encodedForumUserId? : string) => {
+    console.log(encodedForumUserId)
     const config = {
-        url: `${apiServerUrl}/api/forum/posts/latest`,
+        url: encodedForumUserId ? `${apiServerUrl}/api/forum/posts/latest?encodedForumUserId=` + encodedForumUserId  : `${apiServerUrl}/api/forum/posts/latest`,
         method: "GET",
+    }
+    return callAndGetResult(config)
+}
+
+export const likeOrDislikePost = (postId : number, encodedForumUserId : string, jwt : string) => {
+    const config = {
+        url: `${apiServerUrl}/api/protected/forum/post/${postId}/likeOrDislike?encodedForumUserId=` + encodedForumUserId,
+        method: "PUT",
+        headers: {
+            Authorization: `Bearer ${jwt}`,
+        }
     }
     return callAndGetResult(config)
 }

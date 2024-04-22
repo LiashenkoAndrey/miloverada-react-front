@@ -88,51 +88,51 @@ const CreateContentBtnsAndStoriesList:FC<StoriesListProps> = ({isPost, isTopic})
                 }
             </Flex>
 
+                <Image.PreviewGroup  key={333} preview={{
+                    toolbarRender: (
 
-            <Image.PreviewGroup key={333} preview={{
-                toolbarRender: (
-
-                    _,
-                    {
-                        transform: {scale},
-                        actions: {onRotateLeft, onZoomOut, onZoomIn},
-                        current
-                    },
-                ) => (
-                    <Flex vertical gap={8} style={{width: "100vw"}} align={"center"}>
+                        _,
+                        {
+                            transform: {scale},
+                            actions: {onRotateLeft, onZoomOut, onZoomIn},
+                            current
+                        },
+                    ) => (
+                        <Flex vertical gap={8} style={{width: "100vw"}} align={"center"}>
                             <span  style={{fontSize: 20, color: "white"}}>{stories[current].text}</span>
-                        <Flex gap={25} className={classes.toolbarWrapper}>
-                            <a href={getImageV2Url(stories[current].imageId)}
-                               style={{color: "white", textDecoration: "none"}}>
-                                <DownloadOutlined style={{color: "white"}}/>
+                            <Flex gap={25} className={classes.toolbarWrapper}>
+                                <a href={getImageV2Url(stories[current].imageId)}
+                                   style={{color: "white", textDecoration: "none"}}>
+                                    <DownloadOutlined style={{color: "white"}}/>
 
-                            </a>
-                            <RotateLeftOutlined onClick={onRotateLeft}/>
-                            <ZoomOutOutlined disabled={scale === 1} onClick={onZoomOut}/>
-                            <ZoomInOutlined disabled={scale === 50} onClick={onZoomIn}/>
+                                </a>
+                                <RotateLeftOutlined onClick={onRotateLeft}/>
+                                <ZoomOutOutlined disabled={scale === 1} onClick={onZoomOut}/>
+                                <ZoomInOutlined disabled={scale === 50} onClick={onZoomIn}/>
+                            </Flex>
+
                         </Flex>
+                    ),
+                }}>
 
-                    </Flex>
-                ),
-            }}>
-
-                <Flex gap={9}
-                      style={{overflowX: "scroll", msOverflowStyle: "none", scrollbarWidth: "none", width: "100%"}}>
-                    {stories.map((e) =>
-                            <Flex style={{minWidth: 90}} key={"story-" + e.id} vertical>
-                                <Image
-                                    height={50}
-                                    className={classes.storyImg}
-                                        src={getImageV2Url(e.imageId)}
-                                    />
-                                    <span style={{color: "#B1B8BEFF", whiteSpace: "nowrap"}}>
+                    <Flex style={{width: "100%", position: "relative"}}>
+                        <Flex gap={9} className={classes.storyList} >
+                            {stories.map((e) =>
+                                    <Flex style={{minWidth: 90}} key={"story-" + e.id} vertical>
+                                        <Image
+                                            height={60}
+                                            className={classes.storyImg}
+                                            src={getImageV2Url(e.imageId)}
+                                        />
+                                        <span style={{color: "#B1B8BEFF", whiteSpace: "nowrap"}}>
                             {e.author.firstName}
                         </span>
-                                </Flex>
-                        )}
+                                    </Flex>
+                            )}
+                        </Flex>
                     </Flex>
 
-            </Image.PreviewGroup>
+                </Image.PreviewGroup>
 
 
             <NewPostModal isOpen={isNewPostModalOpen}

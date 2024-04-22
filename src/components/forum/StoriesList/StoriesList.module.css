@@ -4,6 +4,15 @@
     border-radius: 20px;
     background-color: rgba(0, 0, 0, 0.36);
 }
+.storyList {
+    overflow-x: auto;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+    width: 100%;
+    position: absolute;
+    top: -31px;
+}
+
 .toolbarWrapper span {
     transition: color 200ms;
     font-size: 25px;

@@ -1,24 +1,37 @@
 import React, {useEffect, useState} from 'react';
 import {getLatestPosts} from "../../../API/services/forum/PostService";
-import {Flex, Button} from "antd";
+import {Flex} from "antd";
 import Post from "../Post/Post";
 import classes from './PostList.module.css'
 import {useTypedSelector} from "../../../hooks/useTypedSelector";
 import {useActions} from "../../../hooks/useActions";
 import PostSkeleton from "../Post/PostSkeleton";
-import {useLocation} from "react-router-dom";
+import {useAuth0} from "@auth0/auth0-react";
 
 const PostList = () => {
     const {posts} = useTypedSelector(state => state.forum)
     const {setPosts} = useActions()
     const [isNoPosts, setIsNoPosts] = useState<boolean>(false);
-
-
+    // const {forumUser} = useTypedSelector(state =>  state.user)
+    const {user, isLoading} = useAuth0()
     const getAll = async () => {
-        const {data} = await getLatestPosts()
-        if (data) {
-            if (data.length > 0) {
-                setPosts(data)
+        let res;
+        console.log(user)
+        if (user?.sub) {
+            console.log("GET POSTS WITH USER ID")
+            const {data} = await getLatestPosts(encodeURIComponent(user?.sub))
+            res = data;
+
+        } else {
+            console.log("GET POSTS not auth")
+
+            const {data} = await getLatestPosts()
+            res = data;
+        }
+        console.log(res)
+        if (res) {
+            if (res.length > 0) {
+                setPosts(res)
             } else {
                 setIsNoPosts(true)
             }
@@ -26,10 +39,11 @@ const PostList = () => {
     }
 
     useEffect(() => {
+        console.log("GET POSTS")
         if (posts.length === 0) {
             getAll()
         }
-    }, []);
+    }, [user, isLoading]);
 
 
     return (
@@ -68,7 +82,6 @@ const PostList = () => {
                                 )}
                             </Flex>
                         </Flex>
-
             }
 
         </Flex>

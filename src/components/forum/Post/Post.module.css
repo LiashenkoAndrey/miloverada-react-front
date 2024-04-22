@@ -1,20 +1,5 @@
 
 
-.likeBtn {
-    font-size: 27px;
-    color: #263465FF;
-    height: 30px;
-    cursor: pointer;
-    transition: color 300ms;
-}
-
-.likeBtn:hover {
-    color: red;
-}
-
-.likeBtn:active {
-    color: #ab0909;
-}
 
 .commentsAmount {
     cursor: pointer;
