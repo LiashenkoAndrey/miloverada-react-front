@@ -1,10 +1,6 @@
 
 
 
-.commentsAmount {
-    cursor: pointer;
-    color:  var(--forum-primary-text-color);
-}
 
 .buttons {
     margin-top: 10px;

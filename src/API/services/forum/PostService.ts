@@ -1,4 +1,4 @@
-import {User} from "./ForumInterfaces";
+import {ForumUser, User} from "./ForumInterfaces";
 import {apiServerUrl} from "../../Constants";
 import {callAndGetResult} from "../ExternalApiService";
 
@@ -7,12 +7,20 @@ export interface IPost {
     id : number
     createdOn : string
     text : string
-    author : User
+    author : ForumUser
     imageId : string
     isUserLikedPost : boolean
     likesAmount : number
+    commentsTotalAmount : number
+    comments : IPostComment[]
 }
 
+export interface IPostComment {
+    id : number
+    createdOn : string
+    text : string
+    author : ForumUser
+}
 
 export const getLatestPosts = (encodedForumUserId? : string) => {
     console.log(encodedForumUserId)

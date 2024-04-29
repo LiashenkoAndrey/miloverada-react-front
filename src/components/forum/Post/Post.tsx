@@ -1,6 +1,6 @@
-import React, {FC, useContext} from 'react';
-import {IPost, likeOrDislikePost} from "../../../API/services/forum/PostService";
-import {Flex, Image, message} from "antd";
+import React, {FC} from 'react';
+import {IPost} from "../../../API/services/forum/PostService";
+import {Flex, Image} from "antd";
 import {getImageV2Url} from "../../../API/services/ImageService";
 import classes from './Post.module.css'
 // @ts-ignore
@@ -8,12 +8,11 @@ import heartImg from '../../../assets/heart-svgrepo-com.svg'
 // @ts-ignore
 import chatImg from '../../../assets/chat-round-line-svgrepo-com.svg'
 import {toDateV2} from "../../../API/Util";
-import {HeartFilled, HeartOutlined} from "@ant-design/icons";
 import '../../../App.css'
 // @ts-ignore
 import placeholder from '../../../assets/image-placeholder-forum.svg'
-import {AuthContext} from "../../../context/AuthContext";
 import PostLike from "../PostLike/PostLike";
+import PostComments from "../PostComments/PostComments";
 
 interface PostProps {
     post : IPost
@@ -28,7 +27,7 @@ const Post:FC<PostProps> = ({post}) => {
 
             <Flex align={"center"} gap={5}>
                 <Image height={40} style={{borderRadius: 20}} src={post.author.avatar.includes("http") ? post.author.avatar : getImageV2Url(post.author.avatar)}/>
-                <span style={{color: "white"}}>{post.author.firstName}</span>
+                <span style={{color: "white"}}>{post.author.nickname}</span>
             </Flex>
             <Flex vertical>
                 <Image placeholder={
@@ -42,11 +41,9 @@ const Post:FC<PostProps> = ({post}) => {
                     <span>{toDateV2(post.createdOn)}</span>
                 </Flex>
                 <Flex className={classes.buttons} align={"center"} gap={10}>
-                    <Flex gap={5}>
-                        <PostLike post={post} />
-                    </Flex>
-                    <img height={23} src={chatImg} className={[classes.likeBtn, classes.btn].join(' ')}/>
-                    <span className={classes.commentsAmount}> 6 коментарів...</span>
+                    <PostLike post={post} />
+
+                    <PostComments post={post}/>
                 </Flex>
             </Flex>
 

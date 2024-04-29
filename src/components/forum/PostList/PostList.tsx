@@ -16,14 +16,13 @@ const PostList = () => {
     const {user, isLoading} = useAuth0()
     const getAll = async () => {
         let res;
-        console.log(user)
         if (user?.sub) {
-            console.log("GET POSTS WITH USER ID")
+            // console.log("GET POSTS WITH USER ID")
             const {data} = await getLatestPosts(encodeURIComponent(user?.sub))
             res = data;
 
         } else {
-            console.log("GET POSTS not auth")
+            // console.log("GET POSTS not auth")
 
             const {data} = await getLatestPosts()
             res = data;
