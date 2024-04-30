@@ -95,9 +95,6 @@ const Header = () => {
             </Flex>
 
 
-
-
-
     let items = () : MenuProps['items'] => {
         let arr = options.map((o) => {
             return {
@@ -142,16 +139,36 @@ const Header = () => {
         )
     }
 
+
+
     return (
-        <Flex justify={"center"} className={classes.navbar} style={{display: pathname.includes("chat") || pathname.includes("news/new") ? "none" : "block"}} >
-            <Flex className={"IContainer"} justify={"space-between"} align={"center"} >
-                <Flex onClick={() => nav("/")} className={"nonSelect"}>
+        <Flex justify={"center"}
+              className={classes.navbar}
+              style={{
+                  display: pathname.includes("chat") ||
+                           pathname.includes("news/new") ? "none" : "block"
+                }}
+        >
+            <Flex className={"IContainer"}
+                  justify={"space-between"}
+                  align={"center"}
+            >
+                <Flex onClick={() => nav("/")}
+                      className={"nonSelect"}
+                >
                     <span className={classes.title}>Милівська сільська територіальна громада</span>
                     <img className={classes.logo} src={icon} width={50} alt={"Герб України"}/>
                 </Flex>
 
-                <Drawer title="Мій профіль" onClose={() => setIsUserDrawerActive(false)} open={isUserDrawerActive}>
-                    <Flex vertical style={{height: "100%"}} justify={"space-between"}  gap={40}>
+                <Drawer title="Мій профіль"
+                        onClose={() => setIsUserDrawerActive(false)}
+                        open={isUserDrawerActive}
+                >
+                    <Flex vertical
+                          style={{height: "100%"}}
+                          justify={"space-between"}
+                          gap={40}
+                    >
 
                         <Flex gap={10} vertical>
 
@@ -162,29 +179,49 @@ const Header = () => {
                                     <span>{user?.email}</span>
                                 </Flex>
                             </Flex>
-                            <Button onClick={onLogout} style={{width: "fit-content"}} type={"primary"}>Вийти</Button>
+                            <Button onClick={onLogout}
+                                    style={{width: "fit-content"}}
+                                    type={"primary"}
+                            >Вийти</Button>
                         </Flex>
 
 
 
                         <Flex vertical gap={5} >
-                            <Button style={{width: "fit-content"}} onClick={onClearMetadata} loading={isLoading}>Очистити метадані</Button>
-                            <Button disabled style={{width: "fit-content"}} danger>Видалити профіль</Button>
+                            <Button style={{width: "fit-content"}}
+                                    onClick={onClearMetadata}
+                                    loading={isLoading}
+                            >Очистити метадані</Button>
+                            <Button disabled
+                                    style={{width: "fit-content"}}
+                                    danger
+                            >Видалити профіль</Button>
                         </Flex>
                     </Flex>
                 </Drawer>
 
 
-                <Flex wrap={"wrap"} justify={"center"} className={[classes.navBtnWrapper, "nonSelect"].join(' ')}>
+                <Flex wrap={"wrap"}
+                      justify={"center"}
+                      className={[classes.navBtnWrapper, "nonSelect"].join(' ')}
+                >
                     {options.map((o) =>
-                        <span className={[classes.headNavItem, classes.btnText].join(' ')}  key={"Head-option-" + o.title} onClick={o.onClick}>{o.title}</span>
+                        <span className={[classes.headNavItem, classes.btnText].join(' ')}
+                              key={"Head-option-" + o.title}
+                              onClick={o.onClick}
+                        >{o.title}</span>
                     )}
                     {userIcon}
                 </Flex>
 
 
-                <Flex wrap={"wrap"} justify={"center"} className={[classes.mobileNavBtnWrapper, "nonSelect"].join(' ')}>
-                    <Dropdown menu={{items: items()}} trigger={['click']}>
+                <Flex wrap={"wrap"}
+                      justify={"center"}
+                      className={[classes.mobileNavBtnWrapper, "nonSelect"].join(' ')}
+                >
+                    <Dropdown menu={{items: items()}}
+                              trigger={['click']}
+                    >
                         <Space>
                             <MenuOutlined className={classes.menu} style={{ fontSize: 30}} />
                         </Space>

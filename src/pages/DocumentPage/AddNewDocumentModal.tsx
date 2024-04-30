@@ -44,12 +44,12 @@ const AddNewDocumentModal:FC<AddNewDocumentModalProps> = ({groupId, isActive, se
             const {data, error} = await addNewDocumentInSubGroup(formData, groupId, jwt)
             if (data) {
                 const doc : IDocument = data;
-                notification.success({message: "ok"})
+                notification.success({message: "Документ " + filename + " успішно додано"})
                 setDoc(doc)
 
             }
             if (error) throw  error
-        } else notification.error({message: "err"})
+        } else notification.error({message: "Виникла помилка при додаванні :("})
     };
 
     const handleCancel = () => {

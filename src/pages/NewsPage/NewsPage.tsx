@@ -33,6 +33,7 @@ import NewsImageCarousel from "./NewsImageCarousel";
 import NewsComments from "../../components/NewsComments/NewsComments";
 import NewsNewCommentInput from "../../components/NewsNewCommentInput/NewsNewCommentInput";
 import {getImageUrl} from "../../API/services/ImageService";
+import {NOT_AUTH_MSG} from "../../API/Util";
 
 const {  Title } = Typography;
 interface NewsPageProps {
@@ -96,7 +97,7 @@ const NewsPage : FC<NewsPageProps> = ({isPreview}) => {
         if (isPreview) {
             const additionalNews : INews[]= []
             for (let i = 0; i < 3; i++) {
-                additionalNews.push({main_text : "test", description : "Отимано автромобіль Volkswagen Kombi для Качкарівського ЦПМСД", id : i, newsType : {title:  "Допомога громаді", id: i, titleExplanation: "d"}, views: 100, images : [{mongoImageId: "64be864fd388a05bd4608ee2", newsId: i, id : i, fileName: "untitled"}]})
+                additionalNews.push({main_text : "test", commentsAmount: 1, description : "Отимано автромобіль Volkswagen Kombi для Качкарівського ЦПМСД", id : i, newsType : {title:  "Допомога громаді", id: i, titleExplanation: "d"}, views: 100, images : [{mongoImageId: "64be864fd388a05bd4608ee2", newsId: i, id : i, fileName: "untitled"}]})
             }
             setAdditionalNews(additionalNews)
             setNews(preview)
@@ -125,13 +126,18 @@ const NewsPage : FC<NewsPageProps> = ({isPreview}) => {
         if (jwt) {
             setConfirmLoading(true);
             const {data, error} = await deleteNewsById(Number(id), jwt)
+            if (error) {
+                console.error(error)
+            }
+            console.log(data)
             setConfirmLoading(false);
             if (data) {
+                notification.success({message: "Успішно видалено новину №" + news?.id})
                 nav("/newsFeed/all")
             }
             if (error) throw error
 
-        } else notification.warning({message: "not auth"})
+        } else notification.warning(NOT_AUTH_MSG)
     }
 
 

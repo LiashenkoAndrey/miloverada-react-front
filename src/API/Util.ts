@@ -7,6 +7,8 @@ export function toTime(date : Array<string>) {
     return new Date(date.toString()).toTimeString().substring(0, 5)
 }
 
+export const NOT_AUTH_MSG = {message : "Не авторизовано"}
+
 export function getRandomColor(): string {
     const letters: string = '0123456789ABCDEF';
     let color: string = '#';
