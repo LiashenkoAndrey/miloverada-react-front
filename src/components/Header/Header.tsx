@@ -1,6 +1,6 @@
 import React, {useContext, useEffect, useState} from 'react';
 import classes from './Header.module.css'
-import {Button, Drawer, Dropdown, Flex, Image, MenuProps, notification, Skeleton, Space} from "antd";
+import {Button, Drawer, Dropdown, Flex, Image, MenuProps, notification, Skeleton, Space, Tooltip} from "antd";
 // @ts-ignore
 import icon from '../../assets/icon.png'
 import {useLocation, useNavigate} from "react-router-dom";
@@ -16,7 +16,7 @@ import {setUser} from "../../store/actionCreators/user";
 
 export interface HeaderOption {
     onClick : () => void
-    title : string
+    title : any
 }
 
 const Header = () => {
@@ -50,7 +50,9 @@ const Header = () => {
     const options : HeaderOption[] = [
         {onClick : () => nav("/documents/all"), title : "Документи"},
         {onClick : () => nav("/newsFeed/all"), title : "Новини"},
-        {onClick : () => nav("/forum"), title : "Форум"},
+        {onClick : () => {
+
+            }, title : <Tooltip title={"Незабаром буде доступно :)"}>Форум</Tooltip>},
         {onClick : () => nav("/"), title : "Управління"},
         {onClick : () => nav("/institutions"), title : "Установи"},
         {onClick : () => nav("/contacts"), title : "Контакти"},
