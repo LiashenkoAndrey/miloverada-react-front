@@ -5,6 +5,7 @@ export interface INews {
     description? : string,
     dateOfPublication? : string,
     main_text? : string,
+    image_id? : string
     newsType? : NewsType
     views : number
     images? : INewsImage[]
@@ -20,8 +21,9 @@ export interface INewsDto {
     description? : string,
     dateOfPublication? : string,
     newsType? : NewsType
+    image_id? : string
     views : number
-    images? : INewsImage[]
+    images : INewsImage[]
 }
 
 
