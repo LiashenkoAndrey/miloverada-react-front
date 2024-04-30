@@ -1,5 +1,5 @@
 import React, {FC} from 'react';
-import {INewsDto} from "../../domain/NewsInt";
+import {INews, INewsDto} from "../../domain/NewsInt";
 import {getImageUrl} from "../../API/services/ImageService";
 // @ts-ignore
 import {useNavigate} from "react-router-dom";
@@ -8,26 +8,26 @@ import classes from './NewsCard.module.css'
 import {Flex} from "antd";
 
 interface NewsCardProps {
-    news: INewsDto,
+    news: INewsDto | INews,
     style?: React.CSSProperties | undefined
     className?: string
 }
 
 const NewsCard: FC<NewsCardProps> = ({news, style, className}) => {
     const nav = useNavigate()
-    const newsImage = news.images && news.images[0]
+    const newsImage = news.image_id ? news.image_id : news.images && news.images[0]
 
 
     return (
         <Flex vertical
               onClick={() => nav("/newsFeed/" + news.id)}
-              key={newsImage?.mongoImageId}
+              key={typeof newsImage === "string" ? newsImage : newsImage?.mongoImageId}
               className={[classes.newsCard, (className ? className : "")].join(' ')}
               style={style}
         >
-            <img src={getImageUrl(newsImage?.mongoImageId)}
+            <img src={getImageUrl(typeof newsImage === "string" ? newsImage : newsImage?.mongoImageId)}
                  className={"imageWithPlaceholder"}
-                 alt={newsImage?.fileName}
+                 alt={typeof newsImage === "string" ? newsImage : newsImage?.mongoImageId}
             />
             <div className={classes.newsCardContent}>
                 <span className={classes.newsType}>{news.newsType?.title}</span>

@@ -12,7 +12,7 @@ import {
 } from "../../API/services/NewsService";
 
 
-import {App, Breadcrumb, Button, Col, Flex, FloatButton, Popconfirm, Row, Tooltip, Typography} from "antd";
+import {App, Breadcrumb, Button, Col, Flex, FloatButton, Image, Popconfirm, Row, Tooltip, Typography} from "antd";
 import {INews, INewsImage} from "../../domain/NewsInt";
 import './NewsPage.css'
 import {
@@ -32,6 +32,7 @@ import EditMainTextModal from "./EditMainTextModal";
 import NewsImageCarousel from "./NewsImageCarousel";
 import NewsComments from "../../components/NewsComments/NewsComments";
 import NewsNewCommentInput from "../../components/NewsNewCommentInput/NewsNewCommentInput";
+import {getImageUrl} from "../../API/services/ImageService";
 
 const {  Title } = Typography;
 interface NewsPageProps {
@@ -268,6 +269,14 @@ const NewsPage : FC<NewsPageProps> = ({isPreview}) => {
                             </Col>
                         </Row>
                     </div>
+
+                    {news?.image_id &&
+                        <Image
+                            style={{width: "100%", height: "100%", maxHeight : 540}}
+                      className={"imageWithPlaceholder carouselImage"}
+                            src={getImageUrl(news.image_id)} alt={news.description}/>
+
+                    }
 
                     <NewsImageCarousel isPreview={isPreview}
                                        imagesList={imagesList}
