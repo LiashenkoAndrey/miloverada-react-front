@@ -20,6 +20,7 @@ import {useActions} from "../../hooks/useActions";
 import AddNewsTypeModal from "./AddNewsTypeModal";
 import HtmlEditor from "../../components/HtmlEditor";
 import {INews, INewsImage} from "../../domain/NewsInt";
+import {useNavigate} from "react-router-dom";
 
 const AddNewsPage = () => {
 
@@ -39,6 +40,7 @@ const AddNewsPage = () => {
     const [isNewTypeModalOpen, setIsNewTypeModalOpen] = useState<boolean>(false);
     const {setNewsPreview} = useActions()
     const [text, setText] = useState<string>()
+    const nav = useNavigate()
 
     const getTypes = async () => {
         if (jwt) {
@@ -53,6 +55,7 @@ const AddNewsPage = () => {
     useEffect(() => {
         const iNewsPreview : INews = {description : title,
             main_text: text,
+            commentsAmount : 1,
             views: 100,
             dateOfPublication: dateOfPublication.split("T")[0],
             images: newsImages,
@@ -168,12 +171,15 @@ const AddNewsPage = () => {
             const {data, error} = await saveNews(formData, jwt)
 
             if (data) {
-                notification.success({message: "ok"})
+                notification.success({message: "Успішно збережено"})
+                setTimeout(() => {
+                    nav("/newsFeed/all")
+                }, 500)
             }
             if (error) {
-                notification.error({message: "error"})
+                notification.error({message: "Виникла помилка"})
             }
-        } else   notification.warning({message: "not auth"})
+        } else   notification.warning({message: "Не авторизовано"})
     }
 
     const nodeRef = useRef(null);

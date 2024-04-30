@@ -3,7 +3,7 @@ import {INews, INewsDto} from "../../domain/NewsInt";
 import {getImageUrl} from "../../API/services/ImageService";
 // @ts-ignore
 import {useNavigate} from "react-router-dom";
-import {EyeOutlined} from "@ant-design/icons";
+import {CommentOutlined, EyeOutlined, MessageOutlined} from "@ant-design/icons";
 import classes from './NewsCard.module.css'
 import {Flex} from "antd";
 
@@ -39,14 +39,31 @@ const NewsCard: FC<NewsCardProps> = ({news, style, className}) => {
                               justify={"center"}
                               className={classes.newsViews}
                         >
-                            <EyeOutlined className={classes.eye + " eye"}
-                                         style={{fontSize: 16}}
-                            />
-                            <span className={classes.eye}
-                                  style={{fontSize: 16, height: "fit-content"}}
-                            >
+                            {news.views > 0 &&
+                                <>
+                                    <EyeOutlined className={classes.eye + " eye"}
+                                                 style={{fontSize: 16}}
+                                    />
+                                    <span className={classes.eye}
+                                          style={{fontSize: 16, height: "fit-content"}}
+                                    >
                                 {news.views}
                             </span>
+                                </>
+                            }
+
+                            {news.commentsAmount > 0 &&
+                                <>
+                                    <MessageOutlined className={classes.eye + " eye"}
+                                                 style={{fontSize: 16}}
+                                    />
+                                    <span className={classes.eye}
+                                          style={{fontSize: 16, height: "fit-content"}}
+                                    >
+                                {news.commentsAmount}
+                            </span>
+                                </>
+                            }
                         </Flex>
                     </span>
                 </p>

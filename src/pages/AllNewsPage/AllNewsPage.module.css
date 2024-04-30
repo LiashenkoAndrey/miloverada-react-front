@@ -1,7 +1,7 @@
 
 
 .allnewsWrapper {
-    padding-top: 20vh;
+    padding-top: 10vh;
     padding-bottom: 150px;
     background-color: #C8CBD0;
 }
@@ -107,11 +107,6 @@
     }
 }
 
-/*@media (max-width: 400px) {*/
-/*    .bottomNewsList, .topNewsList {*/
-/*        grid-template-columns: 1fr ;*/
-/*    }*/
-/*}*/
 
 .WhiteNewsCard {
     background-color: #E9EAEC;
@@ -120,17 +115,23 @@
 .AllNewsPageWideCard img {
     max-height: initial;
 }
-
+.newsTitle {
+    font-family: 'Source Serif 4', serif;
+    align-self: center;
+}
 
 
 .AllNewsPageBottomCard {
+
+    min-height: 300px;
+    min-width: 300px;
     border-bottom-right-radius: 5px;
     border-bottom-left-radius: 5px;
     background-color: #E9EAEC;
 }
 
 .AllNewsPageBottomCard img {
-    max-height: 300px;
+    max-height: 280px;
 }
 
 

@@ -9,6 +9,7 @@ export interface INews {
     newsType? : NewsType
     views : number
     images? : INewsImage[]
+    commentsAmount : number
 }
 
 export interface IImage {
@@ -24,6 +25,7 @@ export interface INewsDto {
     image_id? : string
     views : number
     images : INewsImage[]
+    commentsAmount : number
 }
 
 
