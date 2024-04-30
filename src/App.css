@@ -1,8 +1,5 @@
-@import url('https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;1,300&family=Libre+Baskerville&family=Open+Sans:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400&family=Source+Serif+4:ital,opsz,wght@0,8..60,200;0,8..60,400;0,8..60,600;0,8..60,700;1,8..60,200;1,8..60,400;1,8..60,500;1,8..60,600&display=swap');
-
-
-
-
+@import url('https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;1,300&family=Libre+Baskerville&family=Open+Sans:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400&family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Source+Serif+4:opsz,wght@8..60,200..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&family=Source+Serif+4:ital,opsz,wght@0,8..60,200..900;1,8..60,200..900&display=swap');
 .smoothAppearance-enter {
     opacity: 0;
 }
@@ -19,6 +16,17 @@
 }
 
 
+.isHighlighted {
+    background-color: rgba(33, 27, 26, 0.34);
+    transition: background-color 1100ms;
+}
+
+.stopHighlight {
+    transition: background-color 1500ms;
+    background-color: rgba(0, 0, 0, 0)!important;
+}
+
+
 
 .imageWithPlaceholder {
     text-align: center;
@@ -28,13 +36,31 @@
     background-size: 80%;
 }
 
+
+.redBtn {
+    width: fit-content;
+    border: 0;
+    color: white;
+    font-size: 28px;
+    height: fit-content;
+    padding: 3px 4em;
+    font-family: 'Source Serif 4', serif;;
+}
+
+.forumStyledScrollBar {
+    scrollbar-width: thin;
+    scrollbar-color: var(--forum-secondary-bg-color) var(--forum-primary-bg-color);
+}
+
 :root {
-    --forum-primary-bg-color : #C4BBAF;
+    --forum-primary-bg-color : #191a24;
+    /*--forum-primary-bg-color : #191a24;*/
     --forum-primary-title-color : #282A3E;
     --forum-secondary-title-color : #282A3E ;
-    --forum-secondary-bg-color : #A5978B;
+    --forum-secondary-bg-color : #2d313d;
+    --forum-primary-text-color : #B1B8BEFF;
 
-    --chat-header-bg-color :#A5978B;
+    --chat-header-bg-color : #191a24;
     --chat-bg-color : #5C4742;
 
     --message-bg-color : #8D5B4C;
@@ -75,3 +101,5 @@ html, body {
     max-height: 700px;
     height: auto;
 }
+
+

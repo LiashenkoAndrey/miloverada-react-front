@@ -1,0 +1,14 @@
+.commentsAmount {
+    cursor: pointer;
+    color:  var(--forum-primary-text-color);
+}
+
+.commentBtn {
+    cursor: pointer;
+    color:  var(--forum-primary-text-color);
+    transition: color 300ms;
+}
+.commentBtn:hover {
+    color: #c9d0d5;
+    text-decoration: underline;
+}

@@ -25,7 +25,22 @@
     }
 
 }
+.selectionToolbarWrapper {
+    width: 100%;
+    position: absolute;
+    bottom: 20px;
+}
+.selectionToolbar {
+    width: 100%;
+    max-width: 700px;
+    padding: 8px 20px;
+    background-color: var(--forum-primary-bg-color);
+    border-radius: 20px;
+}
 
+.chatBottomWrapper {
+    background-color: var(--chat-bg-color);
+}
 .chat {
     width: 100%;
     position: relative;
@@ -37,3 +52,8 @@
     /*background-repeat: no-repeat;*/
     /*background-size: cover;*/
 }
+
+/*.myNode {*/
+
+/*}*/
+

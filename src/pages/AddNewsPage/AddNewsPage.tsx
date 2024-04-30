@@ -111,9 +111,6 @@ const AddNewsPage = () => {
         inputFile.current?.click()
     }
 
-    useEffect(() => {
-        console.log(newsImages)
-    }, [newsImages]);
 
     const onImageLoad = (fileList: FileList | null) => {
         if (fileList !== null) {

@@ -8,21 +8,19 @@ const ChatNav = () => {
 
     return (
         <Flex justify={"flex-start"} className={"chatsWrapper"} vertical>
-            <Flex justify={"center"} vertical={false} align={"center"} gap={30}>
+            <Flex justify={"center"} vertical={true} align={"center"} gap={30}>
 
                 <Button onClick={() => nav(-1)}
                         style={{maxWidth: 150, color: "black"}}
                         icon={<LeftOutlined/>}
-                        type={"text"}>
+                >
                     Назад
                 </Button>
 
                 <Breadcrumb style={{color: "black"}}>
                     <Breadcrumb.Item>
-                        <Button onClick={() => nav("/")}
-                                type={"text"}
-                                size={"small"}
-                                style={{color: "black"}}>
+                        <Button ghost onClick={() => nav("/")}
+                        >
                             Головна
                         </Button>
                     </Breadcrumb.Item>

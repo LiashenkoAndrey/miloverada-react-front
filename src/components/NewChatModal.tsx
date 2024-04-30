@@ -1,48 +1,67 @@
 import React, {FC, useContext, useState} from 'react';
-import {App, Button, Flex, Form, Input, Modal} from "antd";
+import {App, Button, Form, Input, Modal} from "antd";
 import useInput from "../API/hooks/useInput";
 import {newChat} from "../API/services/forum/ChatService";
 import {NewChat} from "../API/services/forum/ForumInterfaces";
 import {useAuth0} from "@auth0/auth0-react";
 import {AuthContext} from "../context/AuthContext";
+import {TopicInfo} from "../pages/forum/AllTopicsPage/TopicsList/TopicsList";
+import {useTypedSelector} from "../hooks/useTypedSelector";
+import {useActions} from "../hooks/useActions";
 
 interface NewChatModalProps {
-    topicId : number
+    topicInfo : TopicInfo
+    isOpen : boolean
+    setIsOpen :  React.Dispatch<React.SetStateAction<boolean>>
 }
 
-const NewChatModal : FC<NewChatModalProps> = ({topicId}) => {
-    const [isModalOpen, setIsModalOpen] = useState(false);
+const NewChatModal : FC<NewChatModalProps> = ({topicInfo, isOpen, setIsOpen}) => {
     const name = useInput()
     const description = useInput()
     const pictureUrl = useInput()
     const {  notification } = App.useApp();
     const {user, isAuthenticated} = useAuth0()
     const {jwt} = useContext(AuthContext)
-
-    const showModal = () => {
-        setIsModalOpen(true);
-    };
+    const {topics} = useTypedSelector(state => state.forum)
+    const {setTopics} = useActions()
+    const [isLoading, setIsLoading] = useState<boolean>(false)
 
     const onFinish = async () => {
-        if (name.value && description.value && pictureUrl.value && user?.sub) {
-
+        if (name.value && description.value && user?.sub && topicInfo.topicId) {
+            console.log(topicInfo.topicId)
             const chat : NewChat = {
                 name: name.value,
                 description: description.value,
-                picture : pictureUrl.value,
                 ownerId : user.sub,
-                topicId : topicId
+                topicId : topicInfo.topicId
+            }
+
+            if (pictureUrl) {
+                chat.picture = pictureUrl.value
             }
 
             console.log(chat)
             if (jwt) {
-
+                setIsLoading(true)
                 const {data, error} = await newChat(chat, jwt)
+                setIsLoading(false)
 
                 if (data) {
                     console.log(data)
                     handleCancel()
                     notification.success({message: "Чат створено!"})
+                    const topic = topics.find((e) => e.id === topicInfo.topicId)
+                    if (topic) {
+                        const index = topics.indexOf(topic);
+                        topics[index].chats.push(data)
+                        console.log(topics)
+                        setTopics(topics)
+                        name.value = ''
+                        description.value = ''
+                        pictureUrl.value = ''
+
+                    } else console.error('topic not found: unexpected behavior')
+                    setIsOpen(false)
                 }
 
                 if (error) throw error
@@ -52,18 +71,10 @@ const NewChatModal : FC<NewChatModalProps> = ({topicId}) => {
     }
 
     const handleCancel = () => {
-        setIsModalOpen(false);
+        setIsOpen(false);
     };
     return (
-        <>
-            {isAuthenticated
-                &&
-                <Flex>
-                    <Button color={"yellow"} onClick={showModal}  type={"primary"}>Створити новий чат</Button>
-                </Flex>
-            }
-
-            <Modal title={"Новий чат"} footer={false} open={isModalOpen}  onCancel={handleCancel}>
+            <Modal title={"Новий чат в темі " + topicInfo.topicName} footer={false} open={isOpen}  onCancel={handleCancel}>
                 <Form
                     name="basic"
                     labelCol={{ span: 8 }}
@@ -72,6 +83,7 @@ const NewChatModal : FC<NewChatModalProps> = ({topicId}) => {
                     initialValues={{ remember: true }}
                     onFinish={onFinish}
                     autoComplete="off"
+
                 >
                     <Form.Item
                         label="Назва"
@@ -95,7 +107,7 @@ const NewChatModal : FC<NewChatModalProps> = ({topicId}) => {
                     </Form.Item>
 
                     <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
-                        <Button type="primary" htmlType="submit">
+                        <Button loading={isLoading} type="primary" htmlType="submit">
                             Створити новий чат
                         </Button>
                     </Form.Item>
@@ -104,7 +116,6 @@ const NewChatModal : FC<NewChatModalProps> = ({topicId}) => {
                     </Button>
                 </Form>
             </Modal>
-        </>
     );
 };
 

@@ -1,8 +1,13 @@
-import {Message} from "../API/services/forum/ForumInterfaces";
+import {IChat, Message, PrivateChat} from "../API/services/forum/ForumInterfaces";
 
 export interface ChatState {
     messages: Message[]
-    chatId: number
+    chatId: number,
+    chatInfo: IChat | null
+    isSelectionEnabled : boolean,
+    isSelectChatToForwardMessageModalActive : boolean
+    selectedMessages : Message[]
+    privateChatInfo : PrivateChat | null
     hasPreviousMessages: boolean
     hasNextMessages: boolean
     unreadMessagesCount : number
@@ -11,6 +16,11 @@ export interface ChatState {
 
 export enum ChatActionTypes {
     SET_MESSAGES = "SET_MESSAGES",
+    SET_CHAT_INFO = "SET_CHAT_INFO",
+    SET_PRIVATE_CHAT_INFO = "SET_PRIVATE_CHAT_INFO",
+    SET_IS_SELECTION_ENABLED = "SET_IS_SELECTION_ENABLED" ,
+    SET_SELECTED_MESSAGES = "SET_SELECTED_MESSAGES" ,
+    SET_IS_SELECT_CHAT_TO_FORWARD_MESSAGE_MODAL_ACTIVE = "SET_IS_SELECT_CHAT_TO_FORWARD_MESSAGE_MODAL_ACTIVE",
     FETCH_PREVIOUS_MESSAGES = "FETCH_PREVIOUS_MESSAGES",
     FETCH_NEXT_MESSAGES = "FETCH_NEXT_MESSAGES",
     SET_CHAT_ID = "SET_CHAT_ID",
@@ -24,6 +34,32 @@ export enum ChatActionTypes {
 interface SetMessagesAction {
     type: ChatActionTypes.SET_MESSAGES
     payload: Message[]
+}
+
+interface SetIsSelectChatToForwardMessageModalActive {
+    type: ChatActionTypes.SET_IS_SELECT_CHAT_TO_FORWARD_MESSAGE_MODAL_ACTIVE
+    payload: boolean
+}
+
+interface SetSelectedMessagesAction {
+    type: ChatActionTypes.SET_SELECTED_MESSAGES
+    payload: Message[]
+}
+
+interface SetIsSelectionEnabledAction {
+    type: ChatActionTypes.SET_IS_SELECTION_ENABLED
+    payload: boolean
+}
+
+
+interface SetPrivateChatInfoAction {
+    type: ChatActionTypes.SET_PRIVATE_CHAT_INFO
+    payload: PrivateChat
+}
+
+interface SetChatInfoAction {
+    type: ChatActionTypes.SET_CHAT_INFO
+    payload: IChat
 }
 
 interface SetUnreadMessagesCountAction {
@@ -72,3 +108,8 @@ export type ChatAction =
     | FetchNextMessagesAction
     | SetUnreadMessagesCountAction
     | SetLastReadMessageIdAction
+    | SetChatInfoAction
+    | SetPrivateChatInfoAction
+    | SetIsSelectionEnabledAction
+    | SetSelectedMessagesAction
+    | SetIsSelectChatToForwardMessageModalActive

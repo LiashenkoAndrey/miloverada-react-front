@@ -5,7 +5,6 @@ import {Topic} from "../../../API/services/forum/ForumInterfaces";
 import {getTopicById} from "../../../API/services/forum/TopicService";
 import ForumNavbar from "../../../components/ForumNavbar/ForumNavbar";
 import {Button, Flex} from "antd";
-import ChatsList from "../AllTopicsPage/ChatsList/ChatsList";
 import {LeftOutlined} from "@ant-design/icons";
 import './TopicPage.css'
 import NewChatModal from "../../../components/NewChatModal";
@@ -50,8 +49,6 @@ const TopicPage = () => {
                         <h3>{topic?.description}</h3>
                     </Flex>
 
-                    <NewChatModal topicId={Number(id)}/>
-
                 </Flex>
 
                 <Flex className={"topicPageChatListWrapper"}>
@@ -59,7 +56,7 @@ const TopicPage = () => {
                     <div>3</div>
                     <div>4</div>
                 </Flex>
-                {topic && <ChatsList chats={topic.chats} topicId={topic.id}/>}
+                {/*{topic && <ContentList chats={topic.chats} topicId={topic.id}/>}*/}
             </Flex>
         </ForumWrapper>
     );

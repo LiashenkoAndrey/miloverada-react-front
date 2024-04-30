@@ -1,14 +1,13 @@
 import React, {FC, useCallback, useContext, useEffect, useRef, useState} from 'react';
 import {App, Badge, Flex} from "antd";
 import {
-    Chat,
     ChatMetadata,
     DeleteMessageDto,
     DeleteMessageImageDto,
     LastReadMessageDto,
-    Message, TypingUser,
-    UpdateMessageDto,
-    User
+    Message,
+    TypingUser,
+    UpdateMessageDto
 } from "../../API/services/forum/ForumInterfaces";
 import {useStompClient, useSubscription} from "react-stomp-hooks";
 import MessageList from "./MessageList/MessageList";
@@ -26,15 +25,18 @@ import {isMyMessage} from "../../API/services/forum/UserService";
 import {MessageFileDto} from "../../API/services/forum/MessageDto";
 import {getChatMetadata, getMessagesByChatIdAndLastReadMessage} from "../../API/services/forum/ChatService";
 import {MESSAGE_LOAD_PORTION_SIZE, MESSAGES_LIST_DEFAULT_SIZE} from "../../Constants";
+// @ts-ignore
+import refrenceArrowIconBlack from "../../assets/back-arrow-svgrepo-com.svg";
+import SelectionToolbar from "../forum/SelectionToolbar/SelectionToolbar";
+import SelectChatModalToForwardMessages
+    from "../forum/SelectChatModalToForwradMessages/SelectChatModalToForwardMessages";
 
 interface ChatProps {
-    chat? : Chat
 }
 
-const ChatWindow: FC<ChatProps> = ({ chat
-                                   }) => {
+const ChatWindow: FC<ChatProps> = () => {
 
-    const {messages, unreadMessagesCount, chatId} = useTypedSelector(state => state.chat)
+    const {messages, unreadMessagesCount, chatId, chatInfo, isSelectionEnabled} = useTypedSelector(state => state.chat)
     const {setMsg, setUnreadMessagesCount, setHasPreviousMessages, setHasNextMessages, setLastReadMessageId} = useActions()
     const stompClient = useStompClient()
     const {user, isAuthenticated} = useAuth0()
@@ -52,7 +54,6 @@ const ChatWindow: FC<ChatProps> = ({ chat
             if (isAuthenticated) {
                 getMetadataAndLoadMessages(chatId)
             } else {
-                console.log("not auth")
                 getLatestOfChat()
             }
         }
@@ -210,12 +211,20 @@ const ChatWindow: FC<ChatProps> = ({ chat
             scrollToLastMessage()
         }
 
-        setInput('')
-        let msg = messages === undefined ? [] : messages;
-        if (chat !== undefined) {
-            chat.totalMessagesAmount  = chat?.totalMessagesAmount + 1;
+        // setInput('')
+        if (chatInfo !== null) {
+            chatInfo.totalMessagesAmount  = chatInfo?.totalMessagesAmount + 1;
         }
-        setMsg([...msg, data])
+        setMsg([...messages, data])
+    }
+
+    const onForwardMessagesEvent = (dto: IMessage) => {
+        const forwardedMessages : Message[] = JSON.parse(dto.body)
+        console.log("forwardedMessagesEvent", forwardedMessages)
+        if (chatInfo !== null) {
+            chatInfo.totalMessagesAmount  = chatInfo?.totalMessagesAmount + forwardedMessages.length;
+        }
+        setMsg([...messages, ...forwardedMessages])
     }
 
     const saveLastReadMessageId = (messageId : number) => {
@@ -236,6 +245,7 @@ const ChatWindow: FC<ChatProps> = ({ chat
     }
 
     useSubscription(`/chat/` + chatId, onChatMessagesSubscribe)
+    useSubscription(`/chat/${chatId}/newForwardedMessagesEvent`, onForwardMessagesEvent)
 
     const filterTypingUsers = (userId : string | undefined) => {
         if (userId) {
@@ -265,10 +275,10 @@ const ChatWindow: FC<ChatProps> = ({ chat
     }, [editMessage]);
 
     const notifyThatMessageWasDeleted = (messageId : number) => {
-        if (stompClient && chat?.id) {
+        if (stompClient && chatInfo?.id) {
             const body : DeleteMessageDto = {
                 messageId : messageId,
-                chatId : chat?.id
+                chatId : chatInfo?.id
             }
 
             stompClient.publish({
@@ -293,42 +303,55 @@ const ChatWindow: FC<ChatProps> = ({ chat
         }
     }
 
+
     return (
-        <Flex className={chat_classes.chatWindow} justify={"space-between"} vertical={true}>
+        <Flex style={{zIndex: 2}} className={chat_classes.chatWindow} justify={"space-between"} vertical={true}>
             <ChatHeader typingUsers={typingUsers}
                         chatId={chatId}
                         setTypingUsers={setTypingUsers}
-                        chat={chat}
                         filterTypingUsers={filterTypingUsers}
             />
             <Flex style={{backgroundColor: "black", overflowY: "hidden", flexGrow: 1}}>
                 <Flex vertical={true} className={chat_classes.chat} justify={"space-between"}>
                     <MessageList
-                                 chat={chat}
-                                 saveLastReadMessageId={saveLastReadMessageId}
-                                 onEditMessage={onEditMessage}
-                                 editMessage={editMessage}
-                                 onReplyMessage={onReplyMessage}
-                                 replyMessage={replyMessage}
-                                 onDeleteMessage={onDeleteMessage}
+                        saveLastReadMessageId={saveLastReadMessageId}
+                        onEditMessage={onEditMessage}
+                        editMessage={editMessage}
+                        onReplyMessage={onReplyMessage}
+                        replyMessage={replyMessage}
+                        onDeleteMessage={onDeleteMessage}
                     />
-                    <Flex style={{display: isScrollDownButtonActive ? "flex" : "none"}} onClick={toBottom} className={"unreadMessagesFloatButtonWrapper"}>
+
+                    <SelectionToolbar onDeleteMessage={onDeleteMessage}/>
+
+                    <SelectChatModalToForwardMessages/>
+
+                    <Flex style={{display: isScrollDownButtonActive ? "flex" : "none"}} onClick={toBottom}
+                          className={"unreadMessagesFloatButtonWrapper"}>
                         <Badge count={unreadMessagesCount} color={"#8f4c58"}>
-                            <DownOutlined className={"unreadMessagesFloatButton"} />
+                            <DownOutlined className={"unreadMessagesFloatButton"}/>
                         </Badge>
                     </Flex>
                 </Flex>
             </Flex>
-            <ChatInput chatId={chatId}
-                       input={input}
-                       setInput={setInput}
-                       stompClient={stompClient}
-                       filterTypingUsers={filterTypingUsers}
-                       editMessage={editMessage}
-                       setEditMessage={setEditMessage}
-                       replyMessage={replyMessage}
-                       setReplyMessage={setReplyMessage}
-            />
+            <div
+                 className={chat_classes.chatBottomWrapper}
+            >
+                {!isSelectionEnabled &&
+                    <ChatInput chatId={chatId}
+                               input={input}
+                               setInput={setInput}
+                               stompClient={stompClient}
+                               filterTypingUsers={filterTypingUsers}
+                               editMessage={editMessage}
+                               setEditMessage={setEditMessage}
+                               replyMessage={replyMessage}
+                               setReplyMessage={setReplyMessage}
+                    />
+                }
+
+            </div>
+
         </Flex>
     );
 };

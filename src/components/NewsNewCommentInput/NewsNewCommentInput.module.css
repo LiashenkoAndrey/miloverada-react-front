@@ -1,0 +1,38 @@
+
+
+.textArea {
+    font-size: 16px;
+    font-weight: 400;
+    font-family: 'Libre Baskerville', serif;
+
+    min-height: 120px;
+    margin-bottom: 5px;
+    margin-top: 10px;
+    resize: none;
+    overflow-y: hidden;
+    transition: height 200ms;
+    padding: 10px;
+    border: none;
+    border-radius: 10px;
+    background-color: #E6E7EF;
+    width: 100%;
+}
+
+.title {
+    font-family: 'Source Serif 4', serif;
+    font-weight: 500;
+    font-size: 22px;
+    width: 100%;
+    padding-bottom: 5px;
+    text-align: center;
+}
+
+.Wrapper {
+    width: 100%;
+    max-width: 700px;
+}
+
+.submitBtn {
+    align-self: flex-end;
+    max-width: 200px;
+}

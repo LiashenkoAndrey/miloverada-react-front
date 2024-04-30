@@ -35,6 +35,13 @@ export interface MessageIsSavedPayload {
     messageId : number
 }
 
+export interface ForwardMessagesDto {
+    messagesIdList : number[],
+    fromChatId : number,
+    toChatsIdList : number[],
+    encodedSenderId : string
+}
+
 export interface MessageDto {
     chatId : number
     senderId : string,

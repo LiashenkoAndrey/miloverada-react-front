@@ -1,0 +1,138 @@
+
+
+.mainImg {
+    position: relative;
+    background-image: url("../../assets/Screenshot (60).png");
+    /* Set a specific height */
+    min-height: 1000px;
+
+    background-attachment: fixed;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+.greetingWrapper {
+    background-color: #fff ;
+    padding-bottom: 70px;
+    padding-top: 50px;
+}
+
+
+.MainPageNewsList {
+    max-width: 80vw;
+    gap: 20px!important;
+    margin: 0;
+}
+
+.whiteNewsCard img {
+    max-height: 240px;
+}
+
+.whiteNewsCard {
+    width: 100%;
+    /*max-width: 350px;*/
+    max-height: 340px!important;
+}
+
+.wideNewsCard {
+    width: 100%;
+    /*max-width: 670px!important;*/
+    max-height: 340px!important;
+}
+
+.NewsWrapper {
+    max-width: 70vw;
+    padding: 20px 0;
+    width: 100%;
+}
+
+
+
+.NewsAndBanners {
+    gap: 40px;
+    padding: 10px;
+    display: flex;
+    justify-content: center;
+}
+
+.gridNewsPageList {
+    display: grid;
+    gap: 20px;
+    grid-template-columns: 44% 28% 28%;
+}
+@media (max-width: 1280px)  {
+    .gridNewsPageList {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+.NewsListWrapperWithTitle {
+    background-color: #f4f4f4;
+    padding-top: 30px;
+    flex-grow: 1;
+
+}
+
+@media (max-width: 688px)  {
+    .NewsAndBanners {
+        display: grid;
+    }
+
+    .NewsListWrapperWithTitle {
+        order: 2;
+    }
+
+    .gridNewsPageList {
+        /*grid-template-columns: 1fr;*/
+    }
+
+    .NewsWrapper {
+        max-width: initial;
+    }
+}
+
+@media (max-width: 500px)  {
+    .MainPageNewsList {
+        max-width: initial;
+    }
+
+    .whiteNewsCard , .wideNewsCard{
+        margin: 0 10px;
+        width: 100%;
+    }
+    .whiteNewsCard img {
+        width: 100% !important;
+    }
+
+    .greetingText {
+        padding: 0 10px;
+        font-size: 30px!important;
+        max-width: initial!important;
+        text-align: start!important;
+    }
+
+}
+
+.greetingTitle {
+    user-select: none;
+    font-weight: 500;
+    font-family: 'Source Serif 4', serif;
+    font-size: 40px;
+}
+
+.greetingText {
+    user-select: none;
+    transition: font-size 200ms;
+    font-family: 'Source Serif 4', serif;
+    max-width: 70vw;
+    font-size: 40px;
+    font-weight:300;
+    font-style: normal;
+    text-align: center;
+}
+
+.content {
+    padding-bottom: 50px;
+    color: black;
+}

@@ -1,6 +1,6 @@
 import React, {FC, useEffect, useRef, useState} from 'react';
 import {Empty, Flex} from "antd";
-import {Chat, Message} from "../../../API/services/forum/ForumInterfaces";
+import {IChat, Message} from "../../../API/services/forum/ForumInterfaces";
 import MessageListItem from "../../../pages/forum/Message/MessageListItem";
 import {useAuth0} from "@auth0/auth0-react";
 import classes from './MessageList.module.css'
@@ -11,9 +11,12 @@ import {
     observeNextMessagesLoadingTrigger,
     observePreviousMessagesLoadingTrigger
 } from "../../../API/services/forum/MessageService";
+// @ts-ignore
+import helloGif from '../../../assets/hello.gif'
+import {setSelectedMessages} from "../../../store/actionCreators/chat";
+
 
 interface MessageListProps {
-    chat?: Chat,
     saveLastReadMessageId(messageId: number): void
     onEditMessage : (message : Message) => void
     editMessage? : Message
@@ -23,7 +26,6 @@ interface MessageListProps {
 }
 
 const MessageList: FC<MessageListProps> = ({
-                                               chat,
                                                saveLastReadMessageId,
                                                onEditMessage,
                                                editMessage,
@@ -33,10 +35,10 @@ const MessageList: FC<MessageListProps> = ({
                                            }) => {
 
     const {isAuthenticated} = useAuth0()
-    const {messages, chatId, hasPreviousMessages, hasNextMessages, unreadMessagesCount, lastReadMessageId} = useTypedSelector(state => state.chat)
+    const {messages, chatId, hasPreviousMessages, hasNextMessages, unreadMessagesCount, lastReadMessageId, selectedMessages, isSelectionEnabled} = useTypedSelector(state => state.chat)
     const [newSeenMessageId, setNewSeenMessageId] = useState<number>()
     const [oldSeenMsgID, setOldSeenMsgID] = useState<number>()
-    const {fetchPreviousMessages, fetchNextMessages, setUnreadMessagesCount, setLastReadMessageId} = useActions()
+    const {fetchPreviousMessages, fetchNextMessages, setUnreadMessagesCount, setLastReadMessageId, setIsSelectionEnabled} = useActions()
 
     useEffect(() => {
         if (newSeenMessageId === undefined) {
@@ -132,17 +134,22 @@ const MessageList: FC<MessageListProps> = ({
     }, [messages]);
 
 
+    useEffect(() => {
+        if (selectedMessages.length === 0) {
+            setIsSelectionEnabled(false)
+        }
+    }, [selectedMessages]);
     return (
         <Flex id={"msgWrapper"} className={classes.messagesWrapper} vertical={true}>
             {messages.length > 0
                 ?
-                messages.map((msg) =>
+                messages.map((msg, index) =>
                         <MessageListItem
+                            index={index}
                             onDeleteMessage={onDeleteMessage}
                             onEditMessage={onEditMessage}
                             replyMessage={replyMessage}
                             onReplyMessage={onReplyMessage}
-                            chat={chat}
                             observer={readMessagesObserver}
                             key={"msg-" + msg.id}
                             message={msg}
@@ -150,10 +157,13 @@ const MessageList: FC<MessageListProps> = ({
                         />
                 )
                 :
-                <Empty style={{marginTop: "5vh"}} description={"Поки немає обрговорень. Почніть першим)!"}/>
+                <Flex justify={"center"}>
+                    <Empty image={<img src={helloGif} alt=""/>} style={{marginTop: "5vh"}} description={<span style={{color :"white", fontSize: 16}}>Поки немає обрговорень. Почніть першим)!</span>}/>
+
+                </Flex>
             }
 
-            <div style={{float: "left", clear: "both"}} id={"chatBottom"}></div>
+            <div style={{float: "left", clear: "both", marginBottom: isSelectionEnabled ? 60 : 20}} id={"chatBottom"}></div>
         </Flex>
     );
 };

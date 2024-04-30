@@ -2,7 +2,7 @@ import {callAndGetResult} from "../ExternalApiService";
 import {apiServerUrl} from "../../Constants";
 import {Message, UpdateMessageDto} from "./ForumInterfaces";
 import {Client} from "@stomp/stompjs";
-import {MessageDto} from "./MessageDto";
+import {ForwardMessagesDto, MessageDto} from "./MessageDto";
 
 export const getLatestMessages = () => {
     const config = {
@@ -40,9 +40,19 @@ export const getNextMessagesOfChat = (chatId : number, fromMessageId : number) =
 
 export const publishNewMessage = (client :  Client, messageDto : MessageDto) => {
     const body = JSON.stringify(messageDto)
-
     client.publish({
         destination: '/app/userMessage/new',
+        body: body,
+        headers: {
+            'content-type': 'application/json'
+        }}
+    )
+}
+
+export const forwardMessages = (client :  Client, dto : ForwardMessagesDto) => {
+    const body = JSON.stringify(dto)
+    client.publish({
+        destination: '/app/messages/forward',
         body: body,
         headers: {
             'content-type': 'application/json'

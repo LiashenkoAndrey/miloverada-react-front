@@ -1,0 +1,31 @@
+
+
+
+
+.buttons {
+    margin-top: 10px;
+}
+.image2 {
+    border-radius: 10px;
+    width: 100% !important;
+    height: 100% !important;
+}
+.image {
+    object-fit: cover;
+    object-position: center;
+    /*width: 100% !important;*/
+    /*height: 100% !important;*/
+    min-height: 300px;
+    max-height: 500px;
+    border-radius: 10px;
+    animation: anim 400ms;
+}
+
+
+@keyframes anim {
+    0%    { opacity: 0; }
+    30%    { opacity: 0.3; }
+    60%    { opacity: 0.6; }
+    100%  { opacity: 1; }
+}
+

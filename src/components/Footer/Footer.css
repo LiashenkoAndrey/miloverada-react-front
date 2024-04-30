@@ -1,6 +1,7 @@
 
 
 .footerTitle {
+    cursor: pointer;
     max-width: 500px;
     letter-spacing: 5px;
     font-weight: 300;
@@ -12,6 +13,7 @@
 }
 
 .footerWrapper {
+    user-select: none;
     background-color: #232235FF;
     padding: 30px 0;
 }

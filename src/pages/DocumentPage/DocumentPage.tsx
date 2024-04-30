@@ -44,6 +44,9 @@ import editTextBtnImg from '../../assets/tour-documents-editTextBtn.jpg'
 import editTextInputImg from '../../assets/tour-documents-editTextInput.png'
 import {useAuth0} from "@auth0/auth0-react";
 import {apiServerUrl} from "../../API/Constants";
+import {useTypedSelector} from "../../hooks/useTypedSelector";
+import {updateAdminMeta} from "../../API/services/UserService";
+import {useActions} from "../../hooks/useActions";
 
 const {  Title } = Typography;
 const DocumentPage = () => {
@@ -61,6 +64,8 @@ const DocumentPage = () => {
     const [editGroupId, setEditGroupId] = useState<number>()
     const [isNewDocumentModalActive, setIsNewDocumentModalActive] = useState<boolean>(false)
     const [newName, setNewName] = useState<string>()
+    const {adminMetadata, appUser} = useTypedSelector(state => state.user)
+    const {setAdminMetadata} = useActions()
 
     const handleOk = () => {
         setIsModalOpen(false);
@@ -72,7 +77,6 @@ const DocumentPage = () => {
     };
 
     const onShowDocument = (document : IDocument) => {
-        console.log("show")
         setSelectedDocument(document)
         setIsModalOpen(true)
     }
@@ -268,17 +272,32 @@ const DocumentPage = () => {
     }
 
     useEffect(() => {
-        setIsTourModalOpen(false)
-    }, []);
+       if (adminMetadata) {
+           setIsTourModalOpen(adminMetadata.isShowModalTourWhenUserOnDocumentsPage)
+       }
+    }, [adminMetadata]);
 
+
+    useEffect(() => {
+        setIsModalOpen(false)
+    }, []);
 
     const handleOk2 = () => {
         setIsTourActive(true)
         setIsTourModalOpen(false);
     };
 
-    const handleCancel2 = () => {
+    const onSkipTour = async () => {
         setIsTourModalOpen(false);
+        if (adminMetadata && jwt) {
+            adminMetadata.isShowModalTourWhenUserOnDocumentsPage = false
+            const {data, error} = await updateAdminMeta(adminMetadata,  jwt)
+            if (data) {
+                console.log("ok")
+            }
+            setAdminMetadata(adminMetadata)
+            if (error) console.error(error);
+        }
     };
 
     const [isTourModalOpen, setIsTourModalOpen] = useState(false);
@@ -289,6 +308,7 @@ const DocumentPage = () => {
     const fontRef = useRef(null);
     const groupRef = useRef(null);
     const documentEditNameInputRef = useRef(null);
+
 
     const steps: TourProps['steps'] = [
         {
@@ -341,10 +361,24 @@ const DocumentPage = () => {
             ),
             target: () => groupRef.current,
             nextButtonProps: {
-                onClick: () => {
+                onClick: async () => {
                     setIsTourActive(false)
                     setIsNewDocumentModalActive(true)
                     setIsAddDocTourActive(true)
+
+                    if (adminMetadata && jwt) {
+                        if (adminMetadata.isShowModalTourWhenUserOnDocumentsPage) {
+                            adminMetadata.isShowModalTourWhenUserOnDocumentsPage = false
+                            adminMetadata.isDocumentsPageTourCompleted = true
+                            const {data, error} = await updateAdminMeta(adminMetadata,  jwt)
+
+                            if (data) {
+                                console.log("ok")
+                            }
+                            setAdminMetadata(adminMetadata)
+                            if (error) console.error(error);
+                        }
+                    }
                 }
             }
         },
@@ -379,20 +413,26 @@ const DocumentPage = () => {
 
     const [isDeletingGroup, setIsDeletingGroup] = useState<boolean>(false)
 
-    const items: MenuProps['items'] = [
-        {
+    const items: MenuProps['items'] = [{
             key: '1',
             label: (
-                <span onClick={() => setIsTourModalOpen(true)}>Пройти екскурсію</span>
+                <span onClick={() => setIsTourActive(true)}>Пройти екскурсію</span>
             ),
-        }
-        ]
+        }]
 
+    const tourModalFooter = [
+        <Button key={"tourModalFooter1"} onClick={onSkipTour}>Пропустити</Button> ,
+        <Button key={"tourModalFooter2"} type={"primary"}  onClick={handleOk2}>Гаразд</Button>
+    ]
 
     return (
         <Flex justify={"center"}>
-            <Modal title="Вітаємо!" open={isTourModalOpen} cancelText={"Пропустити"} onOk={handleOk2} onCancel={handleCancel2}>
-                <p >Схоже ви вперше на цій сторінці як адміністратор, пропонуємо вам пройти екскурсію по основному фунціоналу</p>
+            <Modal title="Вітаємо!"
+                   open={isTourModalOpen}
+                   footer={tourModalFooter}
+                   onCancel={onSkipTour}
+            >
+                <p>Схоже ви вперше на цій сторінці як адміністратор, пропонуємо вам пройти екскурсію по основному фунціоналу</p>
                 <p>Ви завжди можете пройти її знову</p>
             </Modal>
             <Tour open={isTourActive} onClose={() => setIsTourActive(false)} steps={steps} />

@@ -1,0 +1,137 @@
+
+
+.allnewsWrapper {
+    padding-top: 20vh;
+    padding-bottom: 150px;
+    background-color: #C8CBD0;
+}
+
+.AllNewsList {
+    max-width:735px;
+    gap: 20px!important;
+    margin: 0;
+}
+
+.wrapper2 {
+    max-width: 90vw;
+}
+
+.AllNewsPageWideCard {
+    width: 100%;
+    height: 100%;
+    max-height: 300px;
+    max-width: 705px;
+}
+
+.bottomNewsList {
+    display: grid;
+    gap: 15px;
+    grid-template-columns: repeat(4, 1fr);
+}
+
+.TopWhiteNewsCard {
+    max-width: 300px;
+    max-height: 400px;
+}
+
+.TopWideNewsCard {
+    max-width: 300px;
+    max-height: 300px;
+}
+
+.WideNewsCard {
+    flex-grow: 1;
+    max-height: initial!important;
+    width: 800px;
+    height: 700px!important;
+}
+
+.WideNewsCard .newsCardContent {
+    top: 0;
+    background-color: black!important;
+    position: absolute!important;
+}
+
+.WideNewsCard img {
+}
+
+
+
+.topNewsList {
+    display: grid;
+    gap: 20px;
+    grid-template-columns: 1fr 1fr;
+}
+@media (max-width: 1420px) {
+
+    .wrapper2 {
+        padding: 20px;
+        max-width: initial;
+        width: 100%;
+    }
+}
+@media (max-width: 1100px) {
+
+    .topNewsList {
+        grid-template-columns: 1fr 1fr 1fr;
+    }
+
+    .topNewsListWrapper {
+        flex-wrap: wrap;
+    }
+
+    .bottomNewsList {
+        gap: 10px;
+        grid-template-columns: 1fr 1fr 1fr;
+    }
+}
+
+.topNewsListWrapper {
+    gap: 40px;
+}
+
+@media (max-width: 780px) {
+
+    .wrapper2 {
+        padding: 3px!important;
+    }
+
+    .bottomNewsList, .topNewsList  {
+        gap: 8px;
+        grid-template-columns: 1fr 1fr;
+    }
+
+
+    .wrapper2 {
+        padding: 10px;
+    }
+}
+
+/*@media (max-width: 400px) {*/
+/*    .bottomNewsList, .topNewsList {*/
+/*        grid-template-columns: 1fr ;*/
+/*    }*/
+/*}*/
+
+.WhiteNewsCard {
+    background-color: #E9EAEC;
+    max-height: 400px;
+}
+.AllNewsPageWideCard img {
+    max-height: initial;
+}
+
+
+
+.AllNewsPageBottomCard {
+    border-bottom-right-radius: 5px;
+    border-bottom-left-radius: 5px;
+    background-color: #E9EAEC;
+}
+
+.AllNewsPageBottomCard img {
+    max-height: 300px;
+}
+
+
+

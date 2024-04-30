@@ -1,0 +1,27 @@
+
+
+.btn {
+    color: #B1B8BEFF;
+    font-size: 20px;
+    transition: background-color 300ms, border-color 300ms;
+    padding: 10px;
+    border-radius: 20px;
+    border: solid 1px rgba(255, 255, 255, 0);
+}
+
+.btnDanger:hover {
+    background-color: rgba(255, 0, 36, 0.17) !important;
+}
+.btn:hover {
+    cursor: pointer;
+    border-color: #cde0f6;
+    background-color: rgba(205, 224, 246, 0.17);
+}
+
+
+
+
+
+.btn:active {
+
+}

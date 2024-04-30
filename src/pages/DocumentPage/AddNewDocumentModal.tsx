@@ -123,7 +123,7 @@ const AddNewDocumentModal:FC<AddNewDocumentModalProps> = ({groupId, isActive, se
                     <Flex gap={10} vertical style={{width: "inherit"}}>
                         <span>Назва<span style={{color: "red"}}>*</span></span>
                         <div ref={inputRef} style={{width: "100%"}}>
-                            <Input showCount  ref={inputRef}  style={{width: "inherit"}} value={filename} onChange={(e) => setFilename(e.target.value)}  type="text"/>
+                            <Input showCount  style={{width: "inherit"}} value={filename} onChange={(e) => setFilename(e.target.value)}  type="text"/>
                         </div>
                         <div  ref={checkboxRef}>
                             <Checkbox onChange={(e) => onCheckbox(e.target.checked)}>Взяти з назви файлу</Checkbox>

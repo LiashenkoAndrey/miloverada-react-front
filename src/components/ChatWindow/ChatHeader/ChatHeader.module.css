@@ -12,28 +12,55 @@
         font-size: 18px!important;
     }
 }
-
+/*max-width: 263px;*/
+/*width: 100%;*/
 .chatHeader {
     position: relative;
     padding: 2px 10px;
-    border-radius: 5px;
     background-color: var(--chat-header-bg-color);
     width: 100%;
 }
-
+.backBtn {
+    padding-right: 10px;
+    transition: background-color 300ms;
+    border-radius: 3px;
+}
+.backBtn:hover {
+    cursor: pointer;
+    background-color: rgba(205, 224, 246, 0.04);
+}
 .chatName {
     font-size: 25px;
     font-weight: 900;
-    color: var(--forum-primary-title-color);
+    color: var(--forum-primary-text-color);
 
 }
 
+.chatMessagesAmount {
+    align-self: flex-end;
+    color: var(--forum-primary-text-color);
+}
 
 
+.typingUsersWrapper {
+    z-index: 10;
+    bottom: -30px;
+    border-radius: 3px;
+    right: 8px;
+    /*border-bottom-left-radius: 8px;*/
+    padding: 3px 20px 3px 5px;
+    background-color: var(--forum-primary-text-color)
+}
+.typingUserName {
+    font-weight: 500;
+    color: var(--forum-primary-bg-color);
+}
 .chatPicture {
+    width: auto;
+    height: 100%;
+    max-height: 100px;
     cursor: pointer;
-    border-radius: 15px;
-    padding: 5px;
+    border-radius: 5px;
 }
 
 
@@ -64,6 +91,7 @@
 .typing .dot:last-child {
     margin-right: 0;
 }
+
 
 @keyframes mercuryTypingAnimation {
     0% {

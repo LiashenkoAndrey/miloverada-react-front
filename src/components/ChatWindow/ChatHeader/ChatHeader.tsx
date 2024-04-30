@@ -1,15 +1,17 @@
-import React, {FC, useEffect, useState} from 'react';
-import {Button, Flex, Image, Skeleton} from "antd";
-import {Chat, ForumUserDto, TypingUser, User} from "../../../API/services/forum/ForumInterfaces";
+import React, {FC, useState} from 'react';
+import {Drawer, Flex, Skeleton} from "antd";
+import {ForumUserDto, IChat, TypingUser} from "../../../API/services/forum/ForumInterfaces";
 import classes from './ChatHeader.module.css'
 import {useSubscription} from "react-stomp-hooks";
 import {IMessage} from "@stomp/stompjs/src/i-message";
-import {LeftOutlined} from "@ant-design/icons";
 import {useNavigate} from "react-router-dom";
 import ChatSettings from "../../ChatSettings/ChatSettings";
 
+// @ts-ignore
+import leftArrImg from '../../../assets/leftArr/arrow-left-2827.svg'
+import {useTypedSelector} from "../../../hooks/useTypedSelector";
+
 interface ChatHeaderProps {
-    chat? : Chat,
     typingUsers : Array<TypingUser>
     setTypingUsers : React.Dispatch<React.SetStateAction<TypingUser[]>>
     chatId : number
@@ -17,13 +19,12 @@ interface ChatHeaderProps {
 }
 
 const ChatHeader: FC<ChatHeaderProps> = ({
-                                             chat,
                                              typingUsers,
                                              setTypingUsers,
                                              chatId,
                                              filterTypingUsers
                                          }) => {
-
+    const {chatInfo, privateChatInfo} = useTypedSelector(state => state.chat)
     const [isSettingsActive, setIsSettingsActive] = useState<boolean>(false)
     const nav = useNavigate()
     const onUsersStartTyping = (message : IMessage) => {
@@ -36,68 +37,98 @@ const ChatHeader: FC<ChatHeaderProps> = ({
         filterTypingUsers(data.id)
     }
 
-    useEffect(() => {
-        console.log(chat)
-    }, [chat]);
-
     useSubscription(`/chat/` + chatId + "/userStopTyping", onUsersStopTyping)
     useSubscription(`/chat/` + chatId + "/typingUsers", onUsersStartTyping)
 
-    return chat
-        ?
-        (<Flex vertical className={classes.chatHeader} >
-            <Button onClick={() => nav(-1)}
-                    style={{maxWidth: 100, color: "black", padding: 0}}
-                    icon={<LeftOutlined/>}
-                    type={"text"}>
-                Назад
-            </Button>
-            <Flex justify={"space-between"}>
+
+    const [open, setOpen] = useState(false);
+    const showDrawer = () => {
+        console.log("ok")
+        setOpen(true);
+    };
 
 
-                <Flex gap={20} align={"center"}>
-                    <span className={classes.chatName}>{chat.name}</span>
-                </Flex>
-                <Image preview={false}
-                       onClick={() => setIsSettingsActive(true)}
-                       className={"nonSelect " + classes.chatPicture}
-                       width={40}
-                       height={40}
-                       src={chat.picture}
-                />
-            </Flex>
+    return <Flex vertical className={classes.chatHeader} >
 
-            <Flex justify={"space-between"}>
-                <Flex>
-                    {typingUsers.length > 0
-                        ?
-                        <div className={classes.typing}>
-                            <div className={classes.dot}></div>
-                            <div className={classes.dot}></div>
-                            <div className={classes.dot}></div>
-                            <Flex>
-                                {typingUsers.length > 0
-                                    ?
-                                    typingUsers.map((user) =>
-                                        <span key={"typingUser-" + user.id}>{user.firstName} пише...</span>
-                                    )
-                                    : <></>
-                                }
-                            </Flex>
-                        </div>
-                        :
-                        <div></div>
+            <Flex justify={"space-between"} align={"center"}>
+                <Flex vertical>
+                    <img className={classes.backBtn}
+                         height={30}
+                         width={60}
+                         src={leftArrImg}
+                         onClick={() => nav(-1)}
+                    />
+                    {chatInfo &&
+                        <span className={classes.chatName}>{chatInfo.name}</span>
+                    }
+
+                    {privateChatInfo &&
+                        <span className={classes.chatName}>{privateChatInfo.user2.firstName} {privateChatInfo.user2.lastName}</span>
+                    }
+                    {!chatInfo && !privateChatInfo &&
+                        <Flex vertical gap={3} style={{marginBottom: 2}} >
+                            <Skeleton.Input active/>
+                            <Skeleton.Input  size={"small"} active/>
+
+                        </Flex>
+                    }
+                    {(chatInfo && privateChatInfo === null) &&
+                        <span style={{ color:"var(--forum-primary-text-color)"}} >{chatInfo.description}</span>
                     }
                 </Flex>
-                <span>{chat.totalMessagesAmount} повідомлень</span>
+
+                <Flex style={{height: "100%"}} gap={5}>
+                    {chatInfo ?
+                        <span className={classes.chatMessagesAmount}>{chatInfo.totalMessagesAmount} повідомлень</span>
+                        :
+                        <Flex style={{alignSelf: "flex-end", height: 20}}>
+                            <Skeleton.Input  size={"small"} active/>
+                        </Flex>
+                    }
+
+                    {chatInfo ?
+                        <img
+                            onClick={showDrawer}
+                            className={"nonSelect " + classes.chatPicture}
+                            width={75}
+                            height={75}
+                            src={privateChatInfo ? privateChatInfo.user2.avatar : chatInfo.picture}
+                        />
+                        :
+
+                        <Skeleton.Image style={{height: "100%"}} active/>
+                    }
+
+
+                </Flex>
             </Flex>
 
-            {isSettingsActive &&
-                <ChatSettings chat={chat}  setIsSettingsActive={setIsSettingsActive} />
-            }
-        </Flex>)
-        :
-        (<Skeleton style={{height: 50}} active/>)
+        {typingUsers.length > 0 &&
+            <Flex justify={"space-between"}
+                  style={{position: "absolute"}}
+                  className={classes.typingUsersWrapper}
+            >
+                <Flex>
+                    <div className={classes.typing}>
+                        <div className={classes.dot}></div>
+                        <div className={classes.dot}></div>
+                        <div className={classes.dot}></div>
+                        <Flex>
+                            {typingUsers.length > 0 &&
+                                typingUsers.map((user) =>
+                                    <span key={"typingUser-" + user.id}
+                                          className={classes.typingUserName}>{user.firstName} пише...</span>
+                                )
+                            }
+                        </Flex>
+                    </div>
+                </Flex>
+            </Flex>
+        }
+
+
+        <ChatSettings open={open} setOpen={setOpen}  />
+        </Flex>
 
 };
 

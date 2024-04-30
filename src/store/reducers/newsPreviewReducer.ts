@@ -1,5 +1,5 @@
 import {NewsPreviewActionTypes, NewsPreviewState} from "../../types/NewsPreview";
-import {NewsPreviewAction} from "../actionCreators/newsPreview";
+import {NewsPreviewAction} from "../../types/newPreview";
 
 const initState: NewsPreviewState = {
     preview : {views: 0, images: []}

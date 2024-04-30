@@ -1,0 +1,29 @@
+
+.heart {
+    font-size: 27px;
+    height: 30px;
+    cursor: pointer;
+    transition: color 300ms;
+}
+
+.filledLikeBtn {
+    font-size: 27px;
+    color: #263465FF;
+    height: 30px;
+    cursor: pointer;
+    transition: color 300ms;
+}
+
+.liked {
+    color: red;
+}
+
+.filledLikeBtn:hover {
+    color: red;
+}
+
+.filledLikeBtn:active {
+    color: #ab0909;
+}
+
+

@@ -1,0 +1,58 @@
+
+.toolbarWrapper {
+    padding: 0px 15px 8px 15px;
+    border-radius: 20px;
+    background-color: rgba(0, 0, 0, 0.36);
+}
+.storyList {
+    overflow-x: auto;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+    width: 100%;
+    position: absolute;
+    top: -31px;
+}
+
+.toolbarWrapper span {
+    transition: color 200ms;
+    font-size: 25px;
+}
+.toolbarWrapper span:hover {
+    color: #545675;
+}
+
+.storyImg {
+    border: solid 2px #389a3b;
+    border-radius: 10px;
+    position: relative;
+}
+
+.toolbarWrapper span:active {
+    color: #292a3a;
+}
+
+
+.btn {
+    flex-direction: row;
+    align-items: center;
+    gap: 2px;
+    transition: left 0.5s, right 2s;
+    animation: anim 400ms;
+}
+
+.btn span {
+    text-align: center;
+    color: #B1B8BEFF;
+}
+.wrapper {
+    width: 100%;
+    padding-top: 5px;
+    padding-right: 5px;
+    animation: anim 800ms;
+
+}
+
+@keyframes anim {
+    0%    { opacity: 0; }
+    100%  { opacity: 1; }
+}

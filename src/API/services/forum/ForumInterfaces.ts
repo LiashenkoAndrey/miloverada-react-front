@@ -12,6 +12,7 @@ export interface Message {
     imagesList : MessageImage[]
     filesList : MessageFile[]
     fileDtoList : MessageFileDto[]
+    forwardedMessage : Message
 }
 
 
@@ -53,7 +54,7 @@ export interface PrivateChat {
     user2 : User
 }
 
-export interface Chat {
+export interface IChat {
     id : number,
     name : string,
     description : string,
@@ -64,6 +65,11 @@ export interface Chat {
 }
 
 
+export interface IChatWithMeta {
+    chat : IChat
+    chatMetadata : ChatMetadata
+}
+
 export interface MessageImageDto {
     base64Image : string
 }
@@ -71,6 +77,7 @@ export interface MessageImageDto {
 export interface ChatMetadata {
     last_read_message_id : number
     unread_messages_count : number
+    is_member : boolean
 }
 
 export interface LastReadMessageDto {
@@ -83,14 +90,14 @@ export interface LastReadMessageDto {
 export interface NewChat {
     name : string,
     description : string,
-    picture : string,
+    picture? : string,
     ownerId : string,
     topicId : number
 }
 
 export interface User {
     registeredOn? : string[]
-    id? : string,
+    id : string,
     firstName : string,
     lastName : string,
     avatar : string
@@ -101,21 +108,53 @@ export interface TypingUser {
     firstName : string,
 }
 
+export interface NewForumUserDto {
+    nickname : string,
+    avatar : string
+    aboutMe : string
+}
+
+export interface ForumUser {
+    id : number,
+    appUserId : string,
+    registeredOn : string,
+    nickname : string,
+    avatar : string
+}
+export interface AppUser {
+    id? : string,
+    firstName? : string,
+    lastName? : string,
+    email? : string
+    avatarBase64Image? : string
+    avatarContentType? : string
+    avatarUrl? : string
+    registeredOn : string
+}
+
 export interface NewUserDto {
     id? : string,
     firstName? : string,
     lastName? : string,
     avatar? : string
     email? : string
-    base64Avatar : string
-    avatarContentType : string
+    avatarBase64Image? : string
+    avatarContentType? : string
+    avatarUrl? : string
 }
 
 export interface Topic {
     id? : number,
     name? : string,
     description? : string,
-    chats? : Array<Chat>
+    chats? : Array<IChat>
 }
 
+
+export interface ITopic {
+    id : number,
+    name : string,
+    description : string,
+    chats : IChat[]
+}
 

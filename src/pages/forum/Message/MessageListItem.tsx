@@ -1,20 +1,31 @@
 import React, {FC, useCallback, useEffect, useRef} from 'react';
-import {Button, Dropdown, Flex, Image, MenuProps, Tooltip} from "antd";
-import {Chat, Message} from "../../../API/services/forum/ForumInterfaces";
+import {Checkbox, ConfigProvider, Dropdown, Flex, MenuProps, message as antdMessage} from "antd";
+import {Message} from "../../../API/services/forum/ForumInterfaces";
 import {useAuth0} from "@auth0/auth0-react";
-import {toDate, toDateShort, toTime} from "../../../API/Util";
-import MessageImages from "./MessageImages/MessageImages";
+import {generateContrastColor2, toTime} from "../../../API/Util";
 import classes from './Message.module.css'
 import {useTypedSelector} from "../../../hooks/useTypedSelector";
 import {isMyMessage} from "../../../API/services/forum/UserService";
-import FileList from "../../../components/Files/FileList";
-import FileDtoList from "../../../components/Files/FileDtoList";
 import UserPicture from "../../../components/UserPicture/UserPicture";
 
+
+// @ts-ignore
+import referenceArrowIconSilver from '../../../assets/back-arrow-svgrepo-com.svg'
+// @ts-ignore
+import refrenceArrowIconBlack from '../../../assets/back-arrow-black.svg'
+
+
+// @ts-ignore
+import forwardIcon from '../../../assets/forwardIcon.svg'
+
+import {CheckCircleOutlined, CheckOutlined, CopyOutlined, DeleteOutlined, EditOutlined} from "@ant-design/icons";
+import {useActions} from "../../../hooks/useActions";
+import MessageContent from "./MessageContent";
+
 interface MessageProps {
+    index : number
     message: Message
     observer: IntersectionObserver
-    chat?: Chat,
     onEditMessage: (message: Message) => void
     editMessage?: Message
     onReplyMessage: (message: Message) => void
@@ -22,21 +33,63 @@ interface MessageProps {
     onDeleteMessage: (messageId: number) => void
 }
 
+const colorMap = new Map()
+
+class MessageBtn {
+    public id: number = 0;
+
+    constructor(messageId: number) {
+        this.id = messageId
+    }
+
+    select = {
+        icon: <CheckCircleOutlined className={classes.dropDownOptionIcon}/>,
+        label: <span className={classes.dropDownOptionTitle}>Виділити</span>,
+        key: 'select-' + this.id,
+    }
+    reply = {
+        icon: <img src={refrenceArrowIconBlack} height={20} width={20} alt="" />,
+        label: <span className={classes.dropDownOptionTitle}>Відповісти</span>,
+        key: 'reply-' + this.id,
+    }
+    copyText = {
+        icon: <CopyOutlined className={classes.dropDownOptionIcon}/>,
+        label: <span className={classes.dropDownOptionTitle}>Копіювати текст</span>,
+        key: 'copy-' + this.id,
+    }
+    forward = {
+        icon: <img src={refrenceArrowIconBlack} height={20} width={20} alt=""  style={{rotate : "180deg"}}/>,
+        label: <span className={classes.dropDownOptionTitle}>Переслати</span>,
+        key: 'forward-' + this.id,
+    }
+    edit = {
+        icon :<EditOutlined  className={classes.dropDownOptionIcon}/>,
+        label: <span className={classes.dropDownOptionTitle}>Редагувати</span>,
+        key: 'edit-' + this.id,
+    }
+    delete = {
+        icon : <DeleteOutlined className={classes.dropDownOptionIcon} />,
+        label: <span className={classes.dropDownOptionTitle}>Видалити</span>,
+        key: 'delete-' + this.id,
+        danger: true
+    }
+
+}
 
 const MessageListItem: FC<MessageProps> = ({
                                                message,
-                                               chat,
                                                observer,
                                                onEditMessage,
                                                editMessage,
                                                replyMessage,
                                                onReplyMessage,
-                                               onDeleteMessage
+                                               onDeleteMessage,
+                                               index,
                                            }) => {
     const messageRef = useRef<HTMLDivElement>(null)
     const {isAuthenticated, user} = useAuth0()
-    const {lastReadMessageId, messages} = useTypedSelector(state => state.chat)
-    const {isFileDropdownActive} = useTypedSelector(state => state.dropdown)
+    const {lastReadMessageId, messages, isSelectionEnabled, selectedMessages} = useTypedSelector(state => state.chat)
+    const {setIsSelectionEnabled, setSelectedMessages, setIsSelectChatToForwardMessageModalActive} = useActions()
 
     useEffect(() => {
         if (isAuthenticated) {
@@ -47,22 +100,16 @@ const MessageListItem: FC<MessageProps> = ({
         }
     }, [isAuthenticated]);
 
+    const btns : MessageBtn = new MessageBtn(message.id)
 
-    const messageMenuItems: MenuProps['items'] = [
-        {
-            label: 'Відповісти',
-            key: 'reply-' + message.id,
-        },
-        {
-            label: 'Редагувати',
-            key: 'edit-' + message.id,
-        },
-        {
-            label: 'Видалити',
-            key: 'delete-' + message.id,
-            danger: true
-        },
-    ];
+    const messageMenuItems: MenuProps['items'] =
+        isMine(message.sender.id)
+            ?
+            [btns.reply, btns.copyText, btns.forward, btns.edit, btns.select, btns.delete]
+            :
+            [btns.reply, btns.copyText, btns.forward, btns.select]
+
+
 
     async function doAction(action: string, messageId: number) {
         switch (action) {
@@ -73,7 +120,19 @@ const MessageListItem: FC<MessageProps> = ({
                 onEditMessage(message)
                 break
             case 'delete':
-                onDeleteMessage(messageId)
+                onDeleteMessage(message.id)
+                break
+            case 'select' :
+                setIsSelectionEnabled(true)
+                setSelectedMessages([...selectedMessages, message])
+                break
+            case 'copy' :
+                await navigator.clipboard.writeText(message.text)
+                antdMessage.success({content : "Текст скопійовано", icon : <CheckOutlined />})
+                break
+            case 'forward':
+                setSelectedMessages([message])
+                setIsSelectChatToForwardMessageModalActive(true)
                 break
         }
     }
@@ -93,95 +152,185 @@ const MessageListItem: FC<MessageProps> = ({
         return ""
     }, [editMessage, message.id, replyMessage]);
 
-    const onRepliedMessageLinkClick = () => {
-        let msg = document.getElementById("msgWrapper-" + message.repliedMessage.id)
-        if (msg !== undefined) {
-            let highlightedClass = classes.isHighlighted;
-            let stopHighlightClass = classes.stopHighlight;
-            msg?.classList.add(highlightedClass)
-            setTimeout(() => {
-                msg?.classList.remove(highlightedClass)
-                msg?.classList.add(stopHighlightClass)
 
-                setTimeout(() => {
-                    msg?.classList.remove(stopHighlightClass)
-                }, 200)
-            }, 1200)
+    function isMine(id: string) {
+        if (user?.sub) {
+            return user.sub === id
+        }
+        return false;
+    }
 
-            setTimeout(() => {
-                msg?.classList.remove("stopHighlight", "isHighlighted")
-            }, 1600)
-            msg?.scrollIntoView({behavior: "smooth", inline: "start", block: "nearest"})
+    /**
+     * Checks if sender of previous message is the same as in this message
+     */
+    function isPrevMsgHasTheSameSender() {
+        const elem = messages[index - 1];
+        if (elem) {
+            return messages[index -1].sender.id === message.sender.id
+        }
+        return false;
+    }
+
+    /**
+     * Checks if sender of next message is the same as in this message
+     */
+    function isNextMsgHasTheSameSender() {
+        const elem = messages[index + 1];
+        if (elem) {
+            return messages[index + 1].sender.id !== message.sender.id
+        } else {
+            return isPrevMsgHasTheSameSender();
+        }
+    }
+
+
+    /**
+     * generates random colors and saves is to map as value and message sender id as key
+     */
+    function generateContrastColor() {
+        const id = message.sender.id
+
+        // get color from map by sender id
+        if (colorMap.has(id)) {
+            return colorMap.get(id)
+
+        } else {
+            // generate new color and set it to map as value and user id as key
+            const newColor = generateContrastColor2()
+            colorMap.set(id, newColor)
+            return newColor
+        }
+    }
+
+
+    const onMessageClick = () => {
+        if (isSelectionEnabled) {
+            if (selectedMessages.includes(message)) {
+                setSelectedMessages([...selectedMessages.filter((e) => e.id !== message.id)])
+            } else {
+                setSelectedMessages([...selectedMessages, message])
+            }
         }
     }
 
     return (
-        <div style={{width: "100%", paddingLeft: 5}}
-             data-index={messages.indexOf(message)}
-             className={isHighlighted()}
-             id={"msgWrapper-" + message.id}
+        <Dropdown
+            disabled={isSelectionEnabled}
+            menu={{items: messageMenuItems, onClick: onSelectAction}}
+            trigger={['contextMenu']}
         >
-            <Dropdown
-                      menu={{items: messageMenuItems, onClick: onSelectAction}}
-                      trigger={['contextMenu']}
+            <Flex onClick={onMessageClick}
+                  style={{
+                      cursor: isSelectionEnabled ? "pointer" : "initial",
+                      margin: isPrevMsgHasTheSameSender() ? "0px 3em 0px 0" : "9px 3em 0px 0"
+                  }}
+                  data-index={messages.indexOf(message)}
+                  justify={"center"}
+                  onDoubleClick={() => onEditMessage(message)}
+                  className={[isHighlighted(), classes.messageMainWrapper, (isSelectionEnabled && !selectedMessages.includes(message)) ? classes.selectable : "", selectedMessages.includes(message) ? classes.selected : ""].join(' ')}
+                  id={"msgWrapper-" + message.id}
             >
-                <Flex ref={messageRef}
-                      className={classes.message}
-                      style={{backgroundColor: isMyMessage(user?.sub, message.sender.id) ? "#8d654c" : "var(--message-bg-color)"}}
-                      id={"msgId-" + message.id}
-                      gap={8}
-                >
 
-                    <UserPicture user={message.sender}/>
+            <Flex className={classes.messageWrapper2}
+                  justify={isMine(message.sender.id) ? "flex-end" : "flex-start"}
+            >
+                    <Flex ref={messageRef}
+                          className={classes.message}
+                          style={{backgroundColor: isMyMessage(user?.sub, message.sender.id) ? "#8d654c" : "var(--message-bg-color)"}}
+                          id={"msgId-" + message.id}
+                          gap={8}
+                    >
+                        <Flex vertical={true} style={{paddingBottom: 3}}>
+                            <Flex style={{position: "relative"}}
+                                  className={"nonSelect"}
+                                  gap={8}
+                                  align={"center"}
+                                  justify={"space-between"}
+                            >
+                                <Flex gap={5} align={"center"}>
+                                    <div></div>
+                                    {(!isPrevMsgHasTheSameSender() && message.sender) &&
+                                        <span className={classes.senderName} style={{color: generateContrastColor()}}>{message.sender.firstName}</span>
+                                    }
 
-                    <Flex vertical={true}>
-                        <Flex style={{position: "relative"}}
-                              className={"nonSelect"}
-                              gap={5}
-                              align={"center"}
-                              justify={"space-between"}
-                        >
-                            <span className={classes.senderName}>{message.sender.firstName}</span>
-                            <span className={classes.messageDate} style={{margin: 0, alignSelf: "flex-end"}}>
-                            {toTime(message.createdOn)}
-                        </span>
-                        </Flex>
-                        <Flex vertical style={{marginTop: 3}}>
-                            <span style={{fontWeight: "bold", display: "none"}}>{message.id}</span>
+                                    {message.forwardedMessage &&
+                                        <Flex gap={5}>
+                                            <img src={forwardIcon} height={25} width={25} alt="" style={{
+                                                rotate: "180deg",
+                                                transform: "scaleY(-1)", position: "relative", top: -2
+                                            }}/>
+                                            <span className={classes.senderName} style={{color: generateContrastColor()}}>{message.forwardedMessage.sender.firstName}</span>
 
-
-
-                            {message.repliedMessage &&
-                                <Flex onClick={onRepliedMessageLinkClick} className={classes.repliedMessage + " nonSelect"} vertical>
-                                    <span>{message.repliedMessage.text}</span>
+                                        </Flex>
+                                    }
                                 </Flex>
-                            }
 
-                            <MessageImages
-                                message={message}
-                                chat={chat}
-                            />
+                                <span className={classes.messageDate} style={{margin: 0}}>
+                                    {toTime(message.createdOn)}
+                                </span>
 
-                            {message.fileDtoList
-                                &&
-                                <FileDtoList files={message.fileDtoList}/>
+                            </Flex>
+                            <Flex vertical style={{marginTop: 3}}>
+                                <span style={{fontWeight: "bold", display: "none"}}>{message.id}</span>
 
-                            }
+                                <MessageContent message={message}/>
 
-                            {message.filesList
-                                &&
-                                <FileList messageFiles={message.filesList}/>
+                                {message.forwardedMessage &&
+                                    <MessageContent message={message.forwardedMessage}/>
+                                }
+                            </Flex>
 
-                            }
-
-                            <pre className={classes.messageText} style={{margin: 0, alignSelf: "flex-end"}}>
-                                {message.text}
-                            </pre>
                         </Flex>
+                        {(isNextMsgHasTheSameSender()) &&
+                            <>
+                                {isMine(message.sender.id)
+                                    ?
+                                    <div style={{position: "absolute", bottom: 3, right: -40}}>
+                                        <UserPicture user={message.sender}/>
+                                    </div>
+                                    :
+                                    <div style={{position: "absolute", bottom: 3, left: -40}}>
+                                        <UserPicture user={message.sender}/>
+                                    </div>
+                                }
+                            </>
+                        }
+
+
+                        {isPrevMsgHasTheSameSender() &&
+                            <img style={{position: "absolute", bottom: 3, right: 5}} src={referenceArrowIconSilver} height={10}
+                                 width={10} alt=""/>
+                        }
+
                     </Flex>
-                </Flex>
-            </Dropdown>
-        </div>
+
+                <ConfigProvider theme={{
+                    components : {
+                        Checkbox : {
+                            borderRadiusSM : 20,
+                            colorBgContainer : 'rgba(113,9,44,0)'
+                        }
+                    }
+                }}>
+                    {isSelectionEnabled &&
+                        <div style={{
+                            position: "absolute",
+                            bottom: 10,
+                            left : -80
+                        }}>
+                            <Checkbox
+                                      checked={selectedMessages.includes(message)}
+                                      className={classes.messageCheckBox}
+                            />
+                        </div>
+
+                    }
+
+                </ConfigProvider>
+            </Flex>
+        </Flex>
+</Dropdown>
+
     );
 };
 
