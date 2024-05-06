@@ -29,6 +29,7 @@ import { getAppUser, UserDto} from "./API/services/UserService";
 import {getForumUserByAppUserId} from "./API/services/forum/UserService";
 import CreateNewForumUserProfileModal from "./components/CreateNewForumUserProfileModal/CreateNewForumUserProfileModal";
 import {useTypedSelector} from "./hooks/useTypedSelector";
+import AboutPage from "./pages/AboutPage/AboutPage";
 
 function App() {
     const [jwt, setJwt] = useState<string>()
@@ -118,6 +119,7 @@ function App() {
                       }
                       <Routes>
                           <Route path={"/"} element={<MainPage/>}/>
+                          <Route path={"/about"} element={<AboutPage/>}/>
                           <Route path={"/newsFeed/:id"} element={<NewsPage isPreview={false}/>}/>
                           <Route path={"/newsFeed/all"} element={<AllNewsPage/>}/>
                           <Route path={"/news/new"} element={<AddNewsPage/>}/>
