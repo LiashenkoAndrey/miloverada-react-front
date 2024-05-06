@@ -86,14 +86,12 @@ const Document: FC<DocumentProps> = ({
     const [isNotShowConfirm, setIsNotShowConfirm] = useState(true)
 
     const onOkDelete = useCallback(() => {
-        console.log(isEditing)
         if (!isNotShowConfirm) {
             console.log("Update !!!")
         }
     }, [isEditing]);
 
     const onChange: CheckboxProps['onChange'] = (e) => {
-        console.log(`checked = ${e.target.checked}`);
         setIsNotShowConfirm(e.target.checked)
     };
     const [isConfirmModalOpen, setIsConfirmModalOpen] = useState<boolean>(false)
@@ -107,8 +105,6 @@ const Document: FC<DocumentProps> = ({
                 setIsEditing(true)
                 break;
             case 'delete':
-                console.log(adminMetadata)
-
                 if (adminMetadata) {
                     if (adminMetadata.isShowConfirmWhenDeleteDocument) {
                         console.log("show")
@@ -129,7 +125,6 @@ const Document: FC<DocumentProps> = ({
 
 
     const onDelete = async () => {
-        console.log(isNotShowConfirm)
         setIsConfirmModalOpen(false)
         if (onDeleteDocument) {
             onDeleteDocument(document)

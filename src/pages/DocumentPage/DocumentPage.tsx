@@ -231,8 +231,6 @@ const DocumentPage = () => {
         } else notification.error({message: "not auth"})
     }
 
-
-
     useEffect(  () => {
         if (newName && editGroupId) {
             updateGroupName(newName, editGroupId, editSubGroupNameCallback)
@@ -250,7 +248,6 @@ const DocumentPage = () => {
         </a> ,
         <Button key={"showDocFooterBtn-2"} type={"primary"} onClick={handleCancel}>Заразд</Button>
     ]
-
 
 
     const addNewSubGroup = async (subGroup : IDocumentGroup) => {
