@@ -46,11 +46,20 @@ const AddNewDocumentModal:FC<AddNewDocumentModalProps> = ({groupId, isActive, se
                 const doc : IDocument = data;
                 notification.success({message: "Документ " + filename + " успішно додано"})
                 setDoc(doc)
+                clearDocData()
 
             }
             if (error) throw  error
         } else notification.error({message: "Виникла помилка при додаванні :("})
     };
+
+    /**
+     * deletes inserted data of document
+     */
+    function clearDocData() {
+        setFile(undefined)
+        setFilename('')
+    }
 
     const handleCancel = () => {
         setIsActive(false);
