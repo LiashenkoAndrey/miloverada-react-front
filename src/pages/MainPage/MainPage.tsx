@@ -41,8 +41,8 @@ const MainPage = () => {
                         поспілкуватся на форумі та багато іншого...
                     </h1>
 
-                    <RedButton style={{marginTop: 20, width: "fit-content"}}>
-                        <span style={{width: "fit-content"}}>Про громаду</span>
+                    <RedButton onClick={() => nav("/about")} style={{marginTop: 20, width: "fit-content"}}>
+                        <span  style={{width: "fit-content"}}>Про громаду</span>
                     </RedButton>
                 </Flex>
 

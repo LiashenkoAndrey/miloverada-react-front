@@ -1,0 +1,34 @@
+
+
+.wrapper {
+    width: 100%;
+    min-height: 100vh;
+    padding-top: 15vh;
+
+}
+
+.content {
+    width: 100%;
+    max-width: 80vw;
+}
+
+@media (max-width: 800px) {
+    .content {
+        max-width: initial;
+    }
+}
+
+.content p {
+    margin-top: 40px;
+    font-size: 30px;
+    font-weight: 300;
+    font-family: "Source Serif 4", serif;
+}
+
+.content h1 {
+    text-align: center;
+    text-decoration: underline;
+    font-size: 45px;
+    font-weight: 500;
+    font-family: "Source Serif 4", serif;
+}
