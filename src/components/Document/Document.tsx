@@ -32,7 +32,7 @@ const Document: FC<DocumentProps> = ({
                                          documentEditNameInputRef
                                      }) => {
     const fileFormat = document.name.substring(document.name.lastIndexOf('.') + 1, document.name.length)
-    const {adminMetadata, appUser} = useTypedSelector(state => state.user)
+    const {adminMetadata} = useTypedSelector(state => state.user)
     const {jwt} = useContext(AuthContext)
     const {setAdminMetadata} = useActions()
 

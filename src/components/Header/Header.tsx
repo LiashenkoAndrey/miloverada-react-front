@@ -36,14 +36,12 @@ const Header = () => {
             setUser(gotUser)
         }
         if (jwt) {
-            console.log("is auth jwt")
             if (appUser === undefined) {
                 if (user?.sub) {
                     console.log(user.sub)
                     getUser(user.sub, jwt)
                 }
             }
-            console.log(user)
         }
     }, [jwt]);
 

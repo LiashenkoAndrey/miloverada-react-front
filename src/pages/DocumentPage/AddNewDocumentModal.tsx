@@ -22,27 +22,13 @@ const AddNewDocumentModal:FC<AddNewDocumentModalProps> = ({groupId, isActive, se
     const [filename, setFilename] = useState<string>('')
     const [isCheckboxChecked, setIsCheckboxChecked] = useState<boolean>(false)
     const [isLoading, setIsLoading] = useState<boolean>(false)
-    const inputRefReal = useRef<InputRef>(null);
 
     const onChangeCheckbox = (e : any) => {
         if  (!isCheckboxChecked) {
-            console.log("fill")
             fillFileTitleFromFilename()
         }
         setIsCheckboxChecked(!isCheckboxChecked)
     }
-
-    useEffect(() => {
-        console.log(inputRefReal.current)
-        if (inputRefReal.current) {
-            console.log(inputRefReal.current.input)
-            if (inputRefReal.current.input) {
-                console.log("present")
-                console.log(inputRefReal.current.input)
-                inputRefReal.current.input.focus()
-            }
-        }
-    }, [inputRefReal.current]);
 
     const props: UploadProps = {
         onRemove: (file) => {
@@ -69,7 +55,7 @@ const AddNewDocumentModal:FC<AddNewDocumentModalProps> = ({groupId, isActive, se
                 const doc : IDocument = data;
                 notification.success({message: "Документ " + filename + " успішно додано"})
                 setDoc(doc)
-                clearDocData()
+                clearFormData()
                 setIsActive(false);
 
             }
@@ -87,14 +73,16 @@ const AddNewDocumentModal:FC<AddNewDocumentModalProps> = ({groupId, isActive, se
     /**
      * deletes inserted data of document
      */
-    function clearDocData() {
+    function clearFormData() {
         setFile(undefined)
+        setIsCheckboxChecked(false)
         setFilename('')
     }
 
     const handleCancel = () => {
+        clearFormData()
         setIsActive(false);
-        setIsCheckboxChecked(false)
+        // setIsCheckboxChecked(false)
     };
 
     const fillFileTitleFromFilename = () => {
@@ -148,15 +136,14 @@ const AddNewDocumentModal:FC<AddNewDocumentModalProps> = ({groupId, isActive, se
                 }
             }
         },
-
-
     ];
-
-
 
     return (
         <>
-            <Tour open={isTourActive} onClose={() => setIsAddDocTourActive(false)} steps={steps} />
+            <Tour open={isTourActive}
+                  onClose={() => setIsAddDocTourActive(false)}
+                  steps={steps}
+            />
             <Modal modalRender={(modal) =>
                 <div ref={modalRef}>
                     {modal}
@@ -172,10 +159,19 @@ const AddNewDocumentModal:FC<AddNewDocumentModalProps> = ({groupId, isActive, se
                     <Flex gap={10} vertical style={{width: "inherit"}}>
                         <span>Назва<span style={{color: "red"}}>*</span></span>
                         <div ref={inputRef} style={{width: "100%"}}>
-                            <Input ref={inputRefReal} autoFocus showCount  style={{width: "inherit"}} value={filename} onChange={(e) => setFilename(e.target.value)}  type="text"/>
+                            <Input autoFocus
+                                   showCount
+                                   style={{width: "inherit"}}
+                                   value={filename}
+                                   onChange={(e) => setFilename(e.target.value)}
+                                   type="text"
+                            />
                         </div>
                         <div  ref={checkboxRef}>
-                            <Checkbox checked={isCheckboxChecked} onChange={onChangeCheckbox}>Взяти з назви файлу</Checkbox>
+                            <Checkbox checked={isCheckboxChecked}
+                                      onChange={onChangeCheckbox}
+                            >Взяти з назви файлу
+                            </Checkbox>
                         </div>
                     </Flex>
                     <Flex ref={ref1} gap={10} vertical style={{width: "100%"}}>

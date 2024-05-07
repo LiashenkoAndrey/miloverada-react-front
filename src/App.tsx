@@ -75,7 +75,9 @@ function App() {
             setUser(userDto.appUser)
             setAdminMetadata(userDto.adminMetadata)
         }
-        if (error) console.error(error);
+        if (error) {
+            console.error("App user not found")
+        }
     }
 
     useEffect(() => {

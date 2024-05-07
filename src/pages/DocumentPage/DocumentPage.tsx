@@ -172,6 +172,7 @@ const DocumentPage = () => {
     const updDocument = (name : string, document : IDocument) => {
         console.log(document)
         if (document.documentGroup.id ===  Number(id)) {
+            console.log("eq doc id")
             const doc = docs.find((d) => d.id === document.id)
             if (doc) {
                 const i = docs.indexOf(doc)
@@ -180,16 +181,16 @@ const DocumentPage = () => {
                 setDocs([...docs])
             }
         } else {
+            console.log("else")
             let foundGroup = groups.find((e) => {
                 const elem = e.documents.find((d) => d.id === document.id)
                 return elem !== undefined
             });
-
             if (foundGroup) {
                 const doc = foundGroup.documents.find((d) => d.id === document.id)
                 if (doc) {
                     const i = foundGroup.documents.indexOf(doc)
-                    doc.name = name
+                    doc.title = name
                     foundGroup.documents[i] = doc
                     groups[groups.indexOf(foundGroup)] = foundGroup
                     setGroups([...groups])
@@ -441,19 +442,22 @@ const DocumentPage = () => {
                 <BackBtn/>
 
                 <Flex style={{padding: 5}} justify={"space-between"} align={"center"} wrap={"wrap"} gap={5}>
-                    {documentGroup
-                        ?
-                        <Title ref={mainGroupRef} style={{margin: 0, flexGrow: 1}}
+                    <div style={{flexGrow : 1}}>
+
+                        {documentGroup
+                            ?
+                            <Title ref={mainGroupRef} style={{margin: 0, width: "fit-content", cursor: "pointer"}}
                                    editable={{
                                        triggerType : ['text'],
-                                       icon: <CopyFilled style={{display: "none"}}/>,
+                                       icon: null,
                                        onChange: (str: string) => setNewGroupName(str)
                                    }}
-                        >{documentGroup.name}
-                        </Title>
-                        :
-                        <Skeleton style={{height: 20}}/>
-                    }
+                            >{documentGroup.name}
+                            </Title>
+                            :
+                            <Skeleton style={{height: 20}}/>
+                        }
+                    </div>
                     <Flex wrap={"wrap"} gap={15} align={"center"}>
 
                         <Flex ref={fontRef} gap={5} align={"center"}>
