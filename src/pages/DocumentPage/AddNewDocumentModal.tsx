@@ -1,7 +1,7 @@
 import React, {FC, useContext, useEffect, useRef, useState} from 'react';
-import {Button, Checkbox, Flex, Input, Modal, notification, Tour, TourProps, UploadFile, UploadProps} from "antd";
+import {Checkbox, Flex, Input, InputRef, Modal, notification, Tour, TourProps, UploadProps} from "antd";
 import Dragger from "antd/es/upload/Dragger";
-import {InboxOutlined, PlusCircleOutlined} from "@ant-design/icons";
+import {InboxOutlined} from "@ant-design/icons";
 import {addNewDocumentInSubGroup} from "../../API/services/DocumentService";
 import {AuthContext} from "../../context/AuthContext";
 import {RcFile} from "antd/es/upload/interface";
@@ -20,7 +20,29 @@ const AddNewDocumentModal:FC<AddNewDocumentModalProps> = ({groupId, isActive, se
     const [file, setFile] = useState<RcFile>()
     const {jwt} = useContext(AuthContext)
     const [filename, setFilename] = useState<string>('')
+    const [isCheckboxChecked, setIsCheckboxChecked] = useState<boolean>(false)
+    const [isLoading, setIsLoading] = useState<boolean>(false)
+    const inputRefReal = useRef<InputRef>(null);
 
+    const onChangeCheckbox = (e : any) => {
+        if  (!isCheckboxChecked) {
+            console.log("fill")
+            fillFileTitleFromFilename()
+        }
+        setIsCheckboxChecked(!isCheckboxChecked)
+    }
+
+    useEffect(() => {
+        console.log(inputRefReal.current)
+        if (inputRefReal.current) {
+            console.log(inputRefReal.current.input)
+            if (inputRefReal.current.input) {
+                console.log("present")
+                console.log(inputRefReal.current.input)
+                inputRefReal.current.input.focus()
+            }
+        }
+    }, [inputRefReal.current]);
 
     const props: UploadProps = {
         onRemove: (file) => {
@@ -35,21 +57,30 @@ const AddNewDocumentModal:FC<AddNewDocumentModalProps> = ({groupId, isActive, se
 
 
     const save = async () => {
-        setIsActive(false);
 
         if (groupId && jwt && file) {
             const formData = new FormData()
             formData.append("file", file)
             formData.append("title", filename)
+            setIsLoading(true)
             const {data, error} = await addNewDocumentInSubGroup(formData, groupId, jwt)
+            setIsLoading(false)
             if (data) {
                 const doc : IDocument = data;
                 notification.success({message: "Документ " + filename + " успішно додано"})
                 setDoc(doc)
                 clearDocData()
+                setIsActive(false);
 
             }
-            if (error) throw  error
+            if (error) {
+                notification.error({message:
+                        <Flex vertical gap={5}>
+                        <span>Виникла помилка при додаванні документу :(</span>
+                        <span>Спробуйте ще раз</span>
+                    </Flex>})
+                console.error(error)
+            }
         } else notification.error({message: "Виникла помилка при додаванні :("})
     };
 
@@ -63,10 +94,11 @@ const AddNewDocumentModal:FC<AddNewDocumentModalProps> = ({groupId, isActive, se
 
     const handleCancel = () => {
         setIsActive(false);
+        setIsCheckboxChecked(false)
     };
 
-    const onCheckbox = (isOn : boolean) => {
-        if (isOn && file) {
+    const fillFileTitleFromFilename = () => {
+        if (file) {
             const  name = file.name
             setFilename(name.substring(0, name.lastIndexOf(".")))
         } else {
@@ -119,7 +151,9 @@ const AddNewDocumentModal:FC<AddNewDocumentModalProps> = ({groupId, isActive, se
 
 
     ];
-        
+
+
+
     return (
         <>
             <Tour open={isTourActive} onClose={() => setIsAddDocTourActive(false)} steps={steps} />
@@ -127,15 +161,21 @@ const AddNewDocumentModal:FC<AddNewDocumentModalProps> = ({groupId, isActive, se
                 <div ref={modalRef}>
                     {modal}
                 </div>
-            } title={"Новий документ"} open={isActive} onOk={save} onCancel={handleCancel}>
+            } title={"Новий документ"}
+                   open={isActive}
+                   onOk={save}
+                   onCancel={handleCancel}
+                   okButtonProps={{loading: isLoading}}
+
+            >
                 <Flex  vertical gap={10}>
                     <Flex gap={10} vertical style={{width: "inherit"}}>
                         <span>Назва<span style={{color: "red"}}>*</span></span>
                         <div ref={inputRef} style={{width: "100%"}}>
-                            <Input showCount  style={{width: "inherit"}} value={filename} onChange={(e) => setFilename(e.target.value)}  type="text"/>
+                            <Input ref={inputRefReal} autoFocus showCount  style={{width: "inherit"}} value={filename} onChange={(e) => setFilename(e.target.value)}  type="text"/>
                         </div>
                         <div  ref={checkboxRef}>
-                            <Checkbox onChange={(e) => onCheckbox(e.target.checked)}>Взяти з назви файлу</Checkbox>
+                            <Checkbox checked={isCheckboxChecked} onChange={onChangeCheckbox}>Взяти з назви файлу</Checkbox>
                         </div>
                     </Flex>
                     <Flex ref={ref1} gap={10} vertical style={{width: "100%"}}>

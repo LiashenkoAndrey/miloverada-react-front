@@ -109,12 +109,11 @@ const Document: FC<DocumentProps> = ({
                     if (adminMetadata.isShowConfirmWhenDeleteDocument) {
                         console.log("show")
                         setIsConfirmModalOpen(true)
-                    } else {
-                        if (onDeleteDocument) {
-                            onDeleteDocument(document)
-                        }
                     }
-                } else console.log("admin meta null")
+                }
+                if (onDeleteDocument) {
+                    onDeleteDocument(document)
+                } else throw new Error("On delete document callback not present!!!!")
                 break;
             case 'show':
                 break;

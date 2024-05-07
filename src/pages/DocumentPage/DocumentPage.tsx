@@ -170,7 +170,7 @@ const DocumentPage = () => {
 
 
     const updDocument = (name : string, document : IDocument) => {
-
+        console.log(document)
         if (document.documentGroup.id ===  Number(id)) {
             const doc = docs.find((d) => d.id === document.id)
             if (doc) {
@@ -231,9 +231,12 @@ const DocumentPage = () => {
         } else notification.error({message: "not auth"})
     }
 
+    const [isUpdated, setIsUpdated] = useState<boolean>(false)
+
     useEffect(  () => {
         if (newName && editGroupId) {
             updateGroupName(newName, editGroupId, editSubGroupNameCallback)
+            setIsUpdated(true)
         }
     }, [ newName]);
 
@@ -498,12 +501,15 @@ const DocumentPage = () => {
                 <Flex ref={groupsRef} gap={10} vertical style={{maxWidth: 1600}}>
                     <Accordion defaultActiveKey={subGroupId}>
                         {groups.map((group, i) =>
-                            <Accordion.Item ref={i === 0 ? groupRef : null}  key={group.id} eventKey={String(group.id)}>
-                                 <Groups fileNameFontSize={fileNameFontSize}
+                            <Accordion.Item ref={i === 0 ? groupRef : null} key={group.id} eventKey={String(group.id)}>
+                                <Groups fileNameFontSize={fileNameFontSize}
                                         setNewName={setNewName}
                                         editGroupId={editGroupId}
                                         onSelectAction={onSelectAction}
                                         group={group}
+                                        isUpdated={isUpdated}
+                                        setIsUpdated={setIsUpdated}
+
                                 />
 
                                 <Accordion.Body>
