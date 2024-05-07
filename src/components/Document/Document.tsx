@@ -32,7 +32,7 @@ const Document: FC<DocumentProps> = ({
                                          documentEditNameInputRef
                                      }) => {
     const fileFormat = document.name.substring(document.name.lastIndexOf('.') + 1, document.name.length)
-    const {adminMetadata, appUser} = useTypedSelector(state => state.user)
+    const {adminMetadata} = useTypedSelector(state => state.user)
     const {jwt} = useContext(AuthContext)
     const {setAdminMetadata} = useActions()
 
@@ -86,14 +86,12 @@ const Document: FC<DocumentProps> = ({
     const [isNotShowConfirm, setIsNotShowConfirm] = useState(true)
 
     const onOkDelete = useCallback(() => {
-        console.log(isEditing)
         if (!isNotShowConfirm) {
             console.log("Update !!!")
         }
     }, [isEditing]);
 
     const onChange: CheckboxProps['onChange'] = (e) => {
-        console.log(`checked = ${e.target.checked}`);
         setIsNotShowConfirm(e.target.checked)
     };
     const [isConfirmModalOpen, setIsConfirmModalOpen] = useState<boolean>(false)
@@ -107,18 +105,15 @@ const Document: FC<DocumentProps> = ({
                 setIsEditing(true)
                 break;
             case 'delete':
-                console.log(adminMetadata)
-
                 if (adminMetadata) {
                     if (adminMetadata.isShowConfirmWhenDeleteDocument) {
                         console.log("show")
                         setIsConfirmModalOpen(true)
-                    } else {
-                        if (onDeleteDocument) {
-                            onDeleteDocument(document)
-                        }
                     }
-                } else console.log("admin meta null")
+                }
+                if (onDeleteDocument) {
+                    onDeleteDocument(document)
+                } else throw new Error("On delete document callback not present!!!!")
                 break;
             case 'show':
                 break;
@@ -129,7 +124,6 @@ const Document: FC<DocumentProps> = ({
 
 
     const onDelete = async () => {
-        console.log(isNotShowConfirm)
         setIsConfirmModalOpen(false)
         if (onDeleteDocument) {
             onDeleteDocument(document)
