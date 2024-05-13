@@ -50,7 +50,6 @@ const NewsImageCarousel:FC<NewsImageCarouselProps> = ({isPreview, imagesList, se
                 setIsNewImageLoading(true)
                 const {data, error} = await saveNewsImageByNewsId(formData, newsId, jwt)
                 setIsNewImageLoading(false)
-                console.log(data)
                 if (data) {
                     setImagesList([...imagesList, ...data])
                 }

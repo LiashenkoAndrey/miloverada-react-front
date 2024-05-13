@@ -1,6 +1,7 @@
 
 
 .wrapper {
+    width: fit-content;
     padding: 5px;
     transition: background-color 300ms;
     border-radius: 20px;

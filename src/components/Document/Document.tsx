@@ -10,6 +10,7 @@ import {updateAdminMeta} from "../../API/services/UserService";
 import {AuthContext} from "../../context/AuthContext";
 import {useActions} from "../../hooks/useActions";
 import {setAdminMetadata} from "../../store/actionCreators/user";
+import {useAuth0} from "@auth0/auth0-react";
 
 const { Paragraph, Text, Title } = Typography;
 
@@ -35,7 +36,7 @@ const Document: FC<DocumentProps> = ({
     const {adminMetadata} = useTypedSelector(state => state.user)
     const {jwt} = useContext(AuthContext)
     const {setAdminMetadata} = useActions()
-
+    const {isAuthenticated} = useAuth0()
 
     const items: MenuProps['items'] = [
         {
@@ -142,7 +143,7 @@ const Document: FC<DocumentProps> = ({
 
 
     return (
-        <Dropdown menu={{items : items , onClick: onSelectAction}} trigger={['contextMenu']}>
+        <Dropdown disabled={!isAuthenticated}  menu={{items : items , onClick: onSelectAction}} trigger={['contextMenu']}>
             <Flex key={"document-" + document.id}
                   className={classes.document}
                   align={"center"} gap={10}

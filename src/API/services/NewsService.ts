@@ -43,9 +43,9 @@ export const getSimilarNews = (newsId : number) => {
     return callAndGetResult(config)
 }
 
-export const getLatestNews = (pageSize: number) => {
+export const getLatestNews = (pageSize: number, pageNumber? : number) => {
     const config = {
-        url: pageSize !== -1 ? `${apiServerUrl}/api/news/latest?pageSize=${pageSize}` : `${apiServerUrl}/api/news/latest`,
+        url: pageSize !== -1 ? `${apiServerUrl}/api/news/latest?pageSize=${pageSize}` + (pageNumber ? `&pageNumber=${pageNumber}` : '') : `${apiServerUrl}/api/news/latest`,
         method: "GET"
     }
     return callAndGetResult(config)

@@ -5,7 +5,7 @@ import {getImageUrl} from "../../API/services/ImageService";
 import {useNavigate} from "react-router-dom";
 import {CommentOutlined, EyeOutlined, MessageOutlined} from "@ant-design/icons";
 import classes from './NewsCard.module.css'
-import {Flex} from "antd";
+import {Flex, Skeleton} from "antd";
 
 interface NewsCardProps {
     news: INewsDto | INews,
@@ -27,12 +27,20 @@ const NewsCard: FC<NewsCardProps> = ({news, style, className}) => {
         >
             <img src={getImageUrl(typeof newsImage === "string" ? newsImage : newsImage?.mongoImageId)}
                  className={"imageWithPlaceholder"}
+                 style={{minHeight: 250}}
                  alt={typeof newsImage === "string" ? newsImage : newsImage?.mongoImageId}
             />
             <div className={classes.newsCardContent}>
                 <span className={classes.newsType}>{news.newsType?.title}</span>
                 <p style={{margin: "5px 10px 10px 10px", display: "block"}}>
-                    <span className={classes.newsCardDescription}>{news.description}
+                    <span className={classes.newsCardDescription}>
+
+                        {news.description
+                            ?
+                            <span>{news.description}</span>
+                            :
+                            <Skeleton/>
+                        }
 
                         <Flex gap={5}
                               align={"center"}

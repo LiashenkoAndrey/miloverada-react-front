@@ -64,7 +64,7 @@ const DocumentPage = () => {
     const [editGroupId, setEditGroupId] = useState<number>()
     const [isNewDocumentModalActive, setIsNewDocumentModalActive] = useState<boolean>(false)
     const [newName, setNewName] = useState<string>()
-    const {adminMetadata, appUser} = useTypedSelector(state => state.user)
+    const {adminMetadata} = useTypedSelector(state => state.user)
     const {setAdminMetadata} = useActions()
 
     const handleOk = () => {
@@ -446,12 +446,12 @@ const DocumentPage = () => {
 
                         {documentGroup
                             ?
-                            <Title ref={mainGroupRef} style={{margin: 0, width: "fit-content", cursor: "pointer"}}
-                                   editable={{
+                            <Title ref={mainGroupRef} style={{margin: 0, width: "fit-content", cursor: isAuthenticated ? "pointer" : 'initial', userSelect: "none"}}
+                                   editable={isAuthenticated ? {
                                        triggerType : ['text'],
                                        icon: null,
                                        onChange: (str: string) => setNewGroupName(str)
-                                   }}
+                                   } : false}
                             >{documentGroup.name}
                             </Title>
                             :
