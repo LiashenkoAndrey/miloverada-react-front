@@ -4,26 +4,43 @@
     width: 100%;
     min-height: 100vh;
     padding-top: 15vh;
-
+    padding-bottom: 100px;
 }
 
 .content {
     width: 100%;
     max-width: 80vw;
 }
+.content img {
+    max-width: 800px;
+    height: auto;
+}
+
 
 @media (max-width: 800px) {
     .content {
+        padding: 0 20px;
         max-width: initial;
+    }
+
+    .content img {
+
+        width: 100%;
+        height: auto;
     }
 }
 
-.content p {
-    margin-top: 40px;
+.aboutText, .content div textarea {
     font-size: 30px;
     font-weight: 300;
     font-family: "Source Serif 4", serif;
 }
+
+.content div  {
+    margin-top: 10px!important;
+    margin-bottom: 0!important;
+}
+
 
 .content h1 {
     text-align: center;

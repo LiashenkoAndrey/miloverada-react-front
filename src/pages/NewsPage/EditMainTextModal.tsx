@@ -1,28 +1,26 @@
 import React, {FC, useRef, useState} from 'react';
-import {Button, Modal} from "antd";
+import {Modal} from "antd";
 import HtmlEditor from "../../components/HtmlEditor";
 import {Editor as TinyMCEEditor} from "tinymce";
+import {useAuth0} from "@auth0/auth0-react";
 
 interface EditMainTextModalProps {
     setText :  React.Dispatch<React.SetStateAction<string | undefined>>
     text : string | undefined
+    onOk? : () => void
+    isLoading? : boolean
 }
 
-const EditMainTextModal:FC<EditMainTextModalProps> = ({setText, text}) => {
+const EditMainTextModal:FC<EditMainTextModalProps> = ({setText, text, onOk, isLoading}) => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const editorRef = useRef<TinyMCEEditor | null>(null);
+    const {isAuthenticated} = useAuth0()
 
-
-    const getEditorText  = () : string => {
-        if (editorRef.current) {
-            if (editorRef.current) {
-                return  editorRef.current.getContent();
-            }
-        }
-        return ""
-    }
     const handleOk = () => {
         setIsModalOpen(false);
+        if (onOk) {
+            onOk()
+        }
     };
 
     const handleCancel = () => {
@@ -30,15 +28,21 @@ const EditMainTextModal:FC<EditMainTextModalProps> = ({setText, text}) => {
     };
 
 
+
     return (
         <>
             {(text) &&
-                <div onClick={() => setIsModalOpen(true)} className={"newsText"} dangerouslySetInnerHTML={{__html: text}}></div>
+            isAuthenticated
+                ?
+                <div onClick={() => setIsModalOpen(true)} className={"newsText"}
+                     dangerouslySetInnerHTML={{__html: text}}></div>
+                :
+                // @ts-ignore
+                <div  className={"newsText"} dangerouslySetInnerHTML={{__html: text}}></div>
             }
 
-
             {isModalOpen &&
-                <Modal open={isModalOpen} onCancel={handleCancel} onOk={handleOk} width={"90vw"}>
+                <Modal open={isModalOpen} onCancel={handleCancel} okButtonProps={{loading : isLoading ? isLoading : false}} onOk={handleOk} width={"90vw"}>
                     <HtmlEditor
                         val={text}
                         onInit={(evt, editor) => {

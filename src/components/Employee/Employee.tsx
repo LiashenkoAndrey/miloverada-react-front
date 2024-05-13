@@ -1,4 +1,4 @@
-import React, {FC, useContext, useEffect} from 'react';
+import React, {FC, useContext} from 'react';
 import classes from "./Employee.module.css"
 import {Dropdown, Flex, MenuProps, notification, Typography} from "antd";
 import {CopyOutlined, DeleteOutlined, MailOutlined, PhoneOutlined} from "@ant-design/icons";
@@ -7,7 +7,7 @@ import {useAuth0} from "@auth0/auth0-react";
 import {IContact} from "../../pages/ContactsPage/ContactsPage";
 import {deleteContactById} from "../../API/services/ContactsService";
 
-const { Text, Paragraph } = Typography;
+const { Text} = Typography;
 interface ContactProps {
     contact : IContact
     removeContactFromArray? (id: number): void
@@ -16,10 +16,6 @@ const Employee: FC<ContactProps> = ({contact, removeContactFromArray}) => {
 
     const {jwt} = useContext(AuthContext)
     const {isAuthenticated} = useAuth0()
-
-    useEffect(() => {
-        console.log("isAuthenticated", isAuthenticated)
-    }, [isAuthenticated]);
 
     const items: MenuProps['items'] = [
         {
