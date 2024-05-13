@@ -3,6 +3,7 @@ import {Accordion} from "react-bootstrap";
 import {Dropdown, MenuProps, Typography} from "antd";
 import {IDocumentGroup} from "../../API/services/InstitutionService";
 import {DeleteOutlined, EditOutlined, PlusCircleOutlined} from "@ant-design/icons";
+import {useAuth0} from "@auth0/auth0-react";
 
 const { Paragraph } = Typography;
 
@@ -24,7 +25,7 @@ const Groups: FC<GroupsProps> = ({
     isUpdated, setIsUpdated,
                                      group,
                                  }) => {
-
+    const {isAuthenticated} = useAuth0()
     const [isEditing, setIsEditing] = useState(group.id === editGroupId)
 
     useEffect(() => {
@@ -72,6 +73,7 @@ const Groups: FC<GroupsProps> = ({
     return (
         <Dropdown menu={{items: getItems(group.id), onClick: (e) => onAction(e.key)}}
                   trigger={['contextMenu']}
+                  disabled={!isAuthenticated}
         >
 
             <Accordion.Header>

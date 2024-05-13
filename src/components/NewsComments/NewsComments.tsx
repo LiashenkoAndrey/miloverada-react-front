@@ -28,7 +28,7 @@ const CommentsList:FC<CommentsListProps> = ({comments}) => {
 const NewsComments: FC<NewsCommentsProps> = ({newsId}) => {
     const {setNewsComments} = useActions()
     const {comments} = useTypedSelector(state => state.newsComments)
-
+    console.log("hello!")
     const getById = async () => {
         const {data, error} = await getAllNewsCommentsById(newsId);
         if (data){
@@ -41,7 +41,7 @@ const NewsComments: FC<NewsCommentsProps> = ({newsId}) => {
 
     useEffect(() => {
         getById()
-    }, []);
+    }, [newsId]);
 
     const [isNotShowAllComments, setIsNotShowAllComments ] = useState<boolean>( true)
 
