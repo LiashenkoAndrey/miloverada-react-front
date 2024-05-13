@@ -27,7 +27,6 @@ const ContactsPage = () => {
     }, []);
 
     const removeContactFromArray = (id : number) => {
-        console.log(id)
         setContacts(contacts.filter(e => e.id !== id))
     }
 
