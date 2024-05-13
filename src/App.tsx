@@ -16,7 +16,6 @@ import TopicPage from "./pages/forum/TopicPage/TopicPage";
 import IsRegisteredCheckPage from "./pages/IsRegisteredCheckPage";
 import PrivateChatPage from "./pages/forum/PrivateChatPage/PrivateChatPage";
 import AllUsersPage from "./pages/AllUsersPage/AllUsersPage";
-import ContactsPage from "./pages/ContactsPage/ContactsPage";
 import AllInstitutionsPage from "./pages/AllInstitutionsPage/AllInstitutionsPage";
 import InstitutionPage from "./pages/InstitutionPage/InstitutionPage";
 import AddNewsPage from "./pages/AddNewsPage/AddNewsPage";
@@ -30,6 +29,7 @@ import {getForumUserByAppUserId} from "./API/services/forum/UserService";
 import CreateNewForumUserProfileModal from "./components/CreateNewForumUserProfileModal/CreateNewForumUserProfileModal";
 import {useTypedSelector} from "./hooks/useTypedSelector";
 import AboutPage from "./pages/AboutPage/AboutPage";
+import {ContactsPage} from "./pages/ContactsPage/ContactsPage";
 
 function App() {
     const [jwt, setJwt] = useState<string>()

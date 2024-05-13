@@ -1,0 +1,15 @@
+
+
+.wrapper {
+    padding: 5px;
+    transition: background-color 300ms;
+    border-radius: 20px;
+    cursor: pointer;
+}
+.wrapper:hover {
+    background-color: rgba(10, 10, 10, 0.18);
+}
+
+.wrapper:active {
+    background-color: rgba(10, 10, 10, 0.41);
+}

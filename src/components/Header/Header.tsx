@@ -51,8 +51,8 @@ const Header = () => {
         {onClick : () => {
 
             }, title : <Tooltip title={"Незабаром буде доступно :)"}>Форум</Tooltip>},
-        {onClick : () => nav("/"), title : "Управління"},
-        {onClick : () => nav("/institutions"), title : "Установи"},
+        // {onClick : () => nav("/"), title : "Управління"},
+        // {onClick : () => nav("/institutions"), title : "Установи"},
         {onClick : () => nav("/contacts"), title : "Контакти"},
     ]
     const onLogin = async () => {
