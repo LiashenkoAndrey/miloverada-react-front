@@ -1,10 +1,10 @@
 import React, {useEffect, useState} from 'react';
 import './App.css';
-import {Route, Routes, Navigate, useLocation} from "react-router-dom";
+import {Route, Routes, useLocation} from "react-router-dom";
 import Header from "./components/Header/Header";
 import MainPage from "./pages/MainPage/MainPage";
 import Footer from "./components/Footer/Footer";
-import {App as AntdApp, ConfigProvider, Layout, notification} from "antd";
+import {App as AntdApp, ConfigProvider, Layout} from "antd";
 import NewsPage from "./pages/NewsPage/NewsPage";
 import AllNewsPage from "./pages/AllNewsPage/AllNewsPage";
 import AllDocumentsPage from "./pages/AllDocumentsPage/AllDocumentsPage";
@@ -24,10 +24,9 @@ import 'dayjs/locale/uk'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import DocumentPage from "./pages/DocumentPage/DocumentPage";
 import {useActions} from "./hooks/useActions";
-import { getAppUser, UserDto} from "./API/services/UserService";
+import {getAppUser, UserDto} from "./API/services/UserService";
 import {getForumUserByAppUserId} from "./API/services/forum/UserService";
 import CreateNewForumUserProfileModal from "./components/CreateNewForumUserProfileModal/CreateNewForumUserProfileModal";
-import {useTypedSelector} from "./hooks/useTypedSelector";
 import AboutPage from "./pages/AboutPage/AboutPage";
 import {ContactsPage} from "./pages/ContactsPage/ContactsPage";
 

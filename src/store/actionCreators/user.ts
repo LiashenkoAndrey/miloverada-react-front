@@ -18,6 +18,12 @@ export const setAdminMetadata =  (metadata : AdminMetadata) => {
     }
 }
 
+export const setNotificationNumber =  (number : number) => {
+    return async (dispatch : Dispatch<UserAction>) => {
+        dispatch({type : UserActionTypes.SET_UNREAD_NOTIFICATION_NUMBER, payload : number})
+    }
+}
+
 export const setForumUser =  (forumUser : ForumUser) => {
     return async (dispatch : Dispatch<UserAction>) => {
         dispatch({type : UserActionTypes.SET_FORUM_USER, payload : forumUser})

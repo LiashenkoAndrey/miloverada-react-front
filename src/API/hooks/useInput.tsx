@@ -9,6 +9,6 @@ export default function useInput(initialValue? : string) {
         setValue(e.target.value)
     }
 
-    return {value, onChange};
+    return {value, onChange, setValue};
 
 }
