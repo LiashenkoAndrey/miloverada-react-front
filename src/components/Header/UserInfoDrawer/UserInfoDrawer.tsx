@@ -112,6 +112,7 @@ const UserInfoDrawer: FC<UserInfoDrawerProps> = ({setIsUserDrawerActive, isUserD
 
     return (
         <Drawer
+            size={currentNotification ? 'large' : 'default'}
             title={currentNotification ? currentNotification.message : "Мій профіль"}
             onClose={currentNotification ? onBackToProfile : onCloseDrawer}
             open={isUserDrawerActive}
