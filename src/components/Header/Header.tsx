@@ -13,6 +13,7 @@ import {AppUser} from "../../API/services/forum/ForumInterfaces";
 import {useActions} from "../../hooks/useActions";
 import {UserInfoDrawer} from "./UserInfoDrawer/UserInfoDrawer";
 import {getTotalNumberOfNotifications} from "../../API/services/NotificationService";
+import {checkPermission} from "../../API/Util";
 
 export interface HeaderOption {
     onClick : () => void
@@ -22,7 +23,7 @@ export interface HeaderOption {
 const Header = () => {
     const nav  = useNavigate()
     const { pathname } = useLocation();
-    const {loginWithRedirect, isAuthenticated, user} = useAuth0()
+    const {loginWithRedirect, user} = useAuth0()
     const {jwt} = useContext(AuthContext)
     const {appUser, unreadNotificationNumber} = useTypedSelector(state => state.user)
     const {setUser, setNotificationNumber} = useActions()
@@ -33,7 +34,6 @@ const Header = () => {
             if (jwt && user?.sub) {
                 const {data, error} = await getTotalNumberOfNotifications(encodeURIComponent(user?.sub),jwt)
                 if (data) {
-                    console.log(data)
                     setNotificationNumber(data)
                 }
                 if (error) console.log("error when load notific")
@@ -79,7 +79,7 @@ const Header = () => {
     }
 
     const userIcon =
-        isAuthenticated
+        jwt
             ?
             <Flex  onClick={() => setIsUserDrawerActive(true)}
                   align={"center"}
@@ -87,7 +87,7 @@ const Header = () => {
                   className={classes.headNavItem}
                   style={{position:"relative", top: "4px",padding: "10px 10px 0px 10px"}}
             >
-                <Badge size={"small"} count={unreadNotificationNumber}>
+                <Badge size={"small"} count={checkPermission(jwt, "admin") ? unreadNotificationNumber : 0}>
                     <img style={{borderRadius: 10}} src={user?.picture} height={30} alt=""/>
                 </Badge>
                 <span style={{color: "white"}}>{user?.firstName}</span>

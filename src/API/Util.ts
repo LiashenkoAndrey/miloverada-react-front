@@ -128,15 +128,16 @@ export const getBase642 = (blob : Blob, cb : Function) => {
     };
 }
 
-export const checkPermission = (token : string, permission : string) => {
-    if (token !== null) {
-        const  payload = jwtDecode(token);
+interface JwtPayload {
+    permissions : string[]
+    scope : string
+    sub : string
+}
 
-        console.log("payload", payload)
-
-        // @ts-ignore
-        const  has = jwtDecode(token).permissions.indexOf(permission) !== -1
-        return has;
+export const checkPermission = (token : string | undefined, permission : string) => {
+    if (token !== undefined) {
+        const  payload : JwtPayload = jwtDecode(token);
+        return payload.permissions.includes(permission);
     } else {
         return false
     }
