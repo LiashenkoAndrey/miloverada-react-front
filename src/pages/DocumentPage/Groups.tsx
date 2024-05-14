@@ -1,9 +1,11 @@
-import React, {FC, useEffect, useState} from 'react';
+import React, {FC, useContext, useEffect, useState} from 'react';
 import {Accordion} from "react-bootstrap";
 import {Dropdown, MenuProps, Typography} from "antd";
 import {IDocumentGroup} from "../../API/services/InstitutionService";
 import {DeleteOutlined, EditOutlined, PlusCircleOutlined} from "@ant-design/icons";
 import {useAuth0} from "@auth0/auth0-react";
+import {checkPermission} from "../../API/Util";
+import {AuthContext} from "../../context/AuthContext";
 
 const { Paragraph } = Typography;
 
@@ -25,6 +27,7 @@ const Groups: FC<GroupsProps> = ({
     isUpdated, setIsUpdated,
                                      group,
                                  }) => {
+    const {jwt} = useContext(AuthContext)
     const {isAuthenticated} = useAuth0()
     const [isEditing, setIsEditing] = useState(group.id === editGroupId)
 
@@ -73,7 +76,7 @@ const Groups: FC<GroupsProps> = ({
     return (
         <Dropdown menu={{items: getItems(group.id), onClick: (e) => onAction(e.key)}}
                   trigger={['contextMenu']}
-                  disabled={!isAuthenticated}
+                  disabled={!checkPermission(jwt, "admin") }
         >
 
             <Accordion.Header>

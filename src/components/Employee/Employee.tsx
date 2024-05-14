@@ -6,6 +6,7 @@ import {AuthContext} from "../../context/AuthContext";
 import {useAuth0} from "@auth0/auth0-react";
 import {IContact} from "../../pages/ContactsPage/ContactsPage";
 import {deleteContactById} from "../../API/services/ContactsService";
+import {checkPermission} from "../../API/Util";
 
 const { Text} = Typography;
 interface ContactProps {
@@ -59,7 +60,7 @@ const Employee: FC<ContactProps> = ({contact, removeContactFromArray}) => {
     return (
         <Dropdown menu={{ items : items , onClick : onSelect}}
                   trigger={['contextMenu']}
-                  disabled={!isAuthenticated}
+                  disabled={!checkPermission(jwt, "admin")}
 
         >
             <Flex key={"contact-" + contact.id}

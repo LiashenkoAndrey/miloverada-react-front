@@ -8,6 +8,7 @@ import {AuthContext} from "../../context/AuthContext";
 import {useAuth0} from "@auth0/auth0-react";
 import {PlusOutlined} from "@ant-design/icons";
 import {FormProps} from "react-bootstrap";
+import {checkPermission} from "../../API/Util";
 
 const ContactsPage = () => {
     const [contacts, setContacts] = useState<IContact[]>([])
@@ -26,7 +27,7 @@ const ContactsPage = () => {
         getContacts()
     }, []);
 
-    const removeContactFromArray = (id : number) => {
+    const removeContactFromArray = (id: number) => {
         setContacts(contacts.filter(e => e.id !== id))
     }
 
@@ -39,7 +40,10 @@ const ContactsPage = () => {
                     {contacts.length > 0
                         ?
                         contacts.map((contact) =>
-                            <Employee removeContactFromArray={removeContactFromArray}  key={"contact-" + contact.id} contact={contact}/>
+                            <Employee removeContactFromArray={removeContactFromArray}
+                                      key={"contact-" + contact.id}
+                                      contact={contact}
+                            />
                         )
                         :
                         <>
@@ -49,20 +53,20 @@ const ContactsPage = () => {
                             <Skeleton/>
                         </>}
                 </Flex>
-                {isAuthenticated &&
-                <>
-                    <Button style={{width: 200, marginTop: 20, marginLeft: 20}}
-                            type={"primary"}
-                            onClick={() => setIsAddContactModalActive(true)}
-                            icon={<PlusOutlined/>}>
-                        Додати контакт
-                    </Button>
-                    <AddContactModal setContacts={setContacts}
-                                     contacts={contacts}
-                                     isOpen={isAddContactModalActive}
-                                     setIsOpen={setIsAddContactModalActive}
-                    />
-                </>
+                {checkPermission(jwt, "admin") &&
+                    <>
+                        <Button style={{width: 200, marginTop: 20, marginLeft: 20}}
+                                type={"primary"}
+                                onClick={() => setIsAddContactModalActive(true)}
+                                icon={<PlusOutlined/>}>
+                            Додати контакт
+                        </Button>
+                        <AddContactModal setContacts={setContacts}
+                                         contacts={contacts}
+                                         isOpen={isAddContactModalActive}
+                                         setIsOpen={setIsAddContactModalActive}
+                        />
+                    </>
                 }
             </Flex>
         </Flex>
@@ -71,13 +75,14 @@ const ContactsPage = () => {
 
 
 interface AddContactModalProps {
-    isOpen : boolean
-    contacts : IContact[]
-    setIsOpen :  React.Dispatch<React.SetStateAction<boolean>>
-    setContacts :   React.Dispatch<React.SetStateAction<IContact[]>>
+    isOpen: boolean
+    contacts: IContact[]
+    setIsOpen: React.Dispatch<React.SetStateAction<boolean>>
+    setContacts: React.Dispatch<React.SetStateAction<IContact[]>>
 }
+
 export type IContact = {
-    id : number
+    id: number
     first_name: string;
     last_name: string;
     position: string;
@@ -91,7 +96,7 @@ const AddContactModal: FC<AddContactModalProps> = ({isOpen, setIsOpen, setContac
 
     const {jwt} = useContext(AuthContext)
     // @ts-ignore
-    const  onFinish: FormProps<IContact>['onFinish'] =  async (values) => {
+    const onFinish: FormProps<IContact>['onFinish'] = async (values) => {
         if (jwt) {
             setIsLoading(true)
             const {data, error} = await newContact(values, jwt)
@@ -117,15 +122,15 @@ const AddContactModal: FC<AddContactModalProps> = ({isOpen, setIsOpen, setContac
     return (
         <Modal open={isOpen}
                onCancel={() => setIsOpen(false)}
-                footer={false}
+               footer={false}
         >
             <Form
                 form={form}
                 name="basic"
-                labelCol={{ span: 8 }}
-                wrapperCol={{ span: 16 }}
-                style={{ maxWidth: 800, marginRight: 20 }}
-                initialValues={{ remember: true }}
+                labelCol={{span: 8}}
+                wrapperCol={{span: 16}}
+                style={{maxWidth: 800, marginRight: 20}}
+                initialValues={{remember: true}}
                 onFinish={onFinish}
                 // onFinishFailed={onFinishFailed}
                 autoComplete="off"
@@ -134,44 +139,44 @@ const AddContactModal: FC<AddContactModalProps> = ({isOpen, setIsOpen, setContac
                 <Form.Item<IContact>
                     label="Ім'я"
                     name="first_name"
-                    rules={[{ required: true, message: 'Будь ласка вкажіть ваше Ім\'я!' }]}
+                    rules={[{required: true, message: 'Будь ласка вкажіть ваше Ім\'я!'}]}
                 >
-                    <Input />
+                    <Input/>
                 </Form.Item>
 
                 <Form.Item<IContact>
                     label="Прізвище"
                     name="last_name"
-                    rules={[{ required: true, message: 'Будь ласка вкажіть ваше Прізвище!' }]}
+                    rules={[{required: true, message: 'Будь ласка вкажіть ваше Прізвище!'}]}
                 >
-                    <Input />
+                    <Input/>
                 </Form.Item>
 
                 <Form.Item<IContact>
                     label="Посада"
                     name="position"
-                    rules={[{ required: true, message: 'Будь ласка вкажіть вашу посаду!' }]}
+                    rules={[{required: true, message: 'Будь ласка вкажіть вашу посаду!'}]}
                 >
-                    <Input />
+                    <Input/>
                 </Form.Item>
 
                 <Form.Item<IContact>
                     label="Телефон"
                     name="phone_number"
-                    rules={[{ required: true, message: 'Будь ласка вкажіть ваш номер телефону!' }]}
+                    rules={[{required: true, message: 'Будь ласка вкажіть ваш номер телефону!'}]}
                 >
-                    <Input />
+                    <Input/>
                 </Form.Item>
 
                 <Form.Item<IContact>
                     label="Пошта"
                     name="email"
-                    rules={[{ required: true, message: 'Будь ласка вкажіть вашу пошту!' }]}
+                    rules={[{required: true, message: 'Будь ласка вкажіть вашу пошту!'}]}
                 >
-                    <Input />
+                    <Input/>
                 </Form.Item>
 
-                <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
+                <Form.Item wrapperCol={{offset: 8, span: 16}}>
                     <Button loading={isLoading}
                             type="primary"
                             htmlType="submit"
@@ -186,7 +191,6 @@ const AddContactModal: FC<AddContactModalProps> = ({isOpen, setIsOpen, setContac
         </Modal>
     );
 };
-
 
 
 export {ContactsPage, AddContactModal};

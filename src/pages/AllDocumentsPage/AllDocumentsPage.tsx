@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import {Button, Divider, Flex} from 'antd';
 import {getAllDocumentsGroups, searchDocuments} from "../../API/services/DocumentService";
 import {IDocument, IDocumentGroup} from "../../API/services/InstitutionService";
@@ -9,8 +9,9 @@ import {useNavigate} from "react-router-dom";
 import {SearchProps} from "antd/lib/input";
 import Document from "../../components/Document/Document";
 import AddNewGroupModal from "../DocumentPage/AddNewSubGroupModal";
-import dayjs from "dayjs";
 import {useAuth0} from "@auth0/auth0-react";
+import {checkPermission} from "../../API/Util";
+import {AuthContext} from "../../context/AuthContext";
 
 const AllDocumentsPage = () => {
 
@@ -19,6 +20,7 @@ const AllDocumentsPage = () => {
     const [searchedDocs, setSearchedDocs] = useState<IDocument[][] | null>(null)
     const [isSearching, setIsSearching] = useState<boolean>(false)
     const {isAuthenticated} = useAuth0()
+    const {jwt} = useContext(AuthContext)
 
     const getDocumentsGroups = async () => {
         const {data, error} = await getAllDocumentsGroups();
@@ -88,7 +90,7 @@ const AllDocumentsPage = () => {
                                 loading={isSearching}
                         />
 
-                        {isAuthenticated &&
+                        {checkPermission(jwt, "admin") &&
                             <AddNewGroupModal addGroup={addNewGroup}
                                               groupId={null}
                             />
