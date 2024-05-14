@@ -54,7 +54,7 @@ export function toDateShort(date : Array<string>) {
     return new Date(date.toString()).toLocaleString().split(",")[0]
 }
 
-export function toDateV2(date : string) {
+export function toDateV2(date : string ) {
     const t = date.split("T")
     return t[0]
 }

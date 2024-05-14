@@ -1,6 +1,6 @@
 import React, {useContext, useEffect, useState} from 'react';
 import classes from './Header.module.css'
-import {Dropdown, Flex, MenuProps, Space, Tooltip} from "antd";
+import {Badge, Dropdown, Flex, MenuProps, Space, Tooltip} from "antd";
 // @ts-ignore
 import icon from '../../assets/icon.png'
 import {useLocation, useNavigate} from "react-router-dom";
@@ -11,7 +11,8 @@ import {useTypedSelector} from "../../hooks/useTypedSelector";
 import {getUserById} from "../../API/services/UserService";
 import {AppUser} from "../../API/services/forum/ForumInterfaces";
 import {useActions} from "../../hooks/useActions";
-import UserInfoDrawer from "./UserInfoDrawer/UserInfoDrawer";
+import {UserInfoDrawer} from "./UserInfoDrawer/UserInfoDrawer";
+import {getTotalNumberOfNotifications} from "../../API/services/NotificationService";
 
 export interface HeaderOption {
     onClick : () => void
@@ -21,11 +22,25 @@ export interface HeaderOption {
 const Header = () => {
     const nav  = useNavigate()
     const { pathname } = useLocation();
-    const {loginWithRedirect, isAuthenticated, user, logout } = useAuth0()
+    const {loginWithRedirect, isAuthenticated, user} = useAuth0()
     const {jwt} = useContext(AuthContext)
-    const {appUser} = useTypedSelector(state => state.user)
-    const {setUser} = useActions()
+    const {appUser, unreadNotificationNumber} = useTypedSelector(state => state.user)
+    const {setUser, setNotificationNumber} = useActions()
     const [isUserDrawerActive, setIsUserDrawerActive] = useState<boolean>(false)
+
+    useEffect(() => {
+        const getNotificationsNumber = async () => {
+            if (jwt && user?.sub) {
+                const {data, error} = await getTotalNumberOfNotifications(encodeURIComponent(user?.sub),jwt)
+                if (data) {
+                    console.log(data)
+                    setNotificationNumber(data)
+                }
+                if (error) console.log("error when load notific")
+            } else console.error("not auth")
+        }
+        getNotificationsNumber();
+    }, [jwt]);
 
     useEffect( () => {
         const getUser =  async (id : string, jwt : string) => {
@@ -66,15 +81,16 @@ const Header = () => {
     const userIcon =
         isAuthenticated
             ?
-            <Flex onClick={() => setIsUserDrawerActive(true)}
+            <Flex  onClick={() => setIsUserDrawerActive(true)}
                   align={"center"}
                   vertical
                   className={classes.headNavItem}
-                  style={{ background: "none"}}
+                  style={{position:"relative", top: "4px",padding: "10px 10px 0px 10px"}}
             >
-                <img src={user?.picture} height={30} alt=""/>
+                <Badge size={"small"} count={unreadNotificationNumber}>
+                    <img style={{borderRadius: 10}} src={user?.picture} height={30} alt=""/>
+                </Badge>
                 <span style={{color: "white"}}>{user?.firstName}</span>
-                {/*<Button ghost danger onClick={onLogout} >Вийти</Button>*/}
             </Flex>
             :
             <Flex align={"center"} onClick={onLogin} gap={10} className={classes.headNavItem} style={{paddingLeft: 10}}>
