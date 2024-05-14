@@ -16,10 +16,10 @@ import {CloseOutlined, LeftOutlined, PlusOutlined} from "@ant-design/icons";
 import useInput from "../../../API/hooks/useInput";
 import HtmlEditor from "../../HtmlEditor";
 import {Editor as TinyMCEEditor} from "tinymce";
-import {toDateV2} from "../../../API/Util";
+import {checkPermission, toDateV2} from "../../../API/Util";
 
 interface UserInfoDrawerProps {
-    isUserDrawerActive : boolean
+    isUserDrawerActive: boolean
     setIsUserDrawerActive: React.Dispatch<React.SetStateAction<boolean>>
 }
 
@@ -34,18 +34,16 @@ const UserInfoDrawer: FC<UserInfoDrawerProps> = ({setIsUserDrawerActive, isUserD
 
     useEffect(() => {
         if (isUserDrawerActive) {
-            console.log("UPDATE")
             const getNotific = async () => {
-                console.log("getNotific")
                 if (jwt && user?.sub) {
-                    const {data, error} = await getAllNotifications(encodeURIComponent(user.sub), jwt);
-                    if (data) {
-                        console.log(data)
-                        setNotifications(data)
-                    }
-                    if (error) {
-                        console.log("error when load notific")
-                    }
+                    if (checkPermission(jwt, "admin")) {
+                        const {data, error} = await getAllNotifications(encodeURIComponent(user.sub), jwt);
+                        if (data) {
+                            setNotifications(data)
+                        }
+                        if (error) {
+                        }
+                    } else console.log("DON'T HAS PERMISSION")
                 } else {
                     console.error("not auth")
                 }
@@ -57,8 +55,8 @@ const UserInfoDrawer: FC<UserInfoDrawerProps> = ({setIsUserDrawerActive, isUserD
 
     const onLogout = () => {
         logout({
-            logoutParams : {
-                returnTo : window.location.origin
+            logoutParams: {
+                returnTo: window.location.origin
             }
         })
     }
@@ -70,7 +68,7 @@ const UserInfoDrawer: FC<UserInfoDrawerProps> = ({setIsUserDrawerActive, isUserD
             adminMetadata.isShowModalTourWhenUserOnDocumentsPage = true
             adminMetadata.isDocumentsPageTourCompleted = false
             setIsLoading(true)
-            const {data, error} = await updateAdminMeta(adminMetadata,  jwt)
+            const {data, error} = await updateAdminMeta(adminMetadata, jwt)
             setIsLoading(false)
 
             if (data) {
@@ -83,22 +81,20 @@ const UserInfoDrawer: FC<UserInfoDrawerProps> = ({setIsUserDrawerActive, isUserD
 
     const [currentNotification, setCurrentNotification] = useState<INotification>()
 
-    const onReadNotification = async (notification : INotification) => {
+    const onReadNotification = async (notification: INotification) => {
         if (notification.id && jwt && user?.sub && notification.isViewed !== undefined) {
 
-            const {data, error} = await getNotificationById(notification.id, notification.isViewed, encodeURIComponent(user.sub), jwt);
+            const {
+                data,
+                error
+            } = await getNotificationById(notification.id, notification.isViewed, encodeURIComponent(user.sub), jwt);
             if (data) {
-                console.log("read notif ", data)
                 setCurrentNotification(data)
                 if (!notification.isViewed) {
                     const index = notifications.indexOf(notification);
-                    console.log("index", index)
                     notifications[index].isViewed = true;
-                    console.log(notification)
-                    console.log(notifications)
-                    const  arr = new Array(...notifications)
+                    const arr = new Array(...notifications)
                     setNotifications([...arr])
-                    console.log(unreadNotificationNumber,unreadNotificationNumber - 1)
                     setNotificationNumber(Math.abs(unreadNotificationNumber - 1))
                 }
             }
@@ -114,12 +110,12 @@ const UserInfoDrawer: FC<UserInfoDrawerProps> = ({setIsUserDrawerActive, isUserD
         setIsUserDrawerActive(false)
     }
 
-     return (
+    return (
         <Drawer
             title={currentNotification ? currentNotification.message : "Мій профіль"}
             onClose={currentNotification ? onBackToProfile : onCloseDrawer}
             open={isUserDrawerActive}
-            closeIcon={currentNotification ? <LeftOutlined/> : <CloseOutlined /> }
+            closeIcon={currentNotification ? <LeftOutlined/> : <CloseOutlined/>}
         >
             <Flex vertical
                   style={{height: "100%"}}
@@ -152,18 +148,21 @@ const UserInfoDrawer: FC<UserInfoDrawerProps> = ({setIsUserDrawerActive, isUserD
                 }
 
                 {currentNotification &&
-                    <Flex vertical gap={10} >
+                    <Flex vertical gap={10}>
                         {currentNotification.createdOn &&
-                            <span style={{color : "brown", fontSize: 14, fontWeight: 600}}>{toDateV2(currentNotification.createdOn)}</span>
+                            <span style={{
+                                color: "brown",
+                                fontSize: 14,
+                                fontWeight: 600
+                            }}>{toDateV2(currentNotification.createdOn)}</span>
                         }
-                        <p dangerouslySetInnerHTML={{__html : currentNotification.text}}></p>
+                        <p dangerouslySetInnerHTML={{__html: currentNotification.text}}></p>
                     </Flex>
                 }
 
                 {!currentNotification &&
                     <Flex vertical gap={5}>
-                        <Button style={{width: "fit-content"}} onClick={() => setIsNewNotificationModalActive(true)}
-                                icon={<PlusOutlined/>}>Повідомлення</Button>
+
                         {isUserDrawerActive &&
                             <NewNotificationModal setIsOpen={setIsNewNotificationModalActive}
                                                   isOpen={isNewNotificationModalActive}
@@ -171,10 +170,17 @@ const UserInfoDrawer: FC<UserInfoDrawerProps> = ({setIsUserDrawerActive, isUserD
                                                   setNotifications={setNotifications}
                             />
                         }
-                        <Button style={{width: "fit-content"}}
-                                onClick={onClearMetadata}
-                                loading={isLoading}
-                        >Очистити метадані</Button>
+                        {checkPermission(jwt, "admin") &&
+                            <>
+                                <Button style={{width: "fit-content"}}
+                                        onClick={() => setIsNewNotificationModalActive(true)}
+                                        icon={<PlusOutlined/>}>Повідомлення</Button>
+                                <Button style={{width: "fit-content"}}
+                                        onClick={onClearMetadata}
+                                        loading={isLoading}
+                                >Очистити метадані</Button>
+                            </>
+                        }
                         <Button disabled
                                 style={{width: "fit-content"}}
                                 danger
@@ -187,12 +193,18 @@ const UserInfoDrawer: FC<UserInfoDrawerProps> = ({setIsUserDrawerActive, isUserD
 };
 
 interface NewNotificationModalProps {
-    isOpen : boolean
-    setIsOpen :  React.Dispatch<React.SetStateAction<boolean>>
-    setNotifications : React.Dispatch<React.SetStateAction<INotification[]>>
-    notifications : INotification[]
+    isOpen: boolean
+    setIsOpen: React.Dispatch<React.SetStateAction<boolean>>
+    setNotifications: React.Dispatch<React.SetStateAction<INotification[]>>
+    notifications: INotification[]
 }
-const NewNotificationModal:FC<NewNotificationModalProps> = ({isOpen, setIsOpen, setNotifications, notifications}) => {
+
+const NewNotificationModal: FC<NewNotificationModalProps> = ({
+                                                                 isOpen,
+                                                                 setIsOpen,
+                                                                 setNotifications,
+                                                                 notifications
+                                                             }) => {
     const [isLoading, setIsLoading] = useState<boolean>(false)
     const [text, setText] = useState<string>()
     const {jwt} = useContext(AuthContext)
@@ -204,9 +216,9 @@ const NewNotificationModal:FC<NewNotificationModalProps> = ({isOpen, setIsOpen, 
             console.log(message)
             console.log(text)
             setIsLoading(true)
-            let notif : INotification = {
-                text : text,
-                message : message.value
+            let notif: INotification = {
+                text: text,
+                message: message.value
             }
             console.log(notif)
             const {data, error} = await newNotification(notif, jwt)
@@ -231,7 +243,7 @@ const NewNotificationModal:FC<NewNotificationModalProps> = ({isOpen, setIsOpen, 
 
     return (
         <Modal open={isOpen}
-               okButtonProps={{loading : isLoading ? isLoading : false}}
+               okButtonProps={{loading: isLoading ? isLoading : false}}
                onOk={onSave}
                width={"50vw"}
                onCancel={() => setIsOpen(false)}
@@ -241,7 +253,9 @@ const NewNotificationModal:FC<NewNotificationModalProps> = ({isOpen, setIsOpen, 
                 <HtmlEditor val={text} onInit={(evt, editor) => {
                     editorRef.current = editor
                 }}
-                            onChange={(str) => {setText(str)}}
+                            onChange={(str) => {
+                                setText(str)
+                            }}
                 />
             </Flex>
         </Modal>
