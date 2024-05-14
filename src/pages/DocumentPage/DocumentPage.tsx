@@ -47,6 +47,7 @@ import {apiServerUrl} from "../../API/Constants";
 import {useTypedSelector} from "../../hooks/useTypedSelector";
 import {updateAdminMeta} from "../../API/services/UserService";
 import {useActions} from "../../hooks/useActions";
+import {checkPermission} from "../../API/Util";
 
 const {  Title } = Typography;
 const DocumentPage = () => {
@@ -170,9 +171,7 @@ const DocumentPage = () => {
 
 
     const updDocument = (name : string, document : IDocument) => {
-        console.log(document)
         if (document.documentGroup.id ===  Number(id)) {
-            console.log("eq doc id")
             const doc = docs.find((d) => d.id === document.id)
             if (doc) {
                 const i = docs.indexOf(doc)
@@ -181,7 +180,6 @@ const DocumentPage = () => {
                 setDocs([...docs])
             }
         } else {
-            console.log("else")
             let foundGroup = groups.find((e) => {
                 const elem = e.documents.find((d) => d.id === document.id)
                 return elem !== undefined
@@ -273,7 +271,7 @@ const DocumentPage = () => {
     }
 
     useEffect(() => {
-       if (adminMetadata) {
+       if (adminMetadata && checkPermission(jwt, "admin") ) {
            setIsTourModalOpen(adminMetadata.isShowModalTourWhenUserOnDocumentsPage)
        }
     }, [adminMetadata]);
@@ -471,7 +469,7 @@ const DocumentPage = () => {
                             />
                             <span>Шрифт</span>
                         </Flex>
-                        {isAuthenticated &&
+                        {checkPermission(jwt, "admin") &&
                             <Flex gap={3}>
                                 <AddNewGroupModal newGroupRef={newGroupRef}
                                                   addGroup={addNewSubGroup}
@@ -502,10 +500,16 @@ const DocumentPage = () => {
                 <Divider/>
 
 
-                <Flex ref={groupsRef} gap={10} vertical style={{maxWidth: 1600}}>
+                <Flex ref={groupsRef}
+                      gap={10} vertical
+                      style={{maxWidth: 1600}}
+                >
                     <Accordion defaultActiveKey={subGroupId}>
                         {groups.map((group, i) =>
-                            <Accordion.Item ref={i === 0 ? groupRef : null} key={group.id} eventKey={String(group.id)}>
+                            <Accordion.Item ref={i === 0 ? groupRef : null}
+                                            key={group.id}
+                                            eventKey={String(group.id)}
+                            >
                                 <Groups fileNameFontSize={fileNameFontSize}
                                         setNewName={setNewName}
                                         editGroupId={editGroupId}
@@ -560,14 +564,16 @@ const DocumentPage = () => {
                     <DocumentsViewer document={selectedDocument}/>
                 </Modal>
             }
-            <AddNewDocumentModal groupId={selectedGroupId}
-                                 isActive={isNewDocumentModalActive}
-                                 setIsActive={setIsNewDocumentModalActive}
-                                 setDoc={setDoc}
-                                 isTourActive={isAddDocTourActive}
-                                 setIsAddDocTourActive={setIsAddDocTourActive}
+            {checkPermission(jwt, "admin") &&
+                <AddNewDocumentModal groupId={selectedGroupId}
+                                     isActive={isNewDocumentModalActive}
+                                     setIsActive={setIsNewDocumentModalActive}
+                                     setDoc={setDoc}
+                                     isTourActive={isAddDocTourActive}
+                                     setIsAddDocTourActive={setIsAddDocTourActive}
 
-            />
+                />
+            }
         </Flex>
     );
 };

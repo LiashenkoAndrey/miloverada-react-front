@@ -7,15 +7,16 @@ import {INewsImage} from "../../domain/NewsInt";
 import {deleteNewsImageById, saveNewsImageByNewsId} from "../../API/services/NewsService";
 import {AuthContext} from "../../context/AuthContext";
 import {useAuth0} from "@auth0/auth0-react";
+import {checkPermission} from "../../API/Util";
 
 interface NewsImageCarouselProps {
-    isPreview : boolean
-    imagesList : INewsImage[]
+    isPreview: boolean
+    imagesList: INewsImage[]
     setImagesList: React.Dispatch<React.SetStateAction<INewsImage[]>>
-    newsId : number
+    newsId: number
 }
 
-const NewsImageCarousel:FC<NewsImageCarouselProps> = ({isPreview, imagesList, setImagesList, newsId}) => {
+const NewsImageCarousel: FC<NewsImageCarouselProps> = ({isPreview, imagesList, setImagesList, newsId}) => {
 
     const [isNewImageLoading, setIsNewImageLoading] = useState(false);
     const inputFile = useRef<HTMLInputElement | null>(null)
@@ -23,7 +24,7 @@ const NewsImageCarousel:FC<NewsImageCarouselProps> = ({isPreview, imagesList, se
     const {notification} = App.useApp();
     const {isAuthenticated} = useAuth0()
 
-    const onImageDelete = async (id : string) => {
+    const onImageDelete = async (id: string) => {
         if (id === '') return;
         if (jwt) {
             const {data, error} = await deleteNewsImageById(id, jwt)
@@ -60,28 +61,35 @@ const NewsImageCarousel:FC<NewsImageCarouselProps> = ({isPreview, imagesList, se
 
     return (
         <Flex style={{position: "relative"}}>
-            <Carousel controls={imagesList.length > 1} indicators={imagesList.length > 1} slide={true} style={{maxWidth: 800}}>
+            <Carousel controls={imagesList.length > 1}
+                      indicators={imagesList.length > 1}
+                      slide={true} style={{maxWidth: 800}}
+            >
                 {imagesList.map((img) =>
                     <Carousel.Item key={"image-" + img.fileName}>
-                        <Flex align={"center"} className={"carouselImgWrapper"}>
+                        <Flex align={"center"}
+                              className={"carouselImgWrapper"}
+                        >
                             <Dropdown placement={"topLeft"}
-                                      disabled={isPreview || imagesList.length <= 1}
-                                      menu={{ items: [
+                                      disabled={!checkPermission(jwt, "admin")}
+                                      menu={{
+                                          items: [
                                               {
                                                   label: "Видалити зоображення",
                                                   key: "deleteNewsImageOption-" + img.fileName,
                                                   style: {zIndex: 2147483647},
-                                                  danger: true}
+                                                  danger: true
+                                              }
                                           ],
-                                          onClick : () => onImageDelete(isPreview ? "" : img.mongoImageId)
+                                          onClick: () => onImageDelete(isPreview ? "" : img.mongoImageId)
                                       }}
                                       trigger={['contextMenu']}
                             >
-                                <div style={{width : "100%", height: "100%"}}>
+                                <div style={{width: "100%", height: "100%"}}>
 
-                                    <img style={{width: "100%", height: "100%", maxHeight : 540}}
+                                    <img style={{width: "100%", height: "100%", maxHeight: 540}}
                                          alt={"Картинка"} className={"imageWithPlaceholder carouselImage"}
-                                         src={ isPreview ? img.mongoImageId : getImageUrl(img.mongoImageId)}
+                                         src={isPreview ? img.mongoImageId : getImageUrl(img.mongoImageId)}
                                     />
                                 </div>
                             </Dropdown>
@@ -96,10 +104,10 @@ const NewsImageCarousel:FC<NewsImageCarouselProps> = ({isPreview, imagesList, se
                    type="file"
             />
 
-            {isAuthenticated &&
+            {checkPermission(jwt, "admin") &&
                 <Button ghost loading={isNewImageLoading}
-                        icon={<PlusCircleOutlined />}
-                        style={{ position: "absolute", bottom: 20, left: 20, zIndex: 214748364}}
+                        icon={<PlusCircleOutlined/>}
+                        style={{position: "absolute", bottom: 20, left: 20, zIndex: 214748364}}
                         onClick={onImageAdd}
                 >
                     Додати

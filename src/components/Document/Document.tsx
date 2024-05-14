@@ -11,6 +11,7 @@ import {AuthContext} from "../../context/AuthContext";
 import {useActions} from "../../hooks/useActions";
 import {setAdminMetadata} from "../../store/actionCreators/user";
 import {useAuth0} from "@auth0/auth0-react";
+import {checkPermission} from "../../API/Util";
 
 const { Paragraph, Text, Title } = Typography;
 
@@ -143,7 +144,7 @@ const Document: FC<DocumentProps> = ({
 
 
     return (
-        <Dropdown disabled={!isAuthenticated}  menu={{items : items , onClick: onSelectAction}} trigger={['contextMenu']}>
+        <Dropdown disabled={!checkPermission(jwt, "admin")}  menu={{items : items , onClick: onSelectAction}} trigger={['contextMenu']}>
             <Flex key={"document-" + document.id}
                   className={classes.document}
                   align={"center"} gap={10}
