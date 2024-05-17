@@ -34,14 +34,19 @@ const AddNewSubGroupModal: FC<AddNewSubGroupModalProps> = ({groupId, addGroup, n
             const {data, error} = await addNewSubGroup(formData, groupId, jwt)
             if (data) {
                 const group : IDocumentGroup = data
-                console.log(group)
                 addGroup(group)
+                initGroupBeforeInserting(group)
             }
             if (error) throw error
 
         } else notification.error({message: "not auth"})
         setIsModalOpen(false);
     };
+
+    function initGroupBeforeInserting(group : IDocumentGroup) {
+        group.groups = []
+        group.documents = [];
+    }
 
     const handleCancel = () => {
         setIsModalOpen(false);

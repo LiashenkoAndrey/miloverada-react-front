@@ -34,6 +34,7 @@ import NewsComments from "../../components/NewsComments/NewsComments";
 import NewsNewCommentInput from "../../components/NewsNewCommentInput/NewsNewCommentInput";
 import {getImageUrl} from "../../API/services/ImageService";
 import {NOT_AUTH_MSG} from "../../API/Util";
+import {setNewsComments} from "../../store/actionCreators/newsComments";
 
 const {  Title } = Typography;
 interface NewsPageProps {
@@ -72,6 +73,7 @@ const NewsPage : FC<NewsPageProps> = ({isPreview}) => {
     const getSimilarOrLatest = async () => {
         const {data, error} = await getSimilarNews(Number(id))
         if (data) {
+
             if (data.length > 0) {
                 setAdditionalNews(data)
             } else {
@@ -84,7 +86,7 @@ const NewsPage : FC<NewsPageProps> = ({isPreview}) => {
     const getLatest = async () => {
         const {data, error} = await getLatestNews(3)
         if (data) {
-            setAdditionalNews(data)
+            setAdditionalNews(data.news)
         } else throw error
     }
 
@@ -110,6 +112,7 @@ const NewsPage : FC<NewsPageProps> = ({isPreview}) => {
             getNews()
             document.getElementById("newsTop")?.scrollIntoView({block: "start", behavior: "smooth"})
             if (id !== undefined) {
+
                 getNews();
                 getSimilarOrLatest()
 
@@ -311,7 +314,7 @@ const NewsPage : FC<NewsPageProps> = ({isPreview}) => {
                 }
 
                 <Flex justify={"space-between"} wrap={"wrap"} gap={20}>
-                    <Button onClick={() => nav("/newsFeed")} size={"large"} style={{fontSize: 18, height:"fit-content"}}>Новини громади</Button>
+                    <Button onClick={() => nav("/newsFeed/all")} size={"large"} style={{fontSize: 18, height:"fit-content"}}>Новини громади</Button>
 
                     <Flex wrap={"wrap"} gap={10}>
                         <ShareAltOutlined onClick={() => navigator.share({url: "https://developer.mozilla.org/en-US/docs/Web/API/Navigator/share"})} className={"contact"} style={{fontSize: 40, cursor: "pointer"}} />
@@ -327,7 +330,10 @@ const NewsPage : FC<NewsPageProps> = ({isPreview}) => {
 
                 <Flex justify={"center"} wrap={"wrap"} gap={20}>
                     {additionalNews.map((n) =>
-                        <NewsCard  className={[mainPageClasses.wideNewsCard, newsCardClasses.wideNewsCard].join(' ')} news={n} key={"newsCa-" + n.id}/>
+                        <NewsCard  className={[mainPageClasses.wideNewsCard, newsCardClasses.wideNewsCard].join(' ')}
+                                   news={n}
+                                   key={"newsCa-" + n.id}
+                        />
                     )}
                 </Flex>
             </Flex>

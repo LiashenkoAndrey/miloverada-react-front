@@ -1,13 +1,13 @@
 import {apiServerUrl} from "../Constants";
 import {callAndGetResult} from "./ExternalApiService";
-import {IEmployee} from "./ContactsService";
+import {IContact} from "../../pages/ContactsPage/ContactsPage";
 
 export interface IInstitution {
     id : number
     title : string
     iconUrl : string
     document_group : IDocumentGroup[]
-    employee_list : IEmployee[]
+    employee_list : IContact[]
 }
 
 
