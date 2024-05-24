@@ -1,18 +1,19 @@
 import React, {useContext, useEffect, useState} from 'react';
 import classes from './Header.module.css'
-import {Button, Drawer, Dropdown, Flex, Image, MenuProps, notification, Skeleton, Space, Tooltip} from "antd";
+import {Badge, Dropdown, Flex, MenuProps, Space, Tooltip} from "antd";
 // @ts-ignore
 import icon from '../../assets/icon.png'
 import {useLocation, useNavigate} from "react-router-dom";
-import MobileNav from "./MobileNav";
 import {MenuOutlined, UserOutlined} from "@ant-design/icons";
 import {useAuth0} from "@auth0/auth0-react";
 import {AuthContext} from "../../context/AuthContext";
 import {useTypedSelector} from "../../hooks/useTypedSelector";
-import {getUserById, updateAdminMeta} from "../../API/services/UserService";
+import {getUserById} from "../../API/services/UserService";
 import {AppUser} from "../../API/services/forum/ForumInterfaces";
 import {useActions} from "../../hooks/useActions";
-import {setUser} from "../../store/actionCreators/user";
+import {UserInfoDrawer} from "./UserInfoDrawer/UserInfoDrawer";
+import {getTotalNumberOfNotifications} from "../../API/services/NotificationService";
+import {checkPermission} from "../../API/Util";
 
 export interface HeaderOption {
     onClick : () => void
@@ -22,23 +23,34 @@ export interface HeaderOption {
 const Header = () => {
     const nav  = useNavigate()
     const { pathname } = useLocation();
-    const {loginWithRedirect, isAuthenticated, user, logout } = useAuth0()
+    const {loginWithRedirect, user} = useAuth0()
     const {jwt} = useContext(AuthContext)
-    const {appUser, adminMetadata} = useTypedSelector(state => state.user)
-    const {setUser} = useActions()
-    const {setAdminMetadata} = useActions()
+    const {appUser, unreadNotificationNumber} = useTypedSelector(state => state.user)
+    const {setUser, setNotificationNumber} = useActions()
+    const [isUserDrawerActive, setIsUserDrawerActive] = useState<boolean>(false)
+
+    useEffect(() => {
+        const getNotificationsNumber = async () => {
+            if (jwt && user?.sub) {
+                const {data, error} = await getTotalNumberOfNotifications(encodeURIComponent(user?.sub),jwt)
+                if (data) {
+                    setNotificationNumber(data)
+                }
+                if (error) console.log("error when load notific")
+            } else console.error("not auth")
+        }
+        getNotificationsNumber();
+    }, [jwt]);
 
     useEffect( () => {
         const getUser =  async (id : string, jwt : string) => {
             const {data} = await getUserById(encodeURI(id), jwt)
-            console.log(data)
             const gotUser : AppUser = data
             setUser(gotUser)
         }
         if (jwt) {
             if (appUser === undefined) {
                 if (user?.sub) {
-                    console.log(user.sub)
                     getUser(user.sub, jwt)
                 }
             }
@@ -65,26 +77,20 @@ const Header = () => {
             },
         })
     }
-    const onLogout = () => {
-        logout({
-            logoutParams : {
-                returnTo : window.location.origin
-            }
-        })
-    }
 
     const userIcon =
-        isAuthenticated
+        jwt
             ?
-            <Flex onClick={() => setIsUserDrawerActive(true)}
+            <Flex  onClick={() => setIsUserDrawerActive(true)}
                   align={"center"}
                   vertical
                   className={classes.headNavItem}
-                  style={{ background: "none"}}
+                  style={{position:"relative", top: "4px",padding: "10px 10px 0px 10px"}}
             >
-                <img src={user?.picture} height={30} alt=""/>
+                <Badge size={"small"} count={checkPermission(jwt, "admin") ? unreadNotificationNumber : 0}>
+                    <img style={{borderRadius: 10}} src={user?.picture} height={30} alt=""/>
+                </Badge>
                 <span style={{color: "white"}}>{user?.firstName}</span>
-                {/*<Button ghost danger onClick={onLogout} >Вийти</Button>*/}
             </Flex>
             :
             <Flex align={"center"} onClick={onLogin} gap={10} className={classes.headNavItem} style={{paddingLeft: 10}}>
@@ -108,36 +114,12 @@ const Header = () => {
         return arr;
     }
 
-    const [isLoading, setIsLoading] = useState<boolean>(false)
-
-    const onClearMetadata = async () => {
-        if (adminMetadata && jwt) {
-
-            adminMetadata.isShowConfirmWhenDeleteDocument = true
-            adminMetadata.isShowModalTourWhenUserOnDocumentsPage = true
-            adminMetadata.isDocumentsPageTourCompleted = false
-            setIsLoading(true)
-            const {data, error} = await updateAdminMeta(adminMetadata,  jwt)
-            setIsLoading(false)
-
-            if (data) {
-                notification.success({message: "Метаданні успішно очищені"})
-            }
-            setAdminMetadata(adminMetadata)
-            if (error) console.error(error);
-        }
-    }
-
-    const [isUserDrawerActive, setIsUserDrawerActive] = useState<boolean>(false)
-
     if ( pathname.includes("forum")) {
         return (
             <>
             </>
         )
     }
-
-
 
     return (
         <Flex justify={"center"}
@@ -159,46 +141,9 @@ const Header = () => {
                     <img className={classes.logo} src={icon} width={50} alt={"Герб України"}/>
                 </Flex>
 
-                <Drawer title="Мій профіль"
-                        onClose={() => setIsUserDrawerActive(false)}
-                        open={isUserDrawerActive}
-                >
-                    <Flex vertical
-                          style={{height: "100%"}}
-                          justify={"space-between"}
-                          gap={40}
-                    >
-
-                        <Flex gap={10} vertical>
-
-                            <Flex gap={10}>
-                                <Image src={user?.picture}/>
-                                <Flex vertical>
-                                    <span>{user?.name}</span>
-                                    <span>{user?.email}</span>
-                                </Flex>
-                            </Flex>
-                            <Button onClick={onLogout}
-                                    style={{width: "fit-content"}}
-                                    type={"primary"}
-                            >Вийти</Button>
-                        </Flex>
-
-
-
-                        <Flex vertical gap={5} >
-                            <Button style={{width: "fit-content"}}
-                                    onClick={onClearMetadata}
-                                    loading={isLoading}
-                            >Очистити метадані</Button>
-                            <Button disabled
-                                    style={{width: "fit-content"}}
-                                    danger
-                            >Видалити профіль</Button>
-                        </Flex>
-                    </Flex>
-                </Drawer>
-
+                <UserInfoDrawer isUserDrawerActive={isUserDrawerActive}
+                                setIsUserDrawerActive={setIsUserDrawerActive}
+                />
 
                 <Flex wrap={"wrap"}
                       justify={"center"}
@@ -212,7 +157,6 @@ const Header = () => {
                     )}
                     {userIcon}
                 </Flex>
-
 
                 <Flex wrap={"wrap"}
                       justify={"center"}

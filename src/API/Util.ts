@@ -54,7 +54,7 @@ export function toDateShort(date : Array<string>) {
     return new Date(date.toString()).toLocaleString().split(",")[0]
 }
 
-export function toDateV2(date : string) {
+export function toDateV2(date : string ) {
     const t = date.split("T")
     return t[0]
 }
@@ -128,15 +128,16 @@ export const getBase642 = (blob : Blob, cb : Function) => {
     };
 }
 
-export const checkPermission = (token : string, permission : string) => {
-    if (token !== null) {
-        const  payload = jwtDecode(token);
+interface JwtPayload {
+    permissions : string[]
+    scope : string
+    sub : string
+}
 
-        console.log("payload", payload)
-
-        // @ts-ignore
-        const  has = jwtDecode(token).permissions.indexOf(permission) !== -1
-        return has;
+export const checkPermission = (token : string | undefined, permission : string) => {
+    if (token !== undefined) {
+        const  payload : JwtPayload = jwtDecode(token);
+        return payload.permissions.includes(permission);
     } else {
         return false
     }

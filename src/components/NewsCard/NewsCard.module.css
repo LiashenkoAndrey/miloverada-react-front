@@ -1,6 +1,7 @@
 
 
 .newsCard {
+    transition: width 300ms;
     user-select: none;
     overflow: hidden;
     cursor: pointer;

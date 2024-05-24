@@ -33,15 +33,16 @@ import NewsImageCarousel from "./NewsImageCarousel";
 import NewsComments from "../../components/NewsComments/NewsComments";
 import NewsNewCommentInput from "../../components/NewsNewCommentInput/NewsNewCommentInput";
 import {getImageUrl} from "../../API/services/ImageService";
-import {NOT_AUTH_MSG} from "../../API/Util";
+import {checkPermission, NOT_AUTH_MSG} from "../../API/Util";
 import {setNewsComments} from "../../store/actionCreators/newsComments";
 
-const {  Title } = Typography;
+const {Title} = Typography;
+
 interface NewsPageProps {
-    isPreview : boolean
+    isPreview: boolean
 }
 
-const NewsPage : FC<NewsPageProps> = ({isPreview}) => {
+const NewsPage: FC<NewsPageProps> = ({isPreview}) => {
 
     const {preview} = useTypedSelector(state => state.newsPreview)
 
@@ -61,7 +62,7 @@ const NewsPage : FC<NewsPageProps> = ({isPreview}) => {
     const getNews = async () => {
         const {data, error} = await getNewsById(Number(id))
         if (data) {
-            const news : INews = data
+            const news: INews = data
             setNews(news)
             setImagesList(news.images ? news.images : [])
             setDescription(news.description)
@@ -90,16 +91,24 @@ const NewsPage : FC<NewsPageProps> = ({isPreview}) => {
         } else throw error
     }
 
-    const incrementViews = async (id : number) => {
+    const incrementViews = async (id: number) => {
         const {error} = await incrementNewsViews(id);
         if (error) throw error
     }
 
     useEffect(() => {
         if (isPreview) {
-            const additionalNews : INews[]= []
+            const additionalNews: INews[] = []
             for (let i = 0; i < 3; i++) {
-                additionalNews.push({main_text : "test", commentsAmount: 1, description : "Отимано автромобіль Volkswagen Kombi для Качкарівського ЦПМСД", id : i, newsType : {title:  "Допомога громаді", id: i, titleExplanation: "d"}, views: 100, images : [{mongoImageId: "64be864fd388a05bd4608ee2", newsId: i, id : i, fileName: "untitled"}]})
+                additionalNews.push({
+                    main_text: "test",
+                    commentsAmount: 1,
+                    description: "Отимано автромобіль Volkswagen Kombi для Качкарівського ЦПМСД",
+                    id: i,
+                    newsType: {title: "Допомога громаді", id: i, titleExplanation: "d"},
+                    views: 100,
+                    images: [{mongoImageId: "64be864fd388a05bd4608ee2", newsId: i, id: i, fileName: "untitled"}]
+                })
             }
             setAdditionalNews(additionalNews)
             setNews(preview)
@@ -144,8 +153,6 @@ const NewsPage : FC<NewsPageProps> = ({isPreview}) => {
     }
 
 
-
-
     const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
     const [confirmLoading, setConfirmLoading] = useState(false);
     const [description, setDescription] = useState<string>()
@@ -154,7 +161,7 @@ const NewsPage : FC<NewsPageProps> = ({isPreview}) => {
     const [isHasChanges, setIsHasChanges] = useState<boolean>(false)
 
     useEffect(() => {
-        if (date !== news?.dateOfPublication  || description !== news?.description || text !== news?.main_text) {
+        if (date !== news?.dateOfPublication || description !== news?.description || text !== news?.main_text) {
             setIsHasChanges(true)
         } else {
             setIsHasChanges(false)
@@ -162,7 +169,7 @@ const NewsPage : FC<NewsPageProps> = ({isPreview}) => {
     }, [date, text, description]);
 
 
-    const onDateChanged = (e : string) => {
+    const onDateChanged = (e: string) => {
         const time = news?.dateOfPublication?.split("T")[1]
         const res = e + "T" + time
         setDate(res)
@@ -175,13 +182,16 @@ const NewsPage : FC<NewsPageProps> = ({isPreview}) => {
             formData.append("text", text)
             formData.append("dateOfPublication", date)
 
-            const {data ,error} = await updateNewsById(Number(id), formData, jwt)
+            const {data, error} = await updateNewsById(Number(id), formData, jwt)
             if (data) {
                 setIsHasChanges(false)
                 notification.success({message: "Зміни збережено", duration: 1})
             }
             if (error) {
-                notification.error({message: "Виникла помилка при збереженні змін, будь ласка, спробуйте ще раз aбо зверніться до підтримки.", duration : 5})
+                notification.error({
+                    message: "Виникла помилка при збереженні змін, будь ласка, спробуйте ще раз aбо зверніться до підтримки.",
+                    duration: 5
+                })
                 throw error
             }
         }
@@ -195,37 +205,64 @@ const NewsPage : FC<NewsPageProps> = ({isPreview}) => {
     }
 
     return (
-        <Flex  justify={"center"}>
-            {isHasChanges &&
-                <Tooltip title="Ви маєте незбережені зміни, клікніть на кнопку щоб зберегти зміни." trigger="click" defaultOpen>
+        <Flex justify={"center"}>
+            {(isHasChanges && checkPermission(jwt, "admin")) &&
+                <Tooltip title="Ви маєте незбережені зміни, клікніть на кнопку щоб зберегти зміни." trigger="click"
+                         defaultOpen>
                     <FloatButton.Group shape="square" style={{right: 94}}>
                         <FloatButton onClick={saveChanges} type={"primary"} icon={<CheckOutlined/>}/>
-                        <FloatButton onClick={removeChanges} icon={<CloseOutlined  />}/>
+                        <FloatButton onClick={removeChanges} icon={<CloseOutlined/>}/>
                     </FloatButton.Group>
                 </Tooltip>
             }
-            <Flex vertical={true} justify={"center"} className={"newsPage"} >
-
-
+            <Flex vertical={true}
+                  justify={"center"}
+                  className={"newsPage"}
+            >
                 {!isPreview &&
-                    <Flex id={"newsTop"} justify={"space-between"}>
-                        <Flex vertical={false} align={"center"}  gap={5} style={{marginBottom: 20}}>
-                            <Button onClick={() => nav(-1)} style={{maxWidth: 150}} icon={<LeftOutlined />} type={"text"}>Назад</Button>
+                    <Flex id={"newsTop"}
+                          justify={"space-between"}
+                    >
+                        <Flex vertical={false}
+                              align={"center"}
+                              gap={5}
+                              style={{marginBottom: 20}}
+                        >
+                            <Button onClick={() => nav(-1)}
+                                    style={{maxWidth: 150}}
+                                    icon={<LeftOutlined/>}
+                                    type={"text"}>
+                                Назад
+                            </Button>
                             <Breadcrumb>
-                                <Breadcrumb.Item><Button onClick={() => nav("/")} type={"text"} size={"small"}>Головна</Button> </Breadcrumb.Item>
-                                <Breadcrumb.Item><Button onClick={() => nav("/newsFeed/all")}  type={"text"} size={"small"}>Новини</Button> </Breadcrumb.Item>
+                                <Breadcrumb.Item>
+                                    <Button onClick={() => nav("/")}
+                                            type={"text"}
+                                            size={"small"}
+                                    >Головна
+                                    </Button>
+                                </Breadcrumb.Item>
+                                <Breadcrumb.Item>
+                                    <Button onClick={() => nav("/newsFeed/all")}
+                                            type={"text"}
+                                            size={"small"}
+                                    >Новини
+                                    </Button>
+                                </Breadcrumb.Item>
                             </Breadcrumb>
                         </Flex>
-                        {isAuthenticated &&
+                        {checkPermission(jwt, "admin") &&
                             <Popconfirm
                                 title="Видалити"
                                 description="Ви впевнені? Дія незворотня."
                                 open={deleteConfirmOpen}
                                 onConfirm={onDelete}
-                                okButtonProps={{ loading: confirmLoading }}
+                                okButtonProps={{loading: confirmLoading}}
                                 onCancel={() => setDeleteConfirmOpen(false)}
                             >
-                                <Button type="primary" onClick={() => setDeleteConfirmOpen(true)}>
+                                <Button type="primary"
+                                        onClick={() => setDeleteConfirmOpen(true)}
+                                >
                                     Видалити
                                 </Button>
                             </Popconfirm>
@@ -234,8 +271,7 @@ const NewsPage : FC<NewsPageProps> = ({isPreview}) => {
                 }
 
 
-
-                {isAuthenticated && date && !isPreview
+                {(isAuthenticated && date && !isPreview && checkPermission(jwt, "admin"))
                     ?
                     <Title level={5}
                            style={{width: "fit-content"}}
@@ -249,7 +285,7 @@ const NewsPage : FC<NewsPageProps> = ({isPreview}) => {
                     <h6 className={"newsData"}>{news?.dateOfPublication?.split("T")[0]}</h6>
                 }
 
-                {isAuthenticated && !isPreview
+                {(isAuthenticated && !isPreview && checkPermission(jwt, "admin"))
                     ?
 
                     <Title className={"newsTitle"}
@@ -266,13 +302,17 @@ const NewsPage : FC<NewsPageProps> = ({isPreview}) => {
                 <Flex gap={20} wrap={"wrap"}>
                     <div style={{alignSelf: "flex-start"}}>
                         <Row style={{marginBottom: 10}}>
-                            <Col><ShareAltOutlined className={"contact"} style={{fontSize: 31, marginRight: 5, cursor: "pointer"}}/></Col>
-                            <Col><TwitterOutlined className={"contact"} style={{fontSize: 31, cursor: "pointer"}}/></Col>
+                            <Col><ShareAltOutlined className={"contact"}
+                                                   style={{fontSize: 31, marginRight: 5, cursor: "pointer"}}/></Col>
+                            <Col><TwitterOutlined className={"contact"}
+                                                  style={{fontSize: 31, cursor: "pointer"}}/></Col>
                         </Row>
                         <Row>
-                            <Col><InstagramFilled className={"contact"} style={{fontSize: 31, marginRight: 5, cursor: "pointer"}}/></Col>
+                            <Col><InstagramFilled className={"contact"}
+                                                  style={{fontSize: 31, marginRight: 5, cursor: "pointer"}}/></Col>
                             <Col>
-                                <a target={"_blank"} style={{color: "#343434"}} href="https://www.facebook.com/groups/2511266795585575">
+                                <a target={"_blank"} style={{color: "#343434"}}
+                                   href="https://www.facebook.com/groups/2511266795585575">
                                     <FacebookOutlined className={"contact"} style={{fontSize: 31, cursor: "pointer"}}/>
                                 </a>
                             </Col>
@@ -281,8 +321,8 @@ const NewsPage : FC<NewsPageProps> = ({isPreview}) => {
 
                     {news?.image_id &&
                         <Image
-                            style={{width: "100%", height: "100%", maxHeight : 540}}
-                      className={"imageWithPlaceholder carouselImage"}
+                            style={{width: "100%", height: "100%", maxHeight: 540}}
+                            className={"imageWithPlaceholder carouselImage"}
                             src={getImageUrl(news.image_id)} alt={news.description}/>
 
                     }
@@ -294,7 +334,7 @@ const NewsPage : FC<NewsPageProps> = ({isPreview}) => {
                     />
                 </Flex>
 
-                {isAuthenticated && !isPreview
+                {(isAuthenticated && !isPreview && checkPermission(jwt, "admin"))
                     ?
                     <EditMainTextModal setText={setText} text={text}/>
                     :
@@ -313,15 +353,34 @@ const NewsPage : FC<NewsPageProps> = ({isPreview}) => {
                     </Flex>
                 }
 
-                <Flex justify={"space-between"} wrap={"wrap"} gap={20}>
-                    <Button onClick={() => nav("/newsFeed/all")} size={"large"} style={{fontSize: 18, height:"fit-content"}}>Новини громади</Button>
+                <Flex justify={"space-between"}
+                      wrap={"wrap"}
+                      gap={20}
+                >
+                    <Button onClick={() => nav("/newsFeed/all")}
+                            size={"large"}
+                            style={{fontSize: 18, height: "fit-content"}}
+                    >Новини громади
+                    </Button>
 
                     <Flex wrap={"wrap"} gap={10}>
-                        <ShareAltOutlined onClick={() => navigator.share({url: "https://developer.mozilla.org/en-US/docs/Web/API/Navigator/share"})} className={"contact"} style={{fontSize: 40, cursor: "pointer"}} />
-                        <TwitterOutlined className={"contact"} style={{fontSize: 40, cursor: "pointer"}} />
-                        <InstagramFilled className={"contact"} style={{fontSize: 40, cursor: "pointer"}} />
-                        <a target={"_blank"} style={{color: "#343434"}} href="https://www.facebook.com/groups/2511266795585575">
-                            <FacebookOutlined className={"contact"} style={{fontSize: 40, cursor: "pointer"}}/>
+                        <ShareAltOutlined
+                            onClick={() => navigator.share({url: "https://developer.mozilla.org/en-US/docs/Web/API/Navigator/share"})}
+                            className={"contact"} style={{fontSize: 40, cursor: "pointer"}}
+                        />
+                        <TwitterOutlined className={"contact"}
+                                         style={{fontSize: 40, cursor: "pointer"}}
+                        />
+                        <InstagramFilled className={"contact"}
+                                         style={{fontSize: 40, cursor: "pointer"}}
+                        />
+                        <a target={"_blank"}
+                           style={{color: "#343434"}}
+                           href="https://www.facebook.com/groups/2511266795585575"
+                        >
+                            <FacebookOutlined className={"contact"}
+                                              style={{fontSize: 40, cursor: "pointer"}}
+                            />
                         </a>
                     </Flex>
                 </Flex>
@@ -330,9 +389,9 @@ const NewsPage : FC<NewsPageProps> = ({isPreview}) => {
 
                 <Flex justify={"center"} wrap={"wrap"} gap={20}>
                     {additionalNews.map((n) =>
-                        <NewsCard  className={[mainPageClasses.wideNewsCard, newsCardClasses.wideNewsCard].join(' ')}
-                                   news={n}
-                                   key={"newsCa-" + n.id}
+                        <NewsCard className={[mainPageClasses.wideNewsCard, newsCardClasses.wideNewsCard].join(' ')}
+                                  news={n}
+                                  key={"newsCa-" + n.id}
                         />
                     )}
                 </Flex>
