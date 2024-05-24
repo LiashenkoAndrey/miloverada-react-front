@@ -36,14 +36,12 @@ const Header = () => {
             setUser(gotUser)
         }
         if (jwt) {
-            console.log("is auth jwt")
             if (appUser === undefined) {
                 if (user?.sub) {
                     console.log(user.sub)
                     getUser(user.sub, jwt)
                 }
             }
-            console.log(user)
         }
     }, [jwt]);
 
@@ -53,8 +51,8 @@ const Header = () => {
         {onClick : () => {
 
             }, title : <Tooltip title={"Незабаром буде доступно :)"}>Форум</Tooltip>},
-        {onClick : () => nav("/"), title : "Управління"},
-        {onClick : () => nav("/institutions"), title : "Установи"},
+        // {onClick : () => nav("/"), title : "Управління"},
+        // {onClick : () => nav("/institutions"), title : "Установи"},
         {onClick : () => nav("/contacts"), title : "Контакти"},
     ]
     const onLogin = async () => {
@@ -152,6 +150,7 @@ const Header = () => {
             <Flex className={"IContainer"}
                   justify={"space-between"}
                   align={"center"}
+                  gap={5}
             >
                 <Flex onClick={() => nav("/")}
                       className={"nonSelect"}
@@ -219,7 +218,12 @@ const Header = () => {
                       justify={"center"}
                       className={[classes.mobileNavBtnWrapper, "nonSelect"].join(' ')}
                 >
-                    <Dropdown menu={{items: items()}}
+                    <Dropdown menu={{items: items(),  className: classes.menuItems}}
+
+                              getPopupContainer={(triggerNode) => {
+                                  triggerNode.classList.add(classes.dropdown)
+                                  return triggerNode;
+                              }}
                               trigger={['click']}
                     >
                         <Space>

@@ -64,7 +64,7 @@ const DocumentPage = () => {
     const [editGroupId, setEditGroupId] = useState<number>()
     const [isNewDocumentModalActive, setIsNewDocumentModalActive] = useState<boolean>(false)
     const [newName, setNewName] = useState<string>()
-    const {adminMetadata, appUser} = useTypedSelector(state => state.user)
+    const {adminMetadata} = useTypedSelector(state => state.user)
     const {setAdminMetadata} = useActions()
 
     const handleOk = () => {
@@ -170,8 +170,9 @@ const DocumentPage = () => {
 
 
     const updDocument = (name : string, document : IDocument) => {
-
+        console.log(document)
         if (document.documentGroup.id ===  Number(id)) {
+            console.log("eq doc id")
             const doc = docs.find((d) => d.id === document.id)
             if (doc) {
                 const i = docs.indexOf(doc)
@@ -180,16 +181,16 @@ const DocumentPage = () => {
                 setDocs([...docs])
             }
         } else {
+            console.log("else")
             let foundGroup = groups.find((e) => {
                 const elem = e.documents.find((d) => d.id === document.id)
                 return elem !== undefined
             });
-
             if (foundGroup) {
                 const doc = foundGroup.documents.find((d) => d.id === document.id)
                 if (doc) {
                     const i = foundGroup.documents.indexOf(doc)
-                    doc.name = name
+                    doc.title = name
                     foundGroup.documents[i] = doc
                     groups[groups.indexOf(foundGroup)] = foundGroup
                     setGroups([...groups])
@@ -231,11 +232,12 @@ const DocumentPage = () => {
         } else notification.error({message: "not auth"})
     }
 
-
+    const [isUpdated, setIsUpdated] = useState<boolean>(false)
 
     useEffect(  () => {
         if (newName && editGroupId) {
             updateGroupName(newName, editGroupId, editSubGroupNameCallback)
+            setIsUpdated(true)
         }
     }, [ newName]);
 
@@ -250,7 +252,6 @@ const DocumentPage = () => {
         </a> ,
         <Button key={"showDocFooterBtn-2"} type={"primary"} onClick={handleCancel}>Заразд</Button>
     ]
-
 
 
     const addNewSubGroup = async (subGroup : IDocumentGroup) => {
@@ -441,19 +442,22 @@ const DocumentPage = () => {
                 <BackBtn/>
 
                 <Flex style={{padding: 5}} justify={"space-between"} align={"center"} wrap={"wrap"} gap={5}>
-                    {documentGroup
-                        ?
-                        <Title ref={mainGroupRef} style={{margin: 0, flexGrow: 1}}
-                                   editable={{
+                    <div style={{flexGrow : 1}}>
+
+                        {documentGroup
+                            ?
+                            <Title ref={mainGroupRef} style={{margin: 0, width: "fit-content", cursor: isAuthenticated ? "pointer" : 'initial', userSelect: "none"}}
+                                   editable={isAuthenticated ? {
                                        triggerType : ['text'],
-                                       icon: <CopyFilled style={{display: "none"}}/>,
+                                       icon: null,
                                        onChange: (str: string) => setNewGroupName(str)
-                                   }}
-                        >{documentGroup.name}
-                        </Title>
-                        :
-                        <Skeleton style={{height: 20}}/>
-                    }
+                                   } : false}
+                            >{documentGroup.name}
+                            </Title>
+                            :
+                            <Skeleton style={{height: 20}}/>
+                        }
+                    </div>
                     <Flex wrap={"wrap"} gap={15} align={"center"}>
 
                         <Flex ref={fontRef} gap={5} align={"center"}>
@@ -501,12 +505,15 @@ const DocumentPage = () => {
                 <Flex ref={groupsRef} gap={10} vertical style={{maxWidth: 1600}}>
                     <Accordion defaultActiveKey={subGroupId}>
                         {groups.map((group, i) =>
-                            <Accordion.Item ref={i === 0 ? groupRef : null}  key={group.id} eventKey={String(group.id)}>
-                                 <Groups fileNameFontSize={fileNameFontSize}
+                            <Accordion.Item ref={i === 0 ? groupRef : null} key={group.id} eventKey={String(group.id)}>
+                                <Groups fileNameFontSize={fileNameFontSize}
                                         setNewName={setNewName}
                                         editGroupId={editGroupId}
                                         onSelectAction={onSelectAction}
                                         group={group}
+                                        isUpdated={isUpdated}
+                                        setIsUpdated={setIsUpdated}
+
                                 />
 
                                 <Accordion.Body>

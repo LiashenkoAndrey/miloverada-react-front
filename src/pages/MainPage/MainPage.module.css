@@ -32,7 +32,7 @@
 .whiteNewsCard {
     width: 100%;
     /*max-width: 350px;*/
-    max-height: 340px!important;
+    max-height: 350px!important;
 }
 
 .wideNewsCard {
@@ -42,7 +42,7 @@
 }
 
 .NewsWrapper {
-    max-width: 70vw;
+    max-width: 99vw;
     padding: 20px 0;
     width: 100%;
 }
@@ -50,16 +50,14 @@
 
 
 .NewsAndBanners {
-    gap: 40px;
+    width: 100%;
     padding: 10px;
-    display: flex;
-    justify-content: center;
 }
 
 .gridNewsPageList {
     display: grid;
-    gap: 20px;
-    grid-template-columns: 44% 28% 28%;
+    gap: 5px;
+    grid-template-columns: 2fr 1fr 1fr;
 }
 @media (max-width: 1280px)  {
     .gridNewsPageList {
@@ -68,9 +66,10 @@
 }
 
 .NewsListWrapperWithTitle {
+    width: 100vw;
     background-color: #f4f4f4;
     padding-top: 30px;
-    flex-grow: 1;
+    /*flex-grow: 1;*/
 
 }
 
@@ -87,18 +86,12 @@
         /*grid-template-columns: 1fr;*/
     }
 
-    .NewsWrapper {
-        max-width: initial;
-    }
 }
 
 @media (max-width: 500px)  {
-    .MainPageNewsList {
-        max-width: initial;
-    }
 
     .whiteNewsCard , .wideNewsCard{
-        margin: 0 10px;
+        /*margin: 0 10px;*/
         width: 100%;
     }
     .whiteNewsCard img {

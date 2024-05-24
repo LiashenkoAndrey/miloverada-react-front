@@ -1,8 +1,9 @@
-import React, {FC, useState} from 'react';
+import React, {FC, useEffect, useState} from 'react';
 import {Accordion} from "react-bootstrap";
 import {Dropdown, MenuProps, Typography} from "antd";
 import {IDocumentGroup} from "../../API/services/InstitutionService";
 import {DeleteOutlined, EditOutlined, PlusCircleOutlined} from "@ant-design/icons";
+import {useAuth0} from "@auth0/auth0-react";
 
 const { Paragraph } = Typography;
 
@@ -12,6 +13,8 @@ interface GroupsProps {
     editGroupId : number | undefined
     setNewName :  React.Dispatch<React.SetStateAction<string | undefined>>
     group : IDocumentGroup
+    setIsUpdated: React.Dispatch<React.SetStateAction<boolean>>
+    isUpdated : boolean
 }
 
 const Groups: FC<GroupsProps> = ({
@@ -19,10 +22,18 @@ const Groups: FC<GroupsProps> = ({
                                      setNewName,
                                      fileNameFontSize,
                                      onSelectAction,
+    isUpdated, setIsUpdated,
                                      group,
                                  }) => {
-
+    const {isAuthenticated} = useAuth0()
     const [isEditing, setIsEditing] = useState(group.id === editGroupId)
+
+    useEffect(() => {
+        if  (isUpdated && group.id === editGroupId) {
+            setIsEditing(false)
+            setIsUpdated(false)
+        }
+    }, [isUpdated, editGroupId]);
 
     function getItems(id: number) {
         const items: MenuProps['items'] = [
@@ -52,7 +63,6 @@ const Groups: FC<GroupsProps> = ({
         const groupId = values[1]
 
         if (action === 'editName') {
-            console.log("edit", groupId)
             setIsEditing(true)
         }
 
@@ -63,6 +73,7 @@ const Groups: FC<GroupsProps> = ({
     return (
         <Dropdown menu={{items: getItems(group.id), onClick: (e) => onAction(e.key)}}
                   trigger={['contextMenu']}
+                  disabled={!isAuthenticated}
         >
 
             <Accordion.Header>

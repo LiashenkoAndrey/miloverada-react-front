@@ -13,6 +13,8 @@
 }
 
 .wrapper2 {
+    transition: max-width 300ms;
+    /*transition: width 300ms;*/
     max-width: 90vw;
 }
 
@@ -44,6 +46,7 @@
     max-height: initial!important;
     width: 800px;
     height: 700px!important;
+    transition: width 300ms;
 }
 
 .WideNewsCard .newsCardContent {
@@ -55,7 +58,32 @@
 .WideNewsCard img {
 }
 
+@media (max-width: 1500px) {
+    .WideNewsCard {
+        width: 700px
+    }
+}
 
+@media (max-width: 1250px) {
+    .WideNewsCard {
+        width: 550px
+    }
+}
+@media (max-width: 1100px) {
+    .WideNewsCard {
+        width: 450px
+    }
+}
+@media (max-width: 890px) {
+    .WideNewsCard {
+        width: 350px
+    }
+}
+@media (max-width: 780px) {
+    .WideNewsCard {
+        width: 100%
+    }
+}
 
 .topNewsList {
     display: grid;
@@ -70,7 +98,8 @@
         width: 100%;
     }
 }
-@media (max-width: 1100px) {
+
+@media (max-width: 780px) {
 
     .topNewsList {
         grid-template-columns: 1fr 1fr 1fr;
@@ -79,6 +108,11 @@
     .topNewsListWrapper {
         flex-wrap: wrap;
     }
+}
+
+@media (max-width: 1100px) {
+
+
 
     .bottomNewsList {
         gap: 10px;
@@ -88,6 +122,13 @@
 
 .topNewsListWrapper {
     gap: 40px;
+}
+
+@media (max-width: 1000px) {
+
+    .wrapper2 {
+        padding: 3px !important;
+    }
 }
 
 @media (max-width: 780px) {
@@ -122,9 +163,9 @@
 
 
 .AllNewsPageBottomCard {
-
+    margin: 5px;
     min-height: 300px;
-    min-width: 300px;
+    /*min-width: 300px;*/
     border-bottom-right-radius: 5px;
     border-bottom-left-radius: 5px;
     background-color: #E9EAEC;
