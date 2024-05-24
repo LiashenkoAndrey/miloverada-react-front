@@ -150,6 +150,7 @@ const Header = () => {
             <Flex className={"IContainer"}
                   justify={"space-between"}
                   align={"center"}
+                  gap={5}
             >
                 <Flex onClick={() => nav("/")}
                       className={"nonSelect"}
@@ -217,7 +218,7 @@ const Header = () => {
                       justify={"center"}
                       className={[classes.mobileNavBtnWrapper, "nonSelect"].join(' ')}
                 >
-                    <Dropdown menu={{items: items()}}
+                    <Dropdown menu={{items: items(),  className: classes.menuItems}}
 
                               getPopupContainer={(triggerNode) => {
                                   triggerNode.classList.add(classes.dropdown)

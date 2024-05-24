@@ -42,9 +42,9 @@ const MainPage = () => {
                     </h1>
 
                     <RedButton onClick={() => nav("/about")}
-                               style={{marginTop: 20, width: "fit-content"}}
+                               style={{marginTop: 20}}
                     >
-                        <span style={{width: "fit-content"}}>Про громаду</span>
+                        <span >Про громаду</span>
                     </RedButton>
                 </Flex>
 
@@ -56,8 +56,8 @@ const MainPage = () => {
                               align={"center"}
                               className={classes.NewsListWrapperWithTitle}
                         >
-                            <h1 style={{fontSize: "3.0517578125em", marginBottom: 0, userSelect: "none"}}>Новини громади</h1>
-                            <p style={{fontSize: 28, fontWeight: 400, padding: 10, userSelect: "none"}}>
+                            <h1 style={{fontSize: "3.0517578125em", marginBottom: 0, userSelect: "none", textAlign : "center"}}>Новини громади</h1>
+                            <p style={{fontSize: 28, fontWeight: 400, padding: 10, userSelect: "none",  textAlign : "center"}}>
                                 Останні події громади, інновації
                             </p>
                             {news === undefined

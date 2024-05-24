@@ -3,7 +3,7 @@ import {INews, INewsDto} from "../../domain/NewsInt";
 import {getImageUrl} from "../../API/services/ImageService";
 // @ts-ignore
 import {useNavigate} from "react-router-dom";
-import {CommentOutlined, EyeOutlined, MessageOutlined} from "@ant-design/icons";
+import {EyeOutlined, MessageOutlined} from "@ant-design/icons";
 import classes from './NewsCard.module.css'
 import {Flex, Skeleton} from "antd";
 
@@ -16,10 +16,6 @@ interface NewsCardProps {
 const NewsCard: FC<NewsCardProps> = ({news, style, className}) => {
     const nav = useNavigate()
     const newsImage = news.image_id ? news.image_id : news.images && news.images[0]
-
-
-
-
 
 
     return (
@@ -36,12 +32,15 @@ const NewsCard: FC<NewsCardProps> = ({news, style, className}) => {
             />
             <div className={classes.newsCardContent}>
                 <span className={classes.newsType}>{news.newsType?.title}</span>
-                <p className={classes.newsCardDescriptionWrapper}  style={{margin: news.description.length > 60 ? "0px 10px 22px 10px" : "0px 10px 10px 10px", display: "block"}}>
-                    <span  className={classes.newsCardDescription}>
+                <p className={classes.newsCardDescriptionWrapper} style={{
+                    margin: news.description ? news.description.length > 60 ? "0px 10px 22px 10px" : "0px 10px 10px 10px" : "0px 10px 10px 10px",
+                    display: "block"
+                }}>
+                    <span className={classes.newsCardDescription}>
 
                         {news.description
                             ?
-                            <span  >{news.description}</span>
+                            <span>{news.description}</span>
                             :
                             <Skeleton/>
                         }
@@ -67,7 +66,7 @@ const NewsCard: FC<NewsCardProps> = ({news, style, className}) => {
                             {news.commentsAmount > 0 &&
                                 <>
                                     <MessageOutlined className={classes.eye + " eye"}
-                                                 style={{fontSize: 16}}
+                                                     style={{fontSize: 16}}
                                     />
                                     <span className={classes.eye}
                                           style={{fontSize: 16, height: "fit-content"}}

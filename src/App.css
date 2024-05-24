@@ -27,7 +27,12 @@
 }
 
 
+html {
 
+
+    scrollbar-width: thin;          /* "auto" or "thin" */
+    scrollbar-color: #50516e rgba(255, 165, 0, 0);   /* scroll thumb and track */
+}
 .imageWithPlaceholder {
     text-align: center;
     line-height: 30px;
@@ -36,14 +41,33 @@
     background-size: 80%;
 }
 
+@media (max-width: 800px) {
+    .redBtn {
+        font-size: 24px!important;
+        width: 95vw!important;
+    }
+}
+
+@media (max-width: 300px) {
+    .redBtn {
+        font-size: 21px!important;
+        width: 95vw!important;
+    }
+}
+
+@media (min-width: 800px) {
+    .redBtn {
+        width: 100%;
+        max-width: 400px;
+
+    }
+}
 
 .redBtn {
-    width: fit-content;
     border: 0;
     color: white;
     font-size: 28px;
     height: fit-content;
-    padding: 3px 4em;
     font-family: 'Source Serif 4', serif;;
 }
 

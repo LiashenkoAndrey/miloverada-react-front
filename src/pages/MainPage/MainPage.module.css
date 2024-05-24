@@ -42,7 +42,7 @@
 }
 
 .NewsWrapper {
-    max-width: 95vw;
+    max-width: 99vw;
     padding: 20px 0;
     width: 100%;
 }
@@ -56,8 +56,8 @@
 
 .gridNewsPageList {
     display: grid;
-    gap: 20px;
-    grid-template-columns: 44% 28% 28%;
+    gap: 5px;
+    grid-template-columns: 2fr 1fr 1fr;
 }
 @media (max-width: 1280px)  {
     .gridNewsPageList {
@@ -66,6 +66,7 @@
 }
 
 .NewsListWrapperWithTitle {
+    width: 100vw;
     background-color: #f4f4f4;
     padding-top: 30px;
     /*flex-grow: 1;*/

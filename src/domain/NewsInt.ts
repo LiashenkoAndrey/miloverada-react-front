@@ -2,7 +2,7 @@ import {NewsType} from "../API/services/NewsService";
 
 export interface INews {
     id?: number,
-    description : string,
+    description? : string,
     dateOfPublication? : string,
     main_text? : string,
     image_id? : string
@@ -19,7 +19,7 @@ export interface IImage {
 
 export interface INewsDto {
     id?: number,
-    description : string,
+    description? : string,
     dateOfPublication? : string,
     newsType? : NewsType
     image_id? : string
