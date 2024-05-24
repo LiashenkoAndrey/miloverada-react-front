@@ -218,6 +218,11 @@ const Header = () => {
                       className={[classes.mobileNavBtnWrapper, "nonSelect"].join(' ')}
                 >
                     <Dropdown menu={{items: items()}}
+
+                              getPopupContainer={(triggerNode) => {
+                                  triggerNode.classList.add(classes.dropdown)
+                                  return triggerNode;
+                              }}
                               trigger={['click']}
                     >
                         <Space>

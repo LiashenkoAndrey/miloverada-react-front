@@ -6,6 +6,9 @@
     font-family: 'Open Sans', sans-serif;
     color: white;
 }
+.dropdown {
+    background-color: red;
+}
 
 .headNavItem {
     padding: 10px 10px;

@@ -103,8 +103,6 @@ function App() {
                       colorPrimary: '#71092C',
                       borderRadius: 2,
 
-                      // Alias Token
-                      colorBgContainer: '#ffffff',
                   },
                   components : {
                       Input : {

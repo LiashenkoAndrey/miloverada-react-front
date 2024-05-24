@@ -18,6 +18,10 @@ const NewsCard: FC<NewsCardProps> = ({news, style, className}) => {
     const newsImage = news.image_id ? news.image_id : news.images && news.images[0]
 
 
+
+
+
+
     return (
         <Flex vertical
               onClick={() => nav("/newsFeed/" + news.id)}
@@ -32,12 +36,12 @@ const NewsCard: FC<NewsCardProps> = ({news, style, className}) => {
             />
             <div className={classes.newsCardContent}>
                 <span className={classes.newsType}>{news.newsType?.title}</span>
-                <p style={{margin: "5px 10px 10px 10px", display: "block"}}>
-                    <span className={classes.newsCardDescription}>
+                <p className={classes.newsCardDescriptionWrapper}  style={{margin: news.description.length > 60 ? "0px 10px 22px 10px" : "0px 10px 10px 10px", display: "block"}}>
+                    <span  className={classes.newsCardDescription}>
 
                         {news.description
                             ?
-                            <span>{news.description}</span>
+                            <span  >{news.description}</span>
                             :
                             <Skeleton/>
                         }

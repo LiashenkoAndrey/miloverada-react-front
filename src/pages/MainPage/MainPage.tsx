@@ -41,13 +41,17 @@ const MainPage = () => {
                         поспілкуватся на форумі та багато іншого...
                     </h1>
 
-                    <RedButton onClick={() => nav("/about")} style={{marginTop: 20, width: "fit-content"}}>
-                        <span  style={{width: "fit-content"}}>Про громаду</span>
+                    <RedButton onClick={() => nav("/about")}
+                               style={{marginTop: 20, width: "fit-content"}}
+                    >
+                        <span style={{width: "fit-content"}}>Про громаду</span>
                     </RedButton>
                 </Flex>
 
 
-                <div style={{width: "100%"}} className={classes.NewsAndBanners}>
+                <Flex justify={"center"}
+                      className={classes.NewsAndBanners}
+                >
                         <Flex vertical={true}
                               align={"center"}
                               className={classes.NewsListWrapperWithTitle}
@@ -68,8 +72,9 @@ const MainPage = () => {
                                 Більше новин громади
                             </RedButton>
                         </Flex>
-                        <BannersList/>
-                </div>
+
+                        {/*<BannersList/>*/}
+                </Flex>
             </Flex>
         </div>
     );
