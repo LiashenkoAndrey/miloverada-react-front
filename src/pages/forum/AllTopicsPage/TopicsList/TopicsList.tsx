@@ -1,10 +1,9 @@
 import React, {FC, useEffect, useState} from 'react';
-import {Avatar, Button, Empty, Flex, List, Skeleton} from "antd";
-import {Topic} from "../../../../API/services/forum/ForumInterfaces";
-import {createSearchParams, useNavigate} from "react-router-dom";
+import {Button, Flex, List} from "antd";
+import {createSearchParams, useLocation, useNavigate} from "react-router-dom";
 import classes from './TopicList.module.css'
 import {getAllTopics} from "../../../../API/services/forum/TopicService";
-import {MessageOutlined, PlusOutlined, UserOutlined} from "@ant-design/icons";
+import {PlusOutlined, UserOutlined} from "@ant-design/icons";
 import NewChatModal from '../../../../components/NewChatModal';
 import ChatImage from "../../../../components/ChatImage/ChatImage";
 import {useTypedSelector} from "../../../../hooks/useTypedSelector";
@@ -20,6 +19,7 @@ export type TopicInfo = {
 
 
 const TopicsList: FC<TopicsListProps> = () => {
+    const {pathname} = useLocation();
     const {topics} = useTypedSelector(state => state.forum)
     const nav = useNavigate();
     const {isAuthenticated} = useAuth0()
@@ -54,6 +54,10 @@ const TopicsList: FC<TopicsListProps> = () => {
         setIsNewChatModalOpen(true)
     }
 
+    useEffect(() => {
+        console.log(pathname.includes("chat"))
+    }, []);
+
     return (
         <Flex vertical className={classes.topicWrapper}>
             {topics?.length > 0
@@ -62,7 +66,7 @@ const TopicsList: FC<TopicsListProps> = () => {
                     <Flex style={{padding: "10px 10px", marginBottom: 10, backgroundColor: "rgba(255,255,255,0.07)"}}
                           vertical>
                         <Flex style={{paddingBottom: 5}} gap={10}>
-                            {isAuthenticated &&
+                            {(isAuthenticated && !pathname.includes("chat")) &&
                                 <Button onClick={() => onChatCreateBtnClick(topic.id, topic.name)}
                                         ghost
                                         style={{padding: 5}}

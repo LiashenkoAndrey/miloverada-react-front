@@ -15,17 +15,18 @@ import PostLike from "../PostLike/PostLike";
 import PostComments from "../PostComments/PostComments";
 
 interface PostProps {
-    post : IPost
+    post: IPost
 }
 
 
-
-const Post:FC<PostProps> = ({post}) => {
+const Post: FC<PostProps> = ({post}) => {
 
     return (
         <Flex vertical gap={10} style={{maxWidth: 600, maxHeight: 700}}>
-
-            <Flex align={"center"} gap={5}>
+            <Flex style={{userSelect: "none"}}
+                  align={"center"}
+                  gap={5}
+            >
                 <Image height={40}
                        width={40}
                        className={"imageWithPlaceholder"}
@@ -35,9 +36,8 @@ const Post:FC<PostProps> = ({post}) => {
                 <span style={{color: "white"}}>{post.author.nickname}</span>
             </Flex>
             <Flex vertical>
-                <Image placeholder={
+                <Image style={{userSelect: "none"}} placeholder={
                     <img className={classes.image2}
-                         onError={(e) => console.log("post img err", e)}
                          src={placeholder}
                          alt="placeholder"
                     />
@@ -47,10 +47,10 @@ const Post:FC<PostProps> = ({post}) => {
                 />
                 <Flex vertical style={{color: "white"}}>
                     <span>{post.text}</span>
-                    <span>{toDateV2(post.createdOn)}</span>
+                    <span style={{userSelect: "none"}}>{toDateV2(post.createdOn)}</span>
                 </Flex>
                 <Flex className={classes.buttons} align={"center"} gap={10}>
-                    <PostLike post={post} />
+                    <PostLike post={post}/>
 
                     {/*<PostComments post={post}/>*/}
                 </Flex>
