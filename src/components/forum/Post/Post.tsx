@@ -26,12 +26,21 @@ const Post:FC<PostProps> = ({post}) => {
         <Flex vertical gap={10} style={{maxWidth: 600, maxHeight: 700}}>
 
             <Flex align={"center"} gap={5}>
-                <Image height={40} style={{borderRadius: 20}} src={post.author.avatar.includes("http") ? post.author.avatar : getImageV2Url(post.author.avatar)}/>
+                <Image height={40}
+                       width={40}
+                       className={"imageWithPlaceholder"}
+                       style={{borderRadius: 20}}
+                       src={post.author.avatar.includes("http") ? post.author.avatar : getImageV2Url(post.author.avatar)}
+                />
                 <span style={{color: "white"}}>{post.author.nickname}</span>
             </Flex>
             <Flex vertical>
                 <Image placeholder={
-                    <img className={classes.image2} src={placeholder} alt="placeholder"/>
+                    <img className={classes.image2}
+                         onError={(e) => console.log("post img err", e)}
+                         src={placeholder}
+                         alt="placeholder"
+                    />
                 }
                        className={classes.image}
                        src={getImageV2Url(post.imageId)}
@@ -43,7 +52,7 @@ const Post:FC<PostProps> = ({post}) => {
                 <Flex className={classes.buttons} align={"center"} gap={10}>
                     <PostLike post={post} />
 
-                    <PostComments post={post}/>
+                    {/*<PostComments post={post}/>*/}
                 </Flex>
             </Flex>
 

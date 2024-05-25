@@ -23,7 +23,7 @@ interface NewStoryModalProps {
 const NewStoryModal:FC<NewStoryModalProps> = ({isOpen, setIsOpen}) => {
     const [text, setText] = useState<string>('')
     const [imagesFiles, setImagesFiles] = useState<File[]>([])
-    const [newsImages, setNewsImages] = useState<IImage[]>([])
+    const [images, setImages] = useState<IImage[]>([])
     const inputFile = useRef<HTMLInputElement | null>(null)
     const [isLoading, setIsLoading] = useState<boolean>(false)
     const {jwt} = useContext(AuthContext)
@@ -43,7 +43,10 @@ const NewStoryModal:FC<NewStoryModalProps> = ({isOpen, setIsOpen}) => {
             if (data) {
                 console.log(data)
                 setIsOpen(false)
-                setStories([...stories, data])
+                setText('')
+                setImages([])
+                setImagesFiles([])
+                setStories([data, ...stories])
             }
             if (error) throw error
         } else notification.warning({message : "not auth"})
@@ -72,14 +75,14 @@ const NewStoryModal:FC<NewStoryModalProps> = ({isOpen, setIsOpen}) => {
                     }
                     arr.push(img)
                     if (i === fileList.length-1) {
-                        setNewsImages([...newsImages, ...arr])
+                        setImages([...images, ...arr])
                     }
                 })
             }
         }
     }
     const onRemove = (img: IImage) => {
-        setNewsImages(newsImages.filter((e) => e.base64Image !== img.base64Image))
+        setImages(images.filter((e) => e.base64Image !== img.base64Image))
         setImagesFiles(imagesFiles.filter((file) => file.name !== img.fileName))
     }
 
@@ -109,7 +112,7 @@ const NewStoryModal:FC<NewStoryModalProps> = ({isOpen, setIsOpen}) => {
                       style={{flexGrow: 1}}
                 >
                     {imagesFiles.length > 0 ?
-                        newsImages.map((img) =>
+                        images.map((img) =>
                             <div style={{position: "relative"}} className={classes2.imgWrapper}>
                                 <Image className={classes2.image}
                                        src={img.base64Image}

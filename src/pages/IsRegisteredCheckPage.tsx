@@ -21,7 +21,7 @@ const IsRegisteredCheckPage = () => {
 
     useEffect(() => {
         if (jwt && user) {
-            const saveUser = async (base64Avatar : string, avatarContentType : string) => {
+            const saveUser = async (base64Avatar? : string, avatarContentType? : string) => {
                 if (user.sub && user.picture) {
                     const newUserObj : NewUserDto = {
                         firstName : user.given_name,
@@ -32,12 +32,16 @@ const IsRegisteredCheckPage = () => {
                         avatarBase64Image :  base64Avatar,
                         avatarUrl : user.picture
                     }
+                    console.log("user dto to save: ", newUserObj)
                     const {data, error} = await newUser(newUserObj, jwt);
                     if (data) {
-                        console.log(data)
+                        console.log("User saved successfully",data)
                         nav(String(searchParams.get("redirectTo")))
                     }
-                    if (error) throw error
+                    if (error) {
+                        console.log("An error occupied during saving of user. Try again.")
+                        console.error(error)
+                    }
                 } else console.error("user data null")
             }
 
@@ -53,6 +57,7 @@ const IsRegisteredCheckPage = () => {
                     }
                     if (error) {
                         console.log("can't load user avatar")
+                        saveUser()
                     }
                 }
             }
@@ -68,21 +73,25 @@ const IsRegisteredCheckPage = () => {
                         console.log("JUST USER")
                     }
 
-
+                    console.log("Send request to check if reg")
                     const {data, error} = await userIsRegistered(user.sub, isAdmin, jwt);
+                    console.log("Responce: ", data)
 
                     if (data) {
                         const userDto : UserDto = data
                         console.log(userDto)
                         if (userDto.isRegistered) {
+                            console.log("userIsRegistered")
 
                             if (userDto.adminMetadata) {
                                 setAdminMetadata(userDto.adminMetadata)
                             }
                             setUser(userDto.appUser)
-                            console.log("userIsRegistered")
                             nav(String(searchParams.get("redirectTo")))
                         } else {
+                            console.log("user not reg")
+
+
                             getAvatarAndThenSaveUser()
                         }
                     }

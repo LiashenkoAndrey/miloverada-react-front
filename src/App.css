@@ -33,6 +33,7 @@ html {
     scrollbar-width: thin;          /* "auto" or "thin" */
     scrollbar-color: #50516e rgba(255, 165, 0, 0);   /* scroll thumb and track */
 }
+
 .imageWithPlaceholder {
     text-align: center;
     line-height: 30px;

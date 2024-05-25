@@ -9,19 +9,22 @@ import NewChatModal from '../../../../components/NewChatModal';
 import ChatImage from "../../../../components/ChatImage/ChatImage";
 import {useTypedSelector} from "../../../../hooks/useTypedSelector";
 import {useActions} from "../../../../hooks/useActions";
+import {useAuth0} from "@auth0/auth0-react";
 
 interface TopicsListProps {
 }
 
-export type TopicInfo ={
-    topicId? : number, topicName? : string
+export type TopicInfo = {
+    topicId?: number, topicName?: string
 }
 
 
 const TopicsList: FC<TopicsListProps> = () => {
     const {topics} = useTypedSelector(state => state.forum)
     const nav = useNavigate();
+    const {isAuthenticated} = useAuth0()
     const {setTopics} = useActions()
+
     const getTopics = async () => {
         const {data, error} = await getAllTopics();
         if (data) {
@@ -44,7 +47,7 @@ const TopicsList: FC<TopicsListProps> = () => {
     const [isNewChatModalOpen, setIsNewChatModalOpen] = useState<boolean>(false)
     const [topicInfo, setTopicInfo] = useState<TopicInfo>({})
 
-    const onChatCreateBtnClick = (topicId? : number, name? : string) => {
+    const onChatCreateBtnClick = (topicId?: number, name?: string) => {
         topicInfo.topicId = topicId
         topicInfo.topicName = name
         setTopicInfo(topicInfo)
@@ -56,9 +59,16 @@ const TopicsList: FC<TopicsListProps> = () => {
             {topics?.length > 0
                 ?
                 topics.map((topic) =>
-                    <Flex style={{padding: "10px 10px", marginBottom : 10, backgroundColor : "rgba(255,255,255,0.07)"}} vertical>
+                    <Flex style={{padding: "10px 10px", marginBottom: 10, backgroundColor: "rgba(255,255,255,0.07)"}}
+                          vertical>
                         <Flex style={{paddingBottom: 5}} gap={10}>
-                            <Button onClick={() => onChatCreateBtnClick(topic.id, topic.name)} ghost icon={<PlusOutlined/>}/>
+                            {isAuthenticated &&
+                                <Button onClick={() => onChatCreateBtnClick(topic.id, topic.name)}
+                                        ghost
+                                        style={{padding: 5}}
+                                        icon={<PlusOutlined/>}
+                                />
+                            }
 
                             <span className={classes.topicName} style={{color: "#B1B8BEFF"}}>
                                 {topic.name} {topic.description}
@@ -85,27 +95,26 @@ const TopicsList: FC<TopicsListProps> = () => {
                                               description={<span className={classes.chatDesc}>{chat.description}</span>}
                                           />
 
-                                          <span className={classes.messagesAmount}>{chat.totalMessagesAmount} повід. <UserOutlined /> 3</span>
+                                          {chat.totalMessagesAmount > 0 &&
+                                              <span className={classes.messagesAmount}>
+                                                  {chat.totalMessagesAmount} повід. <UserOutlined/> {chat.totalMembersAmount}
+                                              </span>
+                                          }
                                       </List.Item>
                                   )}
                             />
                         }
 
                     </Flex>
-
-
                 )
                 :
                 <Flex
-                      vertical
-                      gap={4}
-                      className={classes.topicPlaceholderWrapper}
+                    vertical
+                    gap={4}
+                    className={classes.topicPlaceholderWrapper}
                 >
-                    <p>Жодної теми для обговорення ще стоворили</p>
+                    <p>Жодної теми для обговорення ще не стоворили</p>
                     <p>Станьте першими!</p>
-                    <div>
-                        <Button style={{width: 'fit-content'}}>Нова тема</Button>
-                    </div>
                 </Flex>
             }
             <NewChatModal isOpen={isNewChatModalOpen} setIsOpen={setIsNewChatModalOpen} topicInfo={topicInfo}/>

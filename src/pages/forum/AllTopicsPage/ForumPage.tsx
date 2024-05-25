@@ -1,16 +1,15 @@
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import {ConfigProvider, Flex} from "antd";
 import {useAuth0} from "@auth0/auth0-react";
-import NewTopic from "../../../components/NewTopic";
 import ForumNavbar from "../../../components/ForumNavbar/ForumNavbar";
-import classes from './AllForumTopicsPage.module.css'
+import classes from './ForumPage.module.css'
 import {getActiveUsersAmount} from "../../../API/services/forum/UserService";
 import ContentList from "./ContentList/ContentList";
 
-const AllForumTopicsPage = () => {
+const ForumPage = () => {
 
     const [activeUsersAmount, setActiveUsersAmount] = useState<number>()
-    const {isAuthenticated } = useAuth0()
+    const {isAuthenticated} = useAuth0()
 
     const getUsersAmount = async () => {
         const {data, error} = await getActiveUsersAmount();
@@ -20,37 +19,32 @@ const AllForumTopicsPage = () => {
         if (error) throw error;
     }
 
-    useEffect(() => {
-        getUsersAmount()
-    }, []);
+    // useEffect(() => {
+    // getUsersAmount()
+    // }, []);
 
 
     return (
-        <ConfigProvider  theme={{
-            token : {
+        <ConfigProvider theme={{
+            token: {
                 colorPrimary: '#191a24',
             },
             components: {
                 Segmented: {
-                    itemSelectedBg : "rgba(94,94,107,0.46)",
+                    itemSelectedBg: "rgba(94,94,107,0.46)",
                 }
             }
         }}>
             <Flex wrap={"wrap"}
                   align={"flex-start"}
                   justify={"center"}
-                  className={[classes.wrapper,  classes.forumBg].join(' ')}
+                  className={[classes.wrapper, classes.forumBg].join(' ')}
             >
                 <Flex
-                      className={classes.pageWrapper}
-                      gap={10}
+                    className={classes.pageWrapper}
+                    gap={10}
                 >
-                    <ForumNavbar>
-                        {/*<Flex vertical>*/}
-                        {/*    <span  style={{color: "black", fontSize: 20, marginBottom: 5}}>Теми</span>*/}
-                        {/*    <NewTopic isAuth={isAuthenticated}/>*/}
-                        {/*</Flex>*/}
-                    </ForumNavbar>
+                    <ForumNavbar/>
                     <ContentList/>
 
                 </Flex>
@@ -60,4 +54,4 @@ const AllForumTopicsPage = () => {
     );
 };
 
-export default AllForumTopicsPage;
+export default ForumPage;

@@ -14,15 +14,17 @@ import {
 // @ts-ignore
 import helloGif from '../../../assets/hello.gif'
 import {setSelectedMessages} from "../../../store/actionCreators/chat";
+import {toDate, toDateShort, toDateV2} from "../../../API/Util";
 
 
 interface MessageListProps {
     saveLastReadMessageId(messageId: number): void
-    onEditMessage : (message : Message) => void
-    editMessage? : Message
-    onReplyMessage : (message : Message) => void
-    replyMessage? : Message
-    onDeleteMessage : (messageId : number) => void
+
+    onEditMessage: (message: Message) => void
+    editMessage?: Message
+    onReplyMessage: (message: Message) => void
+    replyMessage?: Message
+    onDeleteMessage: (messageId: number) => void
 }
 
 const MessageList: FC<MessageListProps> = ({
@@ -35,10 +37,26 @@ const MessageList: FC<MessageListProps> = ({
                                            }) => {
 
     const {isAuthenticated} = useAuth0()
-    const {messages, chatId, hasPreviousMessages, hasNextMessages, unreadMessagesCount, lastReadMessageId, selectedMessages, isSelectionEnabled} = useTypedSelector(state => state.chat)
+    const {
+        messages,
+        chatId,
+        hasPreviousMessages,
+        hasNextMessages,
+        unreadMessagesCount,
+        lastReadMessageId,
+        selectedMessages,
+        isSelectionEnabled,
+        chatInfo
+    } = useTypedSelector(state => state.chat)
     const [newSeenMessageId, setNewSeenMessageId] = useState<number>()
     const [oldSeenMsgID, setOldSeenMsgID] = useState<number>()
-    const {fetchPreviousMessages, fetchNextMessages, setUnreadMessagesCount, setLastReadMessageId, setIsSelectionEnabled} = useActions()
+    const {
+        fetchPreviousMessages,
+        fetchNextMessages,
+        setUnreadMessagesCount,
+        setLastReadMessageId,
+        setIsSelectionEnabled
+    } = useActions()
 
     useEffect(() => {
         if (newSeenMessageId === undefined) {
@@ -68,7 +86,6 @@ const MessageList: FC<MessageListProps> = ({
     const readMessagesObserver = new IntersectionObserver(onNewMessageSeen)
 
 
-
     const decrementCount = () => {
         if (unreadMessagesCount) {
             const lastReadMessageIdIndex = getIndexOfMessage(lastReadMessageId)
@@ -95,7 +112,7 @@ const MessageList: FC<MessageListProps> = ({
     }, [newSeenMessageId]);
 
 
-    const loadPreviousMessagesObserverCallback : IntersectionObserverCallback = (entries, observer) => {
+    const loadPreviousMessagesObserverCallback: IntersectionObserverCallback = (entries, observer) => {
         const element = entries[0]
         if (element.isIntersecting) {
             fetchPreviousMessages(chatId, messages)
@@ -103,7 +120,7 @@ const MessageList: FC<MessageListProps> = ({
         }
     };
 
-    const loadNextMessagesObserverCallback : IntersectionObserverCallback = (entries, observer) => {
+    const loadNextMessagesObserverCallback: IntersectionObserverCallback = (entries, observer) => {
         const element = entries[0]
         if (element.isIntersecting) {
             fetchNextMessages(chatId, messages)
@@ -141,29 +158,36 @@ const MessageList: FC<MessageListProps> = ({
     }, [selectedMessages]);
     return (
         <Flex id={"msgWrapper"} className={classes.messagesWrapper} vertical={true}>
+            <Flex justify={"center"} style={{userSelect: "none"}}>
+                <Flex className={classes.chatCreatedOnWrapper}>
+                    <span className={classes.chatCreatedOn}>ЧАТ СТВОРЕНО {chatInfo && chatInfo.createdOn &&  toDateShort(chatInfo.createdOn)}</span>
+                </Flex>
+            </Flex>
             {messages.length > 0
                 ?
                 messages.map((msg, index) =>
-                        <MessageListItem
-                            index={index}
-                            onDeleteMessage={onDeleteMessage}
-                            onEditMessage={onEditMessage}
-                            replyMessage={replyMessage}
-                            onReplyMessage={onReplyMessage}
-                            observer={readMessagesObserver}
-                            key={"msg-" + msg.id}
-                            message={msg}
-                            editMessage={editMessage}
-                        />
+                    <MessageListItem
+                        index={index}
+                        onDeleteMessage={onDeleteMessage}
+                        onEditMessage={onEditMessage}
+                        replyMessage={replyMessage}
+                        onReplyMessage={onReplyMessage}
+                        observer={readMessagesObserver}
+                        key={"msg-" + msg.id}
+                        message={msg}
+                        editMessage={editMessage}
+                    />
                 )
                 :
-                <Flex justify={"center"}>
-                    <Empty image={<img src={helloGif} alt=""/>} style={{marginTop: "5vh"}} description={<span style={{color :"white", fontSize: 16}}>Поки немає обрговорень. Почніть першим)!</span>}/>
+                <Flex justify={"center"} style={{userSelect: "none"}}>
+                    <Empty image={<img src={helloGif} alt=""/>} style={{marginTop: "5vh"}}
+                           description={<span style={{color: "white", fontSize: 16}}>Поки немає обговорень. Почніть першим)!</span>}/>
 
                 </Flex>
             }
 
-            <div style={{float: "left", clear: "both", marginBottom: isSelectionEnabled ? 60 : 20}} id={"chatBottom"}></div>
+            <div style={{float: "left", clear: "both", marginBottom: isSelectionEnabled ? 60 : 20}}
+                 id={"chatBottom"}></div>
         </Flex>
     );
 };

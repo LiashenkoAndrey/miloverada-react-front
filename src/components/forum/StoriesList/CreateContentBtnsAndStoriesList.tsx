@@ -9,6 +9,7 @@ import {
     ZoomOutOutlined,
 } from "@ant-design/icons";
 import classes from './StoriesList.module.css'
+import createContentBtnsClasses from './CreateContentBtns.module.css'
 import NewStoryModal from "../NewStoryModal";
 import {getImageV2Url} from "../../../API/services/ImageService";
 import NewPostModal from "../NewPostModal";
@@ -62,7 +63,7 @@ const CreateContentBtnsAndStoriesList:FC<StoriesListProps> = ({isPost, isTopic})
 
             <Flex gap={5}>
                 {(isAuthenticated && !location.pathname.includes("chat")) &&
-                    <Flex className={classes.btn}
+                    <Flex className={createContentBtnsClasses.btn}
                           onClick={onNewStory}>
                         <PlusCircleTwoTone twoToneColor={"#191a24"} style={{fontSize: 30}}/>
                         <span>Ваша історія </span>
@@ -71,7 +72,7 @@ const CreateContentBtnsAndStoriesList:FC<StoriesListProps> = ({isPost, isTopic})
 
 
                 {(isPost && isAuthenticated && !location.pathname.includes("chat")) &&
-                    <Flex className={classes.btn}
+                    <Flex className={createContentBtnsClasses.btn}
                           onClick={onNewPost}>
                         <PlusCircleTwoTone twoToneColor={"#191a24"} style={{fontSize: 30}}/>
                         <span>Новий пост </span>
@@ -80,7 +81,7 @@ const CreateContentBtnsAndStoriesList:FC<StoriesListProps> = ({isPost, isTopic})
 
 
                 {(isTopic && isAuthenticated && !location.pathname.includes("chat")) &&
-                    <Flex className={classes.btn}
+                    <Flex className={createContentBtnsClasses.btn}
                           onClick={onNewTopic}>
                         <PlusCircleTwoTone twoToneColor={"#191a24"} style={{fontSize: 30}}/>
                         <span>Нова тема </span>
@@ -118,7 +119,10 @@ const CreateContentBtnsAndStoriesList:FC<StoriesListProps> = ({isPost, isTopic})
                     <Flex style={{width: "100%", position: "relative"}}>
                         <Flex gap={9} className={classes.storyList} >
                             {stories.map((e) =>
-                                    <Flex style={{minWidth: 90}} key={"story-" + e.id} vertical>
+                                    <Flex  style={{minWidth: 90, userSelect: "none"}}
+                                           key={"story-" + e.id}
+                                           vertical
+                                    >
                                         <Image
                                             height={60}
                                             className={classes.storyImg}

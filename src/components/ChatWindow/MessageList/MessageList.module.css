@@ -9,7 +9,23 @@
     width: 100%;
 
 }
+.chatCreatedOnWrapper {
+    background-color: #8D5B4C57;
+    position: relative;
+    width: fit-content;
+    padding: 0 10px 3px 10px;
+    color: #FFF;
+    border-radius: 11px;
+    font-family: 'Libre Baskerville', serif;
+}
+.chatCreatedOn {
+    font-size: 16px;
+    white-space: pre-wrap;
+    color: #FFF;
+    font-weight: 400;
+    margin-top: 3px;
 
+}
 
 .messagesWrapper::-webkit-scrollbar-thumb {
     background-color: rgba(108, 108, 108, 0.62);    /* color of the scroll thumb */

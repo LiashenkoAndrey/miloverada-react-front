@@ -1,0 +1,20 @@
+.btn {
+    flex-direction: row;
+    align-items: center;
+    gap: 2px;
+    transition: left 0.5s, right 2s, background-color 300ms;
+    animation: anim 400ms;
+    cursor: pointer;
+    padding: 3px 5px;
+    border-radius: 2px;
+}
+
+.btn span {
+    text-align: center;
+    color: #B1B8BEFF;
+}
+
+.btn:hover {
+    background-color: rgba(94,94,107,0.46);
+
+}

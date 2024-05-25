@@ -337,7 +337,7 @@ const ChatWindow: FC<ChatProps> = () => {
             <div
                  className={chat_classes.chatBottomWrapper}
             >
-                {!isSelectionEnabled &&
+                {(isSelectionEnabled || isAuthenticated) &&
                     <ChatInput chatId={chatId}
                                input={input}
                                setInput={setInput}
