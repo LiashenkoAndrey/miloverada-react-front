@@ -3,7 +3,7 @@ import {INews, INewsDto} from "../../domain/NewsInt";
 import {getImageUrl} from "../../API/services/ImageService";
 // @ts-ignore
 import {useNavigate} from "react-router-dom";
-import {CommentOutlined, EyeOutlined, MessageOutlined} from "@ant-design/icons";
+import {EyeOutlined, MessageOutlined} from "@ant-design/icons";
 import classes from './NewsCard.module.css'
 import {Flex, Skeleton} from "antd";
 
@@ -32,7 +32,10 @@ const NewsCard: FC<NewsCardProps> = ({news, style, className}) => {
             />
             <div className={classes.newsCardContent}>
                 <span className={classes.newsType}>{news.newsType?.title}</span>
-                <p style={{margin: "5px 10px 10px 10px", display: "block"}}>
+                <p className={classes.newsCardDescriptionWrapper} style={{
+                    margin: news.description ? news.description.length > 60 ? "0px 10px 22px 10px" : "0px 10px 10px 10px" : "0px 10px 10px 10px",
+                    display: "block"
+                }}>
                     <span className={classes.newsCardDescription}>
 
                         {news.description
@@ -63,7 +66,7 @@ const NewsCard: FC<NewsCardProps> = ({news, style, className}) => {
                             {news.commentsAmount > 0 &&
                                 <>
                                     <MessageOutlined className={classes.eye + " eye"}
-                                                 style={{fontSize: 16}}
+                                                     style={{fontSize: 16}}
                                     />
                                     <span className={classes.eye}
                                           style={{fontSize: 16, height: "fit-content"}}

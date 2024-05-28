@@ -41,19 +41,23 @@ const MainPage = () => {
                         поспілкуватся на форумі та багато іншого...
                     </h1>
 
-                    <RedButton onClick={() => nav("/about")} style={{marginTop: 20, width: "fit-content"}}>
-                        <span  style={{width: "fit-content"}}>Про громаду</span>
+                    <RedButton onClick={() => nav("/about")}
+                               style={{marginTop: 20}}
+                    >
+                        <span >Про громаду</span>
                     </RedButton>
                 </Flex>
 
 
-                <div style={{width: "100%"}} className={classes.NewsAndBanners}>
+                <Flex justify={"center"}
+                      className={classes.NewsAndBanners}
+                >
                         <Flex vertical={true}
                               align={"center"}
                               className={classes.NewsListWrapperWithTitle}
                         >
-                            <h1 style={{fontSize: "3.0517578125em", marginBottom: 0, userSelect: "none"}}>Новини громади</h1>
-                            <p style={{fontSize: 28, fontWeight: 400, padding: 10, userSelect: "none"}}>
+                            <h1 style={{fontSize: "3.0517578125em", marginBottom: 0, userSelect: "none", textAlign : "center"}}>Новини громади</h1>
+                            <p style={{fontSize: 28, fontWeight: 400, padding: 10, userSelect: "none",  textAlign : "center"}}>
                                 Останні події громади, інновації
                             </p>
                             {news === undefined
@@ -68,8 +72,9 @@ const MainPage = () => {
                                 Більше новин громади
                             </RedButton>
                         </Flex>
-                        <BannersList/>
-                </div>
+
+                        {/*<BannersList/>*/}
+                </Flex>
             </Flex>
         </div>
     );
