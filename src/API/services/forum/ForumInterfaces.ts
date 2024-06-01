@@ -116,6 +116,7 @@ export interface NewForumUserDto {
 }
 
 export interface ForumUser {
+    aboutMe : string,
     id : number,
     appUserId : string,
     registeredOn : string,

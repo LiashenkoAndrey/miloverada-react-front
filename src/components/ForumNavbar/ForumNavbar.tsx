@@ -40,7 +40,7 @@ const ForumNavbar : FC<ForumNavbarProps> = (props) => {
         <Flex className={"ForumNavbarWrapper"} vertical gap={40}>
 
             <Flex vertical style={{ color: "black"}} gap={5}>
-                <Button ghost icon={<HomeOutlined style={{color: "black"}} />}>Головна</Button>
+                <Button ghost icon={<HomeOutlined style={{color: "white"}} />}>Головна</Button>
                 {/*<Button ghost icon={<TagsOutlined />}>Теги</Button>*/}
                 {/*<Button ghost icon={<QuestionCircleOutlined />}>Питання</Button>*/}
                 <Button ghost icon={<UserOutlined />} onClick={() => nav("/forum/users")}>Користувачі</Button>

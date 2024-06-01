@@ -5,6 +5,12 @@
     width: 100%;
 }
 
+.title {
+    color: white;
+    user-select: none;
+    font-size: 28px;
+    font-family: "Source Serif 4", serif;
+}
 @media (min-width: 600px) {
     .pageWrapper {
         padding-top: 15vh;

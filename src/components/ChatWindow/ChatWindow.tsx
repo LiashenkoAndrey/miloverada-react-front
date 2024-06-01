@@ -298,7 +298,7 @@ const ChatWindow: FC<ChatProps> = () => {
             } else {
                 setMsg(messages.filter((msg) => msg.id !== messageId))
                 notifyThatMessageWasDeleted(messageId)
-                notification.success({message: "Видалено успішно"})
+                // notification.success({message: "Видалено успішно"})
             }
         }
     }
