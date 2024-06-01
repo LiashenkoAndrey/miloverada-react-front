@@ -4,6 +4,7 @@ import {Button, Flex, Image} from "antd";
 import userClasses from "./User.module.css"
 import {useNavigate} from "react-router-dom";
 import {useAuth0} from "@auth0/auth0-react";
+import {getImageV2Url} from "../../API/services/ImageService";
 
 interface UserProps {
     user: ForumUser
@@ -26,10 +27,19 @@ const UserElem: FC<UserProps> = ({user}) => {
               className={userClasses.user}
         >
             <Flex>
-                <Image className={"imageWithPlaceholder"}
-                       style={{minWidth: 100, minHeight: 100}}
-                       src={user.avatar}
-                />
+                {!user.avatar.includes("http")
+                    ?
+                    <Image className={"imageWithPlaceholder"}
+                           style={{minWidth: 100, minHeight: 100, maxWidth: 100}}
+                           src={getImageV2Url(user.avatar)}
+                    />
+                    :
+                    <Image className={"imageWithPlaceholder"}
+                           style={{minWidth: 100, minHeight: 100}}
+                           src={user.avatar}
+                    />
+                }
+
                 <Flex gap={10}
                       vertical
                       style={{padding: 10}}
