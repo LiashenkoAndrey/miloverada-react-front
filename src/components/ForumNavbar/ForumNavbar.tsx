@@ -40,7 +40,7 @@ const ForumNavbar : FC<ForumNavbarProps> = (props) => {
         <Flex className={"ForumNavbarWrapper"} vertical gap={40}>
 
             <Flex vertical style={{ color: "black"}} gap={5}>
-                <Button ghost icon={<HomeOutlined style={{color: "white"}} />}>Головна</Button>
+                <Button ghost icon={<HomeOutlined />}>Головна</Button>
                 {/*<Button ghost icon={<TagsOutlined />}>Теги</Button>*/}
                 {/*<Button ghost icon={<QuestionCircleOutlined />}>Питання</Button>*/}
                 <Button ghost icon={<UserOutlined />} onClick={() => nav("/forum/users")}>Користувачі</Button>
@@ -61,7 +61,7 @@ const ForumNavbar : FC<ForumNavbarProps> = (props) => {
                                 :
                                 <Image style={{maxWidth: 170, width: "100%"}} src={getImageV2Url(forumUser.avatar)}/>
                             }
-                            <span style={{color: "black"}}>{user?.name}</span>
+                            <span style={{color: "white"}}>{user?.name}</span>
                             {/*<span>{user?.sub}</span>*/}
                         </Flex>
 
