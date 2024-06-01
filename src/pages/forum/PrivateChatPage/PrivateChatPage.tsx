@@ -83,7 +83,7 @@ const PrivateChatPage = () => {
                 <ChatNav/>
 
                 {isAuthenticated &&
-                    <StompSessionProvider url={'https://v2.miloverada.gov.ua:8443/ws-endpoint'}>
+                    <StompSessionProvider url={'https://api.miloverada.gov.ua:8443/ws-endpoint'}>
                         <ChatWindow />
                     </StompSessionProvider>
                 }
