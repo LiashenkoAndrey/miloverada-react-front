@@ -1,16 +1,15 @@
 import React, {FC} from 'react';
-import {User} from "../../API/services/forum/ForumInterfaces"
+import {ForumUser} from "../../API/services/forum/ForumInterfaces"
 import {Button, Flex, Image} from "antd";
 import userClasses from "./User.module.css"
-import {toDateShort} from "../../API/Util";
 import {useNavigate} from "react-router-dom";
 import {useAuth0} from "@auth0/auth0-react";
 
 interface UserProps {
-    user : User
+    user: ForumUser
 }
 
-const UserElem:FC<UserProps> = ({user}) => {
+const UserElem: FC<UserProps> = ({user}) => {
     const nav = useNavigate()
     const auth0 = useAuth0()
     const onUserStartChatButtonClick = () => {
@@ -19,18 +18,31 @@ const UserElem:FC<UserProps> = ({user}) => {
         } else console.log("user sub null")
     }
 
+
     return (
-        <Flex justify={"space-between"} gap={5} align={"center"} className={userClasses.user}>
+        <Flex justify={"space-between"}
+              gap={5}
+              align={"center"}
+              className={userClasses.user}
+        >
             <Flex>
-                <Image src={user.avatar}/>
-                <span className={userClasses.name}>{user.firstName} {user.lastName}</span>
+                <Image className={"imageWithPlaceholder"}
+                       style={{minWidth: 100, minHeight: 100}}
+                       src={user.avatar}
+                />
+                <Flex gap={10}
+                      vertical
+                      style={{padding: 10}}
+                >
+                    <span className={userClasses.name}>{user.nickname}</span>
+                    <span className={userClasses.about}>{user.aboutMe}</span>
+                </Flex>
             </Flex>
 
-            <Flex vertical align={"center"} style={{marginRight: 5}}>
-
-                {user.registeredOn &&
-                    <span className={userClasses.date}>{toDateShort(user.registeredOn)}</span>
-                }
+            <Flex vertical
+                  align={"center"}
+                  style={{marginRight: 5}}
+            >
                 <Button onClick={onUserStartChatButtonClick}>Написати</Button>
             </Flex>
         </Flex>

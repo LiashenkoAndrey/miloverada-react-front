@@ -28,6 +28,7 @@
 }
 
 .topicWrapper {
+    user-select: none;
     height: 100%;
     width: 100%;
     background-color: var(--forum-primary-bg-color);
@@ -39,6 +40,7 @@
 }
 
 .messagesAmount {
+    margin-left: 10px;
     color: rgba(177, 184, 190, 0.62);
     font-size: 14px;
 }

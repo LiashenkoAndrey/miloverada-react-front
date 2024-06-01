@@ -1,0 +1,5 @@
+
+
+.textArea {
+    transition: height 300ms, top 300ms;
+}

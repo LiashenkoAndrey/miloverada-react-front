@@ -59,8 +59,9 @@ export interface IChat {
     name : string,
     description : string,
     picture : string,
-    owner : User,
+    owner : ForumUser,
     totalMessagesAmount : number
+    totalMembersAmount : number
     createdOn : string[]
 }
 
@@ -115,6 +116,7 @@ export interface NewForumUserDto {
 }
 
 export interface ForumUser {
+    aboutMe : string,
     id : number,
     appUserId : string,
     registeredOn : string,

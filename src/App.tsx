@@ -9,7 +9,7 @@ import NewsPage from "./pages/NewsPage/NewsPage";
 import AllNewsPage from "./pages/AllNewsPage/AllNewsPage";
 import AllDocumentsPage from "./pages/AllDocumentsPage/AllDocumentsPage";
 import ChatPage from "./pages/forum/ChatPage/ChatPage";
-import AllForumTopicsPage from "./pages/forum/AllTopicsPage/AllForumTopicsPage";
+import ForumPage from "./pages/forum/AllTopicsPage/ForumPage";
 import {AuthContext} from "./context/AuthContext";
 import {useAuth0} from "@auth0/auth0-react";
 import TopicPage from "./pages/forum/TopicPage/TopicPage";
@@ -89,6 +89,7 @@ function App() {
     useEffect(() => {
         if (jwt) {
             if (user?.sub) {
+                console.log("Get App user")
                 getUser(encodeURIComponent(user.sub), jwt)
             } else console.error("user null")
         }
@@ -134,7 +135,7 @@ function App() {
                           <Route path={"/forum/chat/:id"} element={<ChatPage/>}/>
                           <Route path={"/forum/chatWith/:userId"} element={<ChatPage/>}/>
                           <Route path={"/forum/topic/:id"} element={<TopicPage/>}/>
-                          <Route path={"/forum"} element={<AllForumTopicsPage/>}/>
+                          <Route path={"/forum"} element={<ForumPage/>}/>
                           <Route path={"/resolveUser"} element={<IsRegisteredCheckPage/>}/>
                           <Route path={"/forum/user/:user1_id/chat"} element={<PrivateChatPage/>}/>
                           <Route path={"/forum/users"} element={<AllUsersPage/>}/>

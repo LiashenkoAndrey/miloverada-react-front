@@ -66,7 +66,7 @@ const PostLike:FC<PostLikeProps> = ({post}) => {
                     </Tooltip>
 
             }
-            <span style={{color: "white", fontSize: 16}}>{post.likesAmount}</span>
+            <span style={{color: "white", fontSize: 16, userSelect: "none"}}>{post.likesAmount}</span>
         </>
     );
 };

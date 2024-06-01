@@ -49,33 +49,38 @@ const ChatsList = () => {
         getAll()
     }, [jwt]);
 
-    return chats.length > 0  ?
+    return chats.length > 0 ?
         (
-        <List key={"chatList-" }
+            <List key={"chatList-"}
 
-              className={classes.chatList}
-              header={<span className={classes.name}>Мої чати</span>}
-              itemLayout="horizontal"
-              dataSource={chats}
-              renderItem={(item, index) => (
-                  <List.Item className={classes.chatWrapper} key={"chat-" + item.chat.id}
-                             onClick={() => onSelectChat(item.chat.id)}
-                  >
-                      <List.Item.Meta
-                          avatar={<ChatImage image={item.chat.picture} chatName={item.chat.name}/>}
-                          title={<span className={classes.chatTitle}>{item.chat.name}</span>}
-                          description={<span className={classes.chatDesc}>{item.chat.description}</span>}
-                      />
-                      {item.chatMetadata.unread_messages_count > 0 &&
-                          <span className={classes.unreadMessagesCount}>{item.chatMetadata.unread_messages_count}</span>
+                  className={classes.chatList}
+                  header={<span className={classes.name}>Мої чати</span>}
+                  itemLayout="horizontal"
+                  dataSource={chats}
+                  renderItem={(item, index) => (
+                      <List.Item className={classes.chatWrapper} key={"chat-" + item.chat.id}
+                                 onClick={() => onSelectChat(item.chat.id)}
+                      >
+                          <List.Item.Meta
+                              avatar={<ChatImage image={item.chat.picture} chatName={item.chat.name}/>}
+                              title={<span className={classes.chatTitle}>{item.chat.name}</span>}
+                              description={<span className={classes.chatDesc}>{item.chat.description}</span>}
+                          />
+                          {item.chatMetadata.unread_messages_count > 0 &&
+                              <span className={classes.unreadMessagesCount}>{item.chatMetadata.unread_messages_count}</span>
 
-                      }
-                  </List.Item>
-              )}
-        />
-    ) :
-        <Flex justify={'center'}  style={{width: "100%", height : '100%', backgroundColor : "var(--forum-primary-bg-color)", paddingTop : "5vh"}} >
-            <Empty description={<p style={{color: 'white'}}>Почніть новий чат!</p>} />;
+                          }
+                      </List.Item>
+                  )}
+            />
+        ) :
+        <Flex justify={'center'} style={{
+            width: "100%",
+            height: '100%',
+            backgroundColor: "var(--forum-primary-bg-color)",
+            paddingTop: "5vh"
+        }}>
+            <Empty description={<p style={{color: 'white'}}>Почніть новий чат!</p>}/>;
 
         </Flex>
 };
