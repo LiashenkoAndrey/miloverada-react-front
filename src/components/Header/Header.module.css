@@ -2,9 +2,10 @@
 
 .btnText {
     font-size: 22px;
-    font-weight: 300;
-    font-family: 'Open Sans', sans-serif;
     color: white;
+    font-family: "Vollkorn SC", serif;
+    font-weight: 600;
+    font-style: normal;
 }
 
 .menuItems {
@@ -51,10 +52,13 @@
 }
 
 .title {
+    font-family: "Vollkorn SC", serif;
+    font-weight: 600;
+    font-style: normal;
     transition: letter-spacing 300ms, font-size 300ms;
     cursor: pointer;
-    letter-spacing: 10px;
-    font-weight: 300;
+    /*letter-spacing: 10px;*/
+    /*font-weight: 500;*/
     color: #FFF;
     text-align: center;
     font-size: 25px;
