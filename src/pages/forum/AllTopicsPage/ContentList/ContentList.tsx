@@ -49,8 +49,8 @@ const ContentList: FC<ChatsListProps> = () => {
     }, []);
 
     function setDefaultContentMode() {
-        setIMode(Modes.POSTS)
-        setContentMode(Modes.POSTS)
+        setIMode(Modes.TOPICS)
+        setContentMode(Modes.TOPICS)
     }
 
 

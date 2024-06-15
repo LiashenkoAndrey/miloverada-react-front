@@ -122,7 +122,9 @@ export interface ForumUser {
     registeredOn : string,
     nickname : string,
     avatar : string
+    isVerified : boolean
 }
+
 export interface AppUser {
     id? : string,
     firstName? : string,

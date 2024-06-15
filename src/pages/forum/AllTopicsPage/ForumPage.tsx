@@ -1,10 +1,11 @@
 import React, {useState} from 'react';
-import {ConfigProvider, Flex} from "antd";
+import {ConfigProvider, Flex, FloatButton} from "antd";
 import {useAuth0} from "@auth0/auth0-react";
 import ForumNavbar from "../../../components/ForumNavbar/ForumNavbar";
 import classes from './ForumPage.module.css'
 import {getActiveUsersAmount} from "../../../API/services/forum/UserService";
 import ContentList from "./ContentList/ContentList";
+import {CommentOutlined, CustomerServiceOutlined} from "@ant-design/icons";
 
 const ForumPage = () => {
 
@@ -49,6 +50,15 @@ const ForumPage = () => {
 
                 </Flex>
             </Flex>
+
+            <FloatButton.Group
+                trigger="click"
+                style={{ right: 24 }}
+                icon={<CustomerServiceOutlined />}
+            >
+                <FloatButton />
+                <FloatButton icon={<CommentOutlined />} />
+            </FloatButton.Group>
         </ConfigProvider>
 
     );
