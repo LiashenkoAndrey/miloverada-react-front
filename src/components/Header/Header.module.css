@@ -43,7 +43,7 @@
 
 .navbar {
     height: fit-content;
-    padding-bottom: 40px;
+    padding-bottom: 15px;
     width: 100%;
     background: linear-gradient(0deg,transparent,rgb(35, 34, 53)),linear-gradient(0deg,transparent 20%, rgb(0, 0, 0));
     z-index: 100;
