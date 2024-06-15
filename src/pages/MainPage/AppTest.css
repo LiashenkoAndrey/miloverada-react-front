@@ -11,7 +11,7 @@
     position: relative;
     rotate: 40deg;
     width: 400px;
-    border: solid black 4px;
+    border: solid #232235FF 4px;
     overflow: hidden;
     height: 182vh;
 }

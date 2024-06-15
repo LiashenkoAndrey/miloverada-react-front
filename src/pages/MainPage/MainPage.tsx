@@ -63,13 +63,16 @@ const MainPage = () => {
                                    wrapperStyle={{zIndex : 1, overflow: "initial"}}
                                    style={{clipPath : "polygon(5% 5%, 87.45% 4.46%, 51.01% 84.29%, 5% 95%)"}}
                                    imgUrl={bg1}
+                                   moveSpeed={50}
                     />
                     <ParallaxImage className={'parallax_image_2'}
                                    wrapperClass={"parallaxImageWrapper_2"}
+                                   moveSpeed={30}
                                    wrapperStyle={{zIndex : 1}} style={{}}
                                    imgUrl={bg2}
                     />
                     <ParallaxImage className={'parallax_image_3'}
+                                   moveSpeed={80}
                                    wrapperClass={"parallaxImageWrapper_3"}
                                    wrapperStyle={{overflow : "initial"}}
                                    style={{}}

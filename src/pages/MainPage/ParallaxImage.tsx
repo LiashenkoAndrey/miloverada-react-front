@@ -9,9 +9,10 @@ interface ParallaxImageProps {
     style : CSSProperties
     className : string
     wrapperClass : string
+    moveSpeed : number
 }
 
-const ParallaxImage: FC<ParallaxImageProps> = ({imgUrl, className, wrapperStyle, wrapperClass, style}) => {
+const ParallaxImage: FC<ParallaxImageProps> = ({imgUrl, className, moveSpeed, wrapperStyle, wrapperClass, style}) => {
     const [position, setPosition] = useState({ x: 0, y: 0 });
 
     useEffect(() => {
@@ -19,8 +20,8 @@ const ParallaxImage: FC<ParallaxImageProps> = ({imgUrl, className, wrapperStyle,
             const { clientX, clientY } = e;
             const centerX = window.innerWidth / 2;
             const centerY = window.innerHeight / 2;
-            const offsetX = (clientX - centerX) / 30; // Зміна швидкості руху
-            const offsetY = (clientY - centerY) / 30;
+            const offsetX = (clientX - centerX) / moveSpeed; // Зміна швидкості руху
+            const offsetY = (clientY - centerY) / moveSpeed;
             setPosition({ x: offsetX, y: offsetY });
         };
 
