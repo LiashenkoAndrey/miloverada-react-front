@@ -113,7 +113,7 @@ function App() {
               }}>
 
                   <Layout>
-                      <Header/>
+                      {/*<Header/>*/}
                       {isForumUserRegistered !== null && !isForumUserRegistered &&
                           <CreateNewForumUserProfileModal/>
                       }

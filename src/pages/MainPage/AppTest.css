@@ -1,0 +1,150 @@
+.App {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    overflow: hidden; /* Щоб зображення не виходили за межі екрану */
+    perspective: 1000px; /* Перспектива для трансформацій 3D */
+}
+
+.parallaxImageWrapper {
+    position: relative;
+    rotate: 40deg;
+    width: 400px;
+    border: solid black 4px;
+    overflow: hidden;
+    height: 182vh;
+}
+
+@media (max-width: 1200px) {
+    .parallaxImageWrapper {
+        width: 350px;
+    }
+
+    .parallax_image_1 {
+        left: -400px!important;
+    }
+}
+
+
+
+@media (min-width: 1200px) {
+    .ParallaxImage {
+        left: -390px!important;
+    }
+
+}
+
+@media (max-width: 1100px) {
+    .parallaxImageWrapper {
+        width: 300px;
+    }
+
+    .parallax_image_1 {
+        clip-path: polygon(5% 5%, 87.45% 4.46%, 35.01% 84.49%, 5% 95%)!important;
+    }
+
+    .parallaxImageWrapper_3 {
+        width: 150px;
+    }
+}
+
+@media (max-width: 910px) {
+    .parallaxImageWrapper_3 {
+        width: 80px;
+    }
+}
+
+@media (max-width: 870px) {
+    .parallaxImageWrapper_2 {
+        width: 270px;
+    }
+}
+
+@media (max-width: 780px) {
+    .parallaxImageWrapper_2 {
+        width: 250px;
+    }
+    .parallaxImageWrapper_3 {
+        width: 100px;
+    }
+}
+
+@media (max-width: 660px) {
+    .parallaxImageWrapper_1 {
+        width: 200px;
+        /*left: -490px!important;*/
+    }
+
+    .parallax_image_1 {
+        top: 125px!important;
+        left: -500px!important;
+     clip-path: polygon(5% 5%, 89.82% 1.65%, 30.79% 75.67%, 5% 95%) !important;
+    }
+}
+
+@media (max-width: 540px) {
+    .parallaxImageWrapper_1 {
+        width: 130px;
+    }
+}
+
+
+@media (max-width: 400px) {
+    .ParallaxImage {
+        width: 1177px!important;
+    }
+    .parallaxImageWrapper_3 {
+        width: 40px;
+    }
+
+    .parallaxImageWrapper_1 {
+        width: 120px;
+    }
+}
+.parallax_image_2 {
+    top: 180px!important;
+    left: -410px!important;
+}
+
+@media (max-width: 330px) {
+    .parallaxImageWrapper_3 {
+        width: 15px;
+    }
+    .parallaxImageWrapper_1 {
+        width: 100px;
+    }
+
+    .parallax_image_1 {
+        clip-path: polygon(5% 5%, 89.82% 0.65%, 30.79% 82.67%, 5% 95%) !important;
+    }
+}
+
+@media (max-width: 250px) {
+    .parallaxImageWrapper_3 {
+        width: 5px;
+    }
+    .parallaxImageWrapper_1 {
+        width: 60px;
+    }
+
+}
+
+
+
+.parallax_image_1 {
+
+}
+
+.ParallaxImage {
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+    background-size: cover;
+    height: 130vh;
+    width: 1350px;
+    position: relative;
+    transform-style: preserve-3d;
+    transition: transform 0.1s ease-out;
+    rotate: -40deg;
+}
+
