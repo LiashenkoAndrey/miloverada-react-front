@@ -32,7 +32,7 @@ const MainPage = () => {
             } else throw error;
         }
 
-        // getNews()
+        getNews()
     }, []);
 
     const [position, setPosition] = useState({ x: 0, y: 0 });
