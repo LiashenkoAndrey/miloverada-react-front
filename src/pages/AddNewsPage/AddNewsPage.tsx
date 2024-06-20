@@ -41,6 +41,7 @@ const AddNewsPage = () => {
     const {setNewsPreview} = useActions()
     const [text, setText] = useState<string>()
     const nav = useNavigate()
+    const [isLoading, setIsLoading] = useState<boolean>(false)
 
     const getTypes = async () => {
         if (jwt) {
@@ -48,7 +49,7 @@ const AddNewsPage = () => {
             if (data) setNewsTypes(data)
 
             if (error) throw error
-        } console.log("not auth")
+        } else console.log("not auth")
     }
 
 
@@ -168,7 +169,9 @@ const AddNewsPage = () => {
 
     const save = async (formData : FormData) => {
         if (jwt) {
+            setIsLoading(true)
             const {data, error} = await saveNews(formData, jwt)
+            setIsLoading(false)
 
             if (data) {
                 notification.success({message: "Успішно збережено"})
@@ -193,7 +196,7 @@ const AddNewsPage = () => {
     const onPostponedPublicationChange = (val : boolean) => {
         setIsPostponedPublication(val)
     }
-    
+
     return (
         <Flex justify={"center"}>
             <Flex vertical gap={20} className={classes.AddNewsPage}>
@@ -204,7 +207,12 @@ const AddNewsPage = () => {
                     </Flex>
                     <Flex wrap={"wrap"} gap={15}>
                         <NewsPreview/>
-                        <Button onClick={onSave} type={"primary"}>Зберегти</Button>
+                        <Button onClick={onSave}
+                                type={"primary"}
+                                loading={isLoading}
+                        >
+                            Зберегти
+                        </Button>
                     </Flex>
                 </Flex>
 
@@ -293,7 +301,12 @@ const AddNewsPage = () => {
                 </Flex>
 
                 <Flex>
-                    <Button onClick={onSave} type={"primary"}>Зберегти</Button>
+                    <Button onClick={onSave}
+                            loading={isLoading}
+                            type={"primary"}
+                    >
+                        Зберегти
+                    </Button>
                 </Flex>
             </Flex>
         </Flex>
