@@ -13,6 +13,7 @@ import {getUserById, updateAdminMeta} from "../../API/services/UserService";
 import {AppUser} from "../../API/services/forum/ForumInterfaces";
 import {useActions} from "../../hooks/useActions";
 import {setUser} from "../../store/actionCreators/user";
+import {UserInfoDrawer} from "./UserInfoDrawer/UserInfoDrawer";
 
 export interface HeaderOption {
     onClick : () => void
@@ -161,45 +162,49 @@ const Header = () => {
                     <img className={classes.logo} src={icon} width={50} alt={"Герб України"}/>
                 </Flex>
 
-                <Drawer title="Мій профіль"
-                        onClose={() => setIsUserDrawerActive(false)}
-                        open={isUserDrawerActive}
-                >
-                    <Flex vertical
-                          style={{height: "100%"}}
-                          justify={"space-between"}
-                          gap={40}
-                    >
+                <UserInfoDrawer isUserDrawerActive={isUserDrawerActive}
+                                setIsUserDrawerActive={setIsUserDrawerActive}
+                />
 
-                        <Flex gap={10} vertical>
+                {/*<Drawer title="Мій профіль"*/}
+                {/*        onClose={() => setIsUserDrawerActive(false)}*/}
+                {/*        open={isUserDrawerActive}*/}
+                {/*>*/}
+                {/*    <Flex vertical*/}
+                {/*          style={{height: "100%"}}*/}
+                {/*          justify={"space-between"}*/}
+                {/*          gap={40}*/}
+                {/*    >*/}
 
-                            <Flex gap={10}>
-                                <Image src={user?.picture}/>
-                                <Flex vertical>
-                                    <span>{user?.name}</span>
-                                    <span>{user?.email}</span>
-                                </Flex>
-                            </Flex>
-                            <Button onClick={onLogout}
-                                    style={{width: "fit-content"}}
-                                    type={"primary"}
-                            >Вийти</Button>
-                        </Flex>
+                {/*        <Flex gap={10} vertical>*/}
+
+                {/*            <Flex gap={10}>*/}
+                {/*                <Image src={user?.picture}/>*/}
+                {/*                <Flex vertical>*/}
+                {/*                    <span>{user?.name}</span>*/}
+                {/*                    <span>{user?.email}</span>*/}
+                {/*                </Flex>*/}
+                {/*            </Flex>*/}
+                {/*            <Button onClick={onLogout}*/}
+                {/*                    style={{width: "fit-content"}}*/}
+                {/*                    type={"primary"}*/}
+                {/*            >Вийти</Button>*/}
+                {/*        </Flex>*/}
 
 
 
-                        <Flex vertical gap={5} >
-                            <Button style={{width: "fit-content"}}
-                                    onClick={onClearMetadata}
-                                    loading={isLoading}
-                            >Очистити метадані</Button>
-                            <Button disabled
-                                    style={{width: "fit-content"}}
-                                    danger
-                            >Видалити профіль</Button>
-                        </Flex>
-                    </Flex>
-                </Drawer>
+                {/*        <Flex vertical gap={5} >*/}
+                {/*            <Button style={{width: "fit-content"}}*/}
+                {/*                    onClick={onClearMetadata}*/}
+                {/*                    loading={isLoading}*/}
+                {/*            >Очистити метадані</Button>*/}
+                {/*            <Button disabled*/}
+                {/*                    style={{width: "fit-content"}}*/}
+                {/*                    danger*/}
+                {/*            >Видалити профіль</Button>*/}
+                {/*        </Flex>*/}
+                {/*    </Flex>*/}
+                {/*</Drawer>*/}
 
 
                 <Flex wrap={"wrap"}
