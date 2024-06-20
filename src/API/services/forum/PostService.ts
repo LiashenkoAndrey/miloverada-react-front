@@ -22,11 +22,24 @@ export interface IPostComment {
     author : ForumUser
 }
 
+
+
 export const getLatestPosts = (encodedForumUserId? : string) => {
     console.log(encodedForumUserId)
     const config = {
         url: encodedForumUserId ? `${apiServerUrl}/api/forum/posts/latest?encodedForumUserId=` + encodedForumUserId  : `${apiServerUrl}/api/forum/posts/latest`,
         method: "GET",
+    }
+    return callAndGetResult(config)
+}
+
+export const deletePostById = (postId : number, jwt : string) => {
+    const config = {
+        headers: {
+            Authorization: `Bearer ${jwt}`,
+        },
+        url :`${apiServerUrl}/api/protected/forum/post/${postId}/delete`,
+        method: "DELETE",
     }
     return callAndGetResult(config)
 }

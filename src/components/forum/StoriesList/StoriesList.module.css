@@ -22,7 +22,7 @@
 }
 
 .storyImg {
-    border: solid 2px #389a3b;
+    /*border: solid 2px #389a3b;*/
     border-radius: 10px;
     position: relative;
 }
@@ -32,18 +32,7 @@
 }
 
 
-.btn {
-    flex-direction: row;
-    align-items: center;
-    gap: 2px;
-    transition: left 0.5s, right 2s;
-    animation: anim 400ms;
-}
 
-.btn span {
-    text-align: center;
-    color: #B1B8BEFF;
-}
 .wrapper {
     width: 100%;
     padding-top: 5px;

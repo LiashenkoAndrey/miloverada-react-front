@@ -5,6 +5,9 @@
     padding-top: 8vh;
 }
 
+.segment {
+    /*background-color: green!important;*/
+}
 .forumBg {
     background-size: 40px 40px;
     background-image: radial-gradient(circle at 1px 1px, rgba(255, 255, 255, 0.15) 1px, transparent 0px);

@@ -6,7 +6,7 @@ import ChatWindow from "../../../components/ChatWindow/ChatWindow";
 import {StompSessionProvider} from "react-stomp-hooks";
 import {useActions} from "../../../hooks/useActions";
 import {getChatById, getOrCreatePrivateChat} from "../../../API/services/forum/ChatService";
-import classes from "../AllTopicsPage/AllForumTopicsPage.module.css";
+import classes from "../AllTopicsPage/ForumPage.module.css";
 import ContentList from "../AllTopicsPage/ContentList/ContentList";
 import {useAuth0} from "@auth0/auth0-react";
 import WindowSlider from "../../../components/WindowSlider/WindowSlider";
@@ -98,7 +98,8 @@ const ChatPage = () => {
                               setLeftPanelWidth={setLeftPanelWidth}
                 />
 
-                <StompSessionProvider url={'https://api.miloverada.gov.ua:8443/ws-endpoint'}>
+                {/*<StompSessionProvider url={'https://api.miloverada.gov.ua:8443/ws-endpoint'}>  */}
+                <StompSessionProvider url={'http://localhost:6060/ws-endpoint'}>
                     <ChatWindow />
                 </StompSessionProvider>
             </Flex>

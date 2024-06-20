@@ -1,4 +1,4 @@
-import React, {FC, useCallback, useContext, useEffect, useRef, useState} from 'react';
+import React, {FC, KeyboardEventHandler, useCallback, useContext, useEffect, useRef, useState} from 'react';
 import {App, Button, Flex, Tooltip} from "antd";
 import {FileAddOutlined, FileImageOutlined, GlobalOutlined, RightOutlined} from "@ant-design/icons";
 import {useAuth0} from "@auth0/auth0-react";
@@ -18,19 +18,22 @@ import {IMessage} from "@stomp/stompjs/src/i-message";
 import {fileToDto, saveMessageFile} from "../../../API/services/forum/MessageFileService";
 import {useTypedSelector} from "../../../hooks/useTypedSelector";
 import {useSubscription} from "react-stomp-hooks";
+import TextAreaAutosize from "../../TextAreaAutosize/TextAreaAutosize";
+import {stringContainsOnlySpaces} from "../../../API/Util";
 
 interface ChatInputProps {
-    stompClient? : Client
-    chatId : number
-    filterTypingUsers ( userId: string | undefined) : void
-    input : string
-    setInput :  React.Dispatch<React.SetStateAction<string>>
-    setEditMessage :  React.Dispatch<React.SetStateAction<Message | undefined>>
-    editMessage? : Message
-    setReplyMessage : React.Dispatch<React.SetStateAction<Message | undefined>>
-    replyMessage? : Message
-}
+    stompClient?: Client
+    chatId: number
 
+    filterTypingUsers(userId: string | undefined): void
+
+    input: string
+    setInput: React.Dispatch<React.SetStateAction<string>>
+    setEditMessage: React.Dispatch<React.SetStateAction<Message | undefined>>
+    editMessage?: Message
+    setReplyMessage: React.Dispatch<React.SetStateAction<Message | undefined>>
+    replyMessage?: Message
+}
 
 
 const ChatInput: FC<ChatInputProps> = ({
@@ -62,9 +65,16 @@ const ChatInput: FC<ChatInputProps> = ({
         setIsTyping(false)
     }
 
+
     const handleEvent = (e: any) => {
-        if (!isTyping) setIsTyping(true)
-        setInput(e.target.value)
+        console.log(e.target.value)
+        if (!stringContainsOnlySpaces(e.target.value)) {
+            setInput(e.target.value)
+            if (!isTyping) setIsTyping(true)
+        } else if (input.length > 0) (
+
+            setInput(e.target.value)
+        )
     }
 
     useEffect(() => {
@@ -78,14 +88,15 @@ const ChatInput: FC<ChatInputProps> = ({
     }, [isTyping]);
 
 
-    const getForumUser = () : ForumUserDto => {
-        if ( user?.name && user.sub) {
-            return  {
+    const getForumUser = (): ForumUserDto => {
+        if (user?.name && user.sub) {
+            return {
                 name: user.name,
                 id: user.sub,
                 chatId: chatId
             }
-        } throw new Error("user data is undefined, maybe not auth")
+        }
+        throw new Error("user data is undefined, maybe not auth")
     }
 
 
@@ -96,8 +107,8 @@ const ChatInput: FC<ChatInputProps> = ({
         }
     }, [input]);
 
-    const onMessageIsSaved = async (message : IMessage) => {
-        const payload : MessageIsSavedPayload = JSON.parse(message.body)
+    const onMessageIsSaved = async (message: IMessage) => {
+        const payload: MessageIsSavedPayload = JSON.parse(message.body)
         console.log("onMessageIsSaved".toUpperCase(), payload)
         console.log("files list", filesList)
         if (jwt) {
@@ -116,18 +127,16 @@ const ChatInput: FC<ChatInputProps> = ({
 
     const onSend = () => {
         if (input !== '' && input.length < 3000) {
-            if(stompClient && user?.sub) {
-                console.log("after fileToDto", filesList)
+            if (stompClient && user?.sub) {
                 const fileDtoList: MessageFileDtoSmall[] = fileToDto(filesList)
-                console.log("fileDtoList", fileDtoList)
 
-                const messageDto : MessageDto  = {
-                    senderId : user.sub,
+                const messageDto: MessageDto = {
+                    senderId: user.sub,
                     text: input,
                     chatId: chatId,
-                    imagesDtoList : imageToDto(imageList),
+                    imagesDtoList: imageToDto(imageList),
                     replyToMessageId: replyMessage?.id,
-                    fileDtoList : fileDtoList
+                    fileDtoList: fileDtoList
                 }
 
                 publishNewMessage(stompClient, messageDto)
@@ -144,12 +153,11 @@ const ChatInput: FC<ChatInputProps> = ({
     };
 
 
+    const updateMsg = useCallback(async () => {
 
-    const updateMsg = useCallback( async () => {
-
-        if(stompClient && user?.sub && editMessage?.id && jwt) {
-            const messageDto : UpdateMessageDto  = {
-                id : editMessage.id,
+        if (stompClient && user?.sub && editMessage?.id && jwt) {
+            const messageDto: UpdateMessageDto = {
+                id: editMessage.id,
                 text: input,
                 chatId: chatId,
             }
@@ -167,13 +175,14 @@ const ChatInput: FC<ChatInputProps> = ({
     }, [input]);
 
     const notifyThatUserStoppedTyping = () => {
-        if (isAuthenticated && stompClient)  {
+        if (isAuthenticated && stompClient) {
             const body = JSON.stringify(getForumUser())
             stompClient.publish({
-                destination: '/app/user/stopTyping', body: body,
-                headers: {
-                    'content-type': 'application/json'
-                }}
+                    destination: '/app/user/stopTyping', body: body,
+                    headers: {
+                        'content-type': 'application/json'
+                    }
+                }
             )
         } else console.info(
             "notifyThatUserStoppedTyping: stompClient is undefined or not auth",
@@ -186,12 +195,14 @@ const ChatInput: FC<ChatInputProps> = ({
         if (isAuthenticated && stompClient !== undefined) {
             const body = JSON.stringify(getForumUser())
             stompClient.publish({
-                destination: '/app/user/startTyping', body: body,
-                headers: {
-                    'content-type': 'application/json'
-                }}
+                    destination: '/app/user/startTyping', body: body,
+                    headers: {
+                        'content-type': 'application/json'
+                    }
+                }
             )
-        } console.info(
+        }
+        console.info(
             "notifyThatUserStartedTyping: stompClient is undefined or not auth",
             stompClient !== undefined,
             isAuthenticated
@@ -239,8 +250,23 @@ const ChatInput: FC<ChatInputProps> = ({
 
     const inputRef = useRef<HTMLTextAreaElement | null>(null)
 
+    // @ts-ignore
+    const onButtonsPressWhenFocusInput = (key: KeyboardEvent<HTMLTextAreaElement>) => {
+        if (key.code === "Enter" && key.shiftKey) {
+            console.log("new line")
+        } else if (key.code === "Enter" && !key.shiftKey && !stringContainsOnlySpaces(input)) {
+            if (editMessage !== undefined) {
+                updateMsg()
+            } else {
+                onSend()
+            }
+            console.log("send!", input)
+        }
+    }
+
+
     return (
-        <Flex vertical >
+        <Flex vertical>
             <FileUpload
                 isFileUploadActive={isFileUploadActive}
                 setIsFileUploadActive={setIsFileUploadActive}
@@ -265,20 +291,24 @@ const ChatInput: FC<ChatInputProps> = ({
             />
 
             <Flex className={"chatInput"}>
-
                 <Tooltip title={isAuthenticated ? "" : "Спочатку авторизуйтеся"}>
-                    <TextareaAutosize maxRows={10}
-                                      ref={inputRef}
-                                      style={{width: "100%", boxSizing: "border-box"}}
-                                      className={"input"}
-                                      maxLength={3000}
-                                      hidden={!isAuthenticated}
-                                      placeholder={"Ваше повідолення...."}
-                                      value={input}
-                                      onChange={handleEvent}
-                    />
+                    <Flex style={{position : "relative", flexGrow : 1}}>
+                        <TextAreaAutosize
+                            input={input}
+                            className={'input'}
+                            onButtonsPressWhenFocusInput={onButtonsPressWhenFocusInput} props={{
+                            ref: inputRef,
+                            maxLength: 3000,
+                            hidden: !isAuthenticated,
+                            placeholder: "Ваше повідолення....",
+                            value: input,
+                            onChange: handleEvent
+                        }}
+
+                        />
+                    </Flex>
                 </Tooltip>
-                <Flex align={"flex-end"}>
+                <Flex align={"flex-end"} style={{height : 37, alignSelf : "flex-end"}}>
                     <Flex style={{height: "100%"}}>
                         <Button className={"toolBtn"} onClick={openFileUpload}
                                 disabled={isBtnsActive()}
@@ -288,12 +318,12 @@ const ChatInput: FC<ChatInputProps> = ({
                                 disabled={isBtnsActive()}
                                 icon={<FileImageOutlined style={{fontSize: 25}}/>}
                         />
-                        <Button className={"toolBtn"}
-                                disabled={isBtnsActive()}
-                                icon={<GlobalOutlined style={{fontSize: 25}}/>}
-                        />
+                        {/*<Button className={"toolBtn"}*/}
+                        {/*        disabled={isBtnsActive()}*/}
+                        {/*        icon={<GlobalOutlined style={{fontSize: 25}}/>}*/}
+                        {/*/>*/}
                     </Flex>
-                    <Button style={{border: "none", }}
+                    <Button style={{border: "none", height : 37}}
                             disabled={!isAuthenticated}
                             onClick={() => editMessage !== undefined ? updateMsg() : onSend()}
                             type={"primary"} className={[btnClass, "chatSubmitBtn"].join(' ')} icon={<RightOutlined/>}

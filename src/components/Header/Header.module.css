@@ -2,9 +2,10 @@
 
 .btnText {
     font-size: 22px;
-    font-weight: 300;
-    font-family: 'Open Sans', sans-serif;
     color: white;
+    font-family: "Vollkorn SC", serif;
+    font-weight: 600;
+    font-style: normal;
 }
 
 .menuItems {
@@ -43,7 +44,7 @@
 
 .navbar {
     height: fit-content;
-    padding-bottom: 40px;
+    padding-bottom: 15px;
     width: 100%;
     background: linear-gradient(0deg,transparent,rgb(35, 34, 53)),linear-gradient(0deg,transparent 20%, rgb(0, 0, 0));
     z-index: 100;
@@ -51,10 +52,13 @@
 }
 
 .title {
+    font-family: "Vollkorn SC", serif;
+    font-weight: 600;
+    font-style: normal;
     transition: letter-spacing 300ms, font-size 300ms;
     cursor: pointer;
-    letter-spacing: 10px;
-    font-weight: 300;
+    /*letter-spacing: 10px;*/
+    /*font-weight: 500;*/
     color: #FFF;
     text-align: center;
     font-size: 25px;
@@ -172,6 +176,25 @@
     .navBtnWrapper {
         display: none;
     }
+}
+
+.navBtnWrapper {
+    margin-top: 8px;
+}
+
+@media (max-width: 1000px) {
+    .forumBadge {
+        top: -7px;
+    }
+}
+@media (min-width: 800px) {
+    .forumBadge {
+        top: -1px;
+    }
+}
+
+.forumBadge {
+    font-size: 8px;
 }
 
 .menu {

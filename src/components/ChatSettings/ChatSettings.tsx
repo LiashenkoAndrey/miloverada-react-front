@@ -1,16 +1,16 @@
 import React, {FC, useEffect} from 'react';
 import {Descriptions, Drawer, Flex, Image} from "antd";
 import classes from './ChatSettings.module.css'
-import {CloseCircleOutlined} from "@ant-design/icons";
+import {CloseCircleOutlined, CloseOutlined} from "@ant-design/icons";
 import {toDate} from "../../API/Util";
 import {useTypedSelector} from "../../hooks/useTypedSelector";
 
 interface ChatSettingsProps {
-    open : boolean
+    open: boolean
     setOpen: React.Dispatch<React.SetStateAction<boolean>>
 }
 
-const ChatSettings :FC<ChatSettingsProps> = ({ open, setOpen}) => {
+const ChatSettings: FC<ChatSettingsProps> = ({open, setOpen}) => {
     const {chatInfo} = useTypedSelector(state => state.chat)
 
 
@@ -23,15 +23,17 @@ const ChatSettings :FC<ChatSettingsProps> = ({ open, setOpen}) => {
 
     return (
         <Drawer
-            title={chatInfo?.name}
+            style={{backgroundColor: "var(--chat-header-bg-color)", color: "white"}}
+            title={<span style={{color: "white", userSelect : 'none'}}>{chatInfo?.name}</span>}
             placement={'top'}
+            closeIcon={<CloseOutlined style={{color : "white"}}/>}
             closable
             onClose={onClose}
             open={open}
             getContainer={false}
             key={"placement"}
         >
-            <Flex vertical >
+            <Flex vertical>
                 <Flex justify={"space-between"}>
                     <Flex>
                         <Image preview={false}
@@ -42,15 +44,20 @@ const ChatSettings :FC<ChatSettingsProps> = ({ open, setOpen}) => {
                         />
                     </Flex>
                 </Flex>
-                <p className={classes.chatDescription}>{chatInfo?.description}</p>
+                <p className={classes.chatDescription} style={{color: "white"}}>{chatInfo?.description}</p>
                 <Descriptions layout={"horizontal"} title={false}>
 
                     {chatInfo?.owner &&
-                        <Descriptions.Item label={<span style={{color: "black"}}>Створив</span>}><span className={classes.userLink}>{chatInfo.owner.firstName}</span></Descriptions.Item>
+                        <Descriptions.Item label={<span style={{color: "white"}}>Створив</span>}>
+                            <span className={classes.userLink}>
+                            {chatInfo.owner.nickname}</span>
+                        </Descriptions.Item>
                     }
 
                     {chatInfo?.createdOn &&
-                        <Descriptions.Item label={<span style={{color: "black"}}>Чат створено</span>}><span>{toDate(chatInfo.createdOn)}</span></Descriptions.Item>
+                        <Descriptions.Item label={<span style={{color: "white"}}>Чат створено</span>}>
+                            <span style={{color: "white"}}>{toDate(chatInfo.createdOn)}</span>
+                        </Descriptions.Item>
                     }
                 </Descriptions>
             </Flex>

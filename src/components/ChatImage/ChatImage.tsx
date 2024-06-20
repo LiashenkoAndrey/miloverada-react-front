@@ -30,10 +30,12 @@ const ChatImage: FC<ChatImageProps> = ({image, chatName}) => {
         :
             (
                 <Flex style={Wrapper} justify={"center"} align={"center"}>
-                    <span style={Text}>
-                        {chatName.charAt(0)}
+                    {chatName &&
+                        <span style={Text}>
+                            {chatName.charAt(0)}
 
-                    </span>
+                        </span>
+                    }
                 </Flex>
             )
 };

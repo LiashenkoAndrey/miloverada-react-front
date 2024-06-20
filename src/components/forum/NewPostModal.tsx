@@ -9,23 +9,22 @@ import {CloseCircleOutlined, PlusOutlined} from "@ant-design/icons";
 import {IImage} from "../../domain/NewsInt";
 import {getBase64} from "../../API/Util";
 import TextareaAutosize from "react-textarea-autosize";
-import {newTopic} from "../../API/services/forum/StoryService";
 import {AuthContext} from "../../context/AuthContext";
 import {useAuth0} from "@auth0/auth0-react";
-import {IPost, newPost} from "../../API/services/forum/PostService";
+import {newPost} from "../../API/services/forum/PostService";
 import {useTypedSelector} from "../../hooks/useTypedSelector";
 import {useActions} from "../../hooks/useActions";
 
-interface NewStoryModalProps {
+interface NewPostModalProps {
     isOpen : boolean
     setIsOpen :  React.Dispatch<React.SetStateAction<boolean>>
 
 }
 
-const NewStoryModal:FC<NewStoryModalProps> = ({isOpen, setIsOpen}) => {
+const NewPostModal:FC<NewPostModalProps> = ({isOpen, setIsOpen}) => {
     const [text, setText] = useState<string>('')
     const [imagesFiles, setImagesFiles] = useState<File[]>([])
-    const [newsImages, setNewsImages] = useState<IImage[]>([])
+    const [images, setImages] = useState<IImage[]>([])
     const inputFile = useRef<HTMLInputElement | null>(null)
     const [isLoading, setIsLoading] = useState<boolean>(false)
     const {jwt} = useContext(AuthContext)
@@ -43,11 +42,16 @@ const NewStoryModal:FC<NewStoryModalProps> = ({isOpen, setIsOpen}) => {
             setIsLoading(false)
 
             if (data) {
-                console.log(data)
-                setPosts([...posts, data])
+                setImagesFiles([])
+                setText('')
+                setImages([])
+                setPosts([data, ...posts])
                 setIsOpen(false)
             }
-            if (error) throw error
+            if (error)  {
+                notification.error({message : "Виникла неочікувана помилка. Будь ласка спробуйте ще раз"})
+                console.error(error)
+            }
         } else notification.warning({message : "not auth"})
     };
 
@@ -74,14 +78,14 @@ const NewStoryModal:FC<NewStoryModalProps> = ({isOpen, setIsOpen}) => {
                     }
                     arr.push(img)
                     if (i === fileList.length-1) {
-                        setNewsImages([...newsImages, ...arr])
+                        setImages([...images, ...arr])
                     }
                 })
             }
         }
     }
     const onRemove = (img: IImage) => {
-        setNewsImages(newsImages.filter((e) => e.base64Image !== img.base64Image))
+        setImages(images.filter((e) => e.base64Image !== img.base64Image))
         setImagesFiles(imagesFiles.filter((file) => file.name !== img.fileName))
     }
 
@@ -111,7 +115,7 @@ const NewStoryModal:FC<NewStoryModalProps> = ({isOpen, setIsOpen}) => {
                       style={{flexGrow: 1}}
                 >
                     {imagesFiles.length > 0 ?
-                        newsImages.map((img) =>
+                        images.map((img) =>
                             <div style={{position: "relative"}} className={classes2.imgWrapper}>
                                 <Image className={classes2.image}
                                        src={img.base64Image}
@@ -150,4 +154,4 @@ const NewStoryModal:FC<NewStoryModalProps> = ({isOpen, setIsOpen}) => {
     );
 };
 
-export default NewStoryModal;
+export default NewPostModal;

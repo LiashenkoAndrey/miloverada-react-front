@@ -4,12 +4,13 @@ import {StompSessionProvider} from "react-stomp-hooks";
 import ChatWindow from "../../../components/ChatWindow/ChatWindow";
 import {useActions} from "../../../hooks/useActions";
 import {useParams} from "react-router-dom";
-import ChatNav from "../../../components/ChatNav";
 import {getChatById, getOrCreatePrivateChat} from "../../../API/services/forum/ChatService";
 import {useAuth0} from "@auth0/auth0-react";
 import {AuthContext} from "../../../context/AuthContext";
 import {useTypedSelector} from "../../../hooks/useTypedSelector";
 import {IChat, PrivateChat} from "../../../API/services/forum/ForumInterfaces";
+import ContentList from "../AllTopicsPage/ContentList/ContentList";
+import WindowSlider from "../../../components/WindowSlider/WindowSlider";
 
 const PrivateChatPage = () => {
     const {setChatId, setHasPreviousMessages} = useActions()
@@ -19,6 +20,8 @@ const PrivateChatPage = () => {
     const {chatId} = useTypedSelector(state => state.chat)
     const {setChatInfo} = useActions()
     const [privateChat, setPrivateChat] = useState<PrivateChat>();
+    const [leftPanelWidth, setLeftPanelWidth] = useState<number>(500)
+
 
     const initChat = async (chatId: number, privateChat : PrivateChat) => {
         const {data, error} = await getChatById(chatId);
@@ -80,10 +83,18 @@ const PrivateChatPage = () => {
     return (
         <Flex className={"chatPageWrapper"} align={"flex-start"} justify={"center"}>
             <Flex className={"chatWrapper"} gap={20} justify={"center"}>
-                <ChatNav/>
+                <Flex className={"leftContent forumStyledScrollBar"}
+                      style={{overflowY: "scroll", height: "100vh", width: leftPanelWidth}}
+                >
+                    <ContentList/>
+                </Flex>
 
+                <WindowSlider leftPanelWidth={leftPanelWidth}
+                              setLeftPanelWidth={setLeftPanelWidth}
+                />
                 {isAuthenticated &&
-                    <StompSessionProvider url={'https://v2.miloverada.gov.ua:8443/ws-endpoint'}>
+                    // <StompSessionProvider url={'https://api.miloverada.gov.ua:8443/ws-endpoint'}>
+                    <StompSessionProvider url={'http://localhost:6060/ws-endpoint'}>
                         <ChatWindow />
                     </StompSessionProvider>
                 }

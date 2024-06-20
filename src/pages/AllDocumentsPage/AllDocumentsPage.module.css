@@ -22,6 +22,7 @@
 
 .heading {
 }
+
 .input span input::placeholder {
     font-size: 14px;
     color: rgba(52, 52, 52, 0.8);
@@ -44,7 +45,7 @@
  }
 
  .subGroupName {
-     
+
     font-size: 21px!important;
     font-family: 'Source Serif 4', serif;
     font-weight: 500;

@@ -1,5 +1,4 @@
 import {ForumAction, ForumActionTypes, ForumState} from "../../types/forum";
-import {Modes} from "../../components/forum/ChatsList/ChatsList";
 
 const initState : ForumState = {
     chats : [],

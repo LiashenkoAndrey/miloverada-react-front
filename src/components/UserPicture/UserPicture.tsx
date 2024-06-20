@@ -5,6 +5,7 @@ import classes from "../../pages/forum/Message/Message.module.css";
 import {User} from "../../API/services/forum/ForumInterfaces";
 import {useAuth0} from "@auth0/auth0-react";
 import {useNavigate} from "react-router-dom";
+import {getImageV2Url} from "../../API/services/ImageService";
 
 interface UserPictureProps  {
     user : User
@@ -30,8 +31,12 @@ const UserPicture: FC<UserPictureProps> = ({user}) => {
     return (
         <Tooltip title={<Flex style={{maxWidth: 300}} gap={5}>
             <div style={{width: 150, maxHeight: 150}}>
-
-                <Image src={user.avatar}/>
+                {!user.avatar.includes("http")
+                    ?
+                    <Image src={getImageV2Url(user.avatar)}/>
+                    :
+                    <Image src={user.avatar}/>
+                }
             </div>
             <Flex gap={5} justify={"space-between"} vertical>
 

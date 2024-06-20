@@ -44,7 +44,9 @@ export function generateContrastColor2() : string {
     }
 }
 
-
+export function stringContainsOnlySpaces(str: string) {
+    return !str.replace(/\s/g, '').length;
+}
 
 export function toDate(date : Array<string>) {
     return new Date(date.toString()).toLocaleString()
