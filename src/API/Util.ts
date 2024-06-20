@@ -62,6 +62,8 @@ export function toDateV2(date: string) {
     return t[0]
 }
 
+
+
 export function toDateV2DateFirst(date: string) {
     const t = date.split("T")
     return t[0].split("-").reverse().join("-")

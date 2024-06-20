@@ -15,7 +15,7 @@ import {useAuth0} from "@auth0/auth0-react";
 import TopicPage from "./pages/forum/TopicPage/TopicPage";
 import IsRegisteredCheckPage from "./pages/IsRegisteredCheckPage";
 import PrivateChatPage from "./pages/forum/PrivateChatPage/PrivateChatPage";
-import AllUsersPage from "./pages/AllUsersPage/AllUsersPage";
+import AllUsersPage from "./pages/forum/AllUsersPage/AllUsersPage";
 import AllInstitutionsPage from "./pages/AllInstitutionsPage/AllInstitutionsPage";
 import InstitutionPage from "./pages/InstitutionPage/InstitutionPage";
 import AddNewsPage from "./pages/AddNewsPage/AddNewsPage";

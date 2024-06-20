@@ -16,6 +16,7 @@ import {CloseOutlined, DeleteOutlined, EditOutlined, LeftOutlined, PlusOutlined}
 import {checkPermission, formatDate, formatDateTodayOrYesterday, toDateV2} from "../../../API/Util";
 import CreateNotificationModal from "../../Notifications/CreateNotificationModal";
 import EditNotificationModal from "../../Notifications/EditNotificationModal";
+import {useNavigate} from "react-router-dom";
 
 interface UserInfoDrawerProps {
     isUserDrawerActive: boolean
@@ -25,8 +26,9 @@ interface UserInfoDrawerProps {
 const UserInfoDrawer: FC<UserInfoDrawerProps> = ({setIsUserDrawerActive, isUserDrawerActive}) => {
     const {jwt} = useContext(AuthContext)
     const {setAdminMetadata, setNotificationNumber} = useActions()
+    const nav = useNavigate()
     const [isLoading, setIsLoading] = useState<boolean>(false)
-    const {user, logout} = useAuth0()
+    const {user, isAuthenticated, logout} = useAuth0()
     const {adminMetadata, unreadNotificationNumber} = useTypedSelector(state => state.user)
     const [notifications, setNotifications] = useState<INotification[]>([])
     const [isNewNotificationModalActive, setIsNewNotificationModalActive] = useState<boolean>(false)
@@ -134,6 +136,12 @@ const UserInfoDrawer: FC<UserInfoDrawerProps> = ({setIsUserDrawerActive, isUserD
         }
     }
 
+    const onUserStartChatWithAuthorButtonClick = () => {
+        if (isAuthenticated && currentNotification) {
+            nav("/forum/user/" + currentNotification.author.id + "/chat")
+        } else console.log("user sub null")
+    }
+
     return (
         <Drawer
             size={currentNotification ? 'large' : 'default'}
@@ -219,7 +227,7 @@ const UserInfoDrawer: FC<UserInfoDrawerProps> = ({setIsUserDrawerActive, isUserD
                                     fontWeight: 600
                                 }}>{toDateV2(currentNotification.createdOn)} {formatDateTodayOrYesterday(currentNotification.createdOn)}</span>
                             }
-                            <Button  disabled icon={
+                            <Button  onClick={onUserStartChatWithAuthorButtonClick} icon={
                                 <img
                                     src={currentNotification.author.avatarBase64Image ? currentNotification.author.avatarBase64Image : currentNotification.author.avatarUrl}
                                     alt="автор"
