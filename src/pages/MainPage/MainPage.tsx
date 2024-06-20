@@ -10,7 +10,7 @@ import BannersList from "../../components/BannersList/BannersList";
 import MainPageImageParallax from "./MainPageImageParallax";
 import ParallaxImage from "./ParallaxImage";
 // @ts-ignore
-import './AppTest.css';
+import './ParallaxImage.css';
 // @ts-ignore
 import bg1 from '../../assets/backgrounds/bg1.png'
 // @ts-ignore

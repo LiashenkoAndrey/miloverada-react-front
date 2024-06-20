@@ -1,7 +1,7 @@
 import React, {CSSProperties, FC, useEffect, useState} from 'react';
 // @ts-ignore
 import img from '../../assets/backgrounds/bg1.png';
-import './AppTest.css';
+import './ParallaxImage.css';
 
 interface ParallaxImageProps {
     imgUrl : string

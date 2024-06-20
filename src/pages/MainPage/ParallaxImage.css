@@ -107,6 +107,25 @@
     left: -410px!important;
 }
 
+@media (min-width: 1800px) {
+    .parallaxImageWrapper_2 {
+        width: 605px;
+    }
+    .parallax_image_1 {
+        left: -462px!important;
+        clip-path: polygon(0% 5%, 100.45% 14.46%, 39.75% 99.6%, 0.18% 99.71%) !important;
+    }
+    .parallax_image_2 {
+        width: 2122px!important;
+        top: 214px!important;
+        left: -576px!important;
+    }
+
+    .parallax_image_3 {
+        left: -522px!important;
+    }
+}
+
 @media (max-width: 330px) {
     .parallaxImageWrapper_3 {
         width: 15px;
