@@ -1,14 +1,29 @@
 import {callAndGetResult} from "./ExternalApiService";
+import {AppUser} from "./forum/ForumInterfaces";
 
 const apiServerUrl = process.env.REACT_APP_API_SERVER_URL;
 
 export interface INotification {
-    id? : number,
+    id : number,
     message : string,
     text : string
-    createdOn? : string
-    isViewed? : boolean
+    createdOn : string
+    updatedOn : string
+    author : AppUser
+    isViewed : boolean
 }
+
+export interface INewNotification {
+    message? : string,
+    text? : string
+    authorId? : string
+}
+
+export interface IEditNotification {
+    message? : string,
+    text? : string
+}
+
 
 export const getAllNotifications = (userId : string, jwt : string) => {
     const config = {
@@ -56,10 +71,22 @@ export const deleteNotificationById = (id : number,jwt : string) => {
 }
 
 
-export const newNotification = (data : INotification, jwt : string) => {
+export const newNotification = (data : INewNotification, jwt : string) => {
     const config = {
         url: `${apiServerUrl}/api/protected/admin/notification/new`,
         method: "POST",
+        data : data,
+        headers: {
+            Authorization: `Bearer ${jwt}`,
+        }
+    }
+    return callAndGetResult(config)
+}
+
+export const editNotification = (data : IEditNotification, id : number, jwt : string) => {
+    const config = {
+        url: `${apiServerUrl}/api/protected/admin/notification/${id}/edit`,
+        method: "PUT",
         data : data,
         headers: {
             Authorization: `Bearer ${jwt}`,

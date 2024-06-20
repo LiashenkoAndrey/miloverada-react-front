@@ -1,6 +1,6 @@
 import React, {useContext, useEffect, useState} from 'react';
 import classes from './Header.module.css'
-import {Badge, Dropdown, Flex, MenuProps, notification, Space} from "antd";
+import {Badge, Dropdown, Flex, MenuProps, Space} from "antd";
 // @ts-ignore
 import icon from '../../assets/icon.png'
 import {useLocation, useNavigate} from "react-router-dom";
@@ -8,10 +8,10 @@ import {MenuOutlined, UserOutlined} from "@ant-design/icons";
 import {useAuth0} from "@auth0/auth0-react";
 import {AuthContext} from "../../context/AuthContext";
 import {useTypedSelector} from "../../hooks/useTypedSelector";
-import {getUserById, updateAdminMeta} from "../../API/services/UserService";
+import {getUserById} from "../../API/services/UserService";
 import {AppUser} from "../../API/services/forum/ForumInterfaces";
 import {useActions} from "../../hooks/useActions";
-import {UserInfoDrawer} from "./UserInfoDrawer/UserInfoDrawer";
+import UserInfoDrawer from "./UserInfoDrawer/UserInfoDrawer";
 import {getTotalNumberOfNotifications} from "../../API/services/NotificationService";
 
 export interface HeaderOption {
