@@ -136,6 +136,14 @@ export interface AppUser {
     registeredOn : string
 }
 
+export interface AppUserDto {
+    id : string,
+    firstName : string,
+    lastName : string,
+    avatarBase64Image? : string
+    avatarUrl? : string
+}
+
 export interface NewUserDto {
     id? : string,
     firstName? : string,

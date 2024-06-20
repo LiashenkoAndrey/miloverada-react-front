@@ -7,7 +7,7 @@ import {AuthContext} from "../../../context/AuthContext";
 import {useActions} from "../../../hooks/useActions";
 import {
     getAllNotifications,
-    getNotificationById,
+    getNotificationById, INewNotification,
     INotification,
     newNotification
 } from "../../../API/services/NotificationService";
@@ -128,16 +128,22 @@ const UserInfoDrawer: FC<UserInfoDrawerProps> = ({setIsUserDrawerActive, isUserD
 
                         <Flex gap={10}>
                             <Image src={user?.picture}/>
-                            <Flex vertical>
-                                <span>{user?.name}</span>
-                                <span>{user?.email}</span>
+                            <Flex vertical justify={"space-between"} >
+                                <Flex vertical>
+                                    <span>{user?.name}</span>
+                                    <span>{user?.email}</span>
+                                </Flex>
+
+                                <Button onClick={onLogout}
+                                        style={{width: "fit-content"}}
+                                        type={"primary"}
+                                >
+                                    Вийти
+                                </Button>
                             </Flex>
                         </Flex>
-                        <Button onClick={onLogout}
-                                style={{width: "fit-content"}}
-                                type={"primary"}
-                        >Вийти
-                        </Button>
+
+                        <span style={{color: "black", fontSize: 20, paddingTop: 5}}>Сповіщення</span>
 
                         <Flex gap={8} vertical style={{margin: "10px 5px"}}>
                             {notifications.map((notif) =>
@@ -209,24 +215,22 @@ const NewNotificationModal: FC<NewNotificationModalProps> = ({
     const [isLoading, setIsLoading] = useState<boolean>(false)
     const [text, setText] = useState<string>()
     const {jwt} = useContext(AuthContext)
+    const {user} = useAuth0()
     const message = useInput()
     const editorRef = useRef<TinyMCEEditor | null>(null)
 
     const onSave = async () => {
-        if (jwt && text && message.value) {
-            console.log(message)
-            console.log(text)
+        if (jwt && user?.sub && text && message.value) {
             setIsLoading(true)
-            let notif: INotification = {
+            let notif: INewNotification = {
                 text: text,
-                message: message.value
+                message: message.value,
+                authorId : user.sub
             }
-            console.log(notif)
             const {data, error} = await newNotification(notif, jwt)
 
             setIsLoading(false)
             if (data) {
-                console.log(data)
                 data.isViewed = false;
                 setNotifications([data, ...notifications])
                 notification.success({message: "Сповіщення збережено успішно!"})

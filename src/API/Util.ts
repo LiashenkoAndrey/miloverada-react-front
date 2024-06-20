@@ -61,6 +61,41 @@ export function toDateV2(date : string ) {
     return t[0]
 }
 
+export function toDateV2DateFirst(date : string ) {
+    const t = date.split("T")
+    return t[0].split("-").reverse().join("-")
+}
+
+
+var fulldays = ["Неділя", "Понеділок", "Вівторок", "Середа", "Четвер", "П'ятниця", "Субота"];
+var months = ["Січень", "Лютий", "Березень", "Квітень", "Травень", "Червень", "Липень", "Серпень", "Вересень", "Жовтень", "Листопад", "Грудень"];
+
+export function formatDate(someDateTimeStamp : string) {
+    var dt = new Date(someDateTimeStamp),
+        date = dt.getDate(),
+        month = months[dt.getMonth()],
+        // @ts-ignore
+        timeDiff = someDateTimeStamp - Date.now(),
+        diffDays = new Date().getDate() - date,
+        diffMonths = new Date().getMonth() - dt.getMonth(),
+        diffYears = new Date().getFullYear() - dt.getFullYear();
+
+    if(diffYears === 0 && diffDays === 0 && diffMonths === 0){
+        return "Сьогоді";
+    }else if(diffYears === 0 && diffDays === 1) {
+        return "Вчора";
+    }else if(diffYears === 0 && diffDays === -1) {
+        return "Завтра";
+    }else if(diffYears === 0 && (diffDays < -1 && diffDays > -7)) {
+        return fulldays[dt.getDay()];
+    }else if(diffYears >= 1){
+        return month + " " + date + ", " + new Date(someDateTimeStamp).getFullYear();
+    }else {
+        return month + " " + date;
+    }
+}
+
+
 export function isValidEmail(email : string) {
     // Regular expression for validating email addresses
     var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
