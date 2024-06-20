@@ -3,11 +3,11 @@ import {jwtDecode} from "jwt-decode";
 
 const apiServerUrl = process.env.REACT_APP_API_SERVER_URL;
 
-export function toTime(date : Array<string>) {
+export function toTime(date: Array<string>) {
     return new Date(date.toString()).toTimeString().substring(0, 5)
 }
 
-export const NOT_AUTH_MSG = {message : "Не авторизовано"}
+export const NOT_AUTH_MSG = {message: "Не авторизовано"}
 
 export function getRandomColor(): string {
     const letters: string = '0123456789ABCDEF';
@@ -17,7 +17,8 @@ export function getRandomColor(): string {
     }
     return color;
 }
-export function generateContrastColor2() : string {
+
+export function generateContrastColor2(): string {
     // Генеруємо випадковий колір для тексту
     const randomColor = getRandomColor()
     const background = "#5C4742"
@@ -48,20 +49,20 @@ export function stringContainsOnlySpaces(str: string) {
     return !str.replace(/\s/g, '').length;
 }
 
-export function toDate(date : Array<string>) {
+export function toDate(date: Array<string>) {
     return new Date(date.toString()).toLocaleString()
 }
 
-export function toDateShort(date : Array<string>) {
+export function toDateShort(date: Array<string>) {
     return new Date(date.toString()).toLocaleString().split(",")[0]
 }
 
-export function toDateV2(date : string ) {
+export function toDateV2(date: string) {
     const t = date.split("T")
     return t[0]
 }
 
-export function toDateV2DateFirst(date : string ) {
+export function toDateV2DateFirst(date: string) {
     const t = date.split("T")
     return t[0].split("-").reverse().join("-")
 }
@@ -70,33 +71,50 @@ export function toDateV2DateFirst(date : string ) {
 var fulldays = ["Неділя", "Понеділок", "Вівторок", "Середа", "Четвер", "П'ятниця", "Субота"];
 var months = ["Січень", "Лютий", "Березень", "Квітень", "Травень", "Червень", "Липень", "Серпень", "Вересень", "Жовтень", "Листопад", "Грудень"];
 
-export function formatDate(someDateTimeStamp : string) {
-    var dt = new Date(someDateTimeStamp),
+export function formatDate(someDateTimeStamp: string) {
+    let dt = new Date(someDateTimeStamp),
         date = dt.getDate(),
         month = months[dt.getMonth()],
         // @ts-ignore
-        timeDiff = someDateTimeStamp - Date.now(),
         diffDays = new Date().getDate() - date,
         diffMonths = new Date().getMonth() - dt.getMonth(),
         diffYears = new Date().getFullYear() - dt.getFullYear();
 
-    if(diffYears === 0 && diffDays === 0 && diffMonths === 0){
-        return "Сьогоді";
-    }else if(diffYears === 0 && diffDays === 1) {
+    if (diffYears === 0 && diffDays === 0 && diffMonths === 0) {
+        return "Сьогодні";
+    } else if (diffYears === 0 && diffDays === 1) {
         return "Вчора";
-    }else if(diffYears === 0 && diffDays === -1) {
+    } else if (diffYears === 0 && diffDays === -1) {
         return "Завтра";
-    }else if(diffYears === 0 && (diffDays < -1 && diffDays > -7)) {
+    } else if (diffYears === 0 && (diffDays < -1 && diffDays > -7)) {
         return fulldays[dt.getDay()];
-    }else if(diffYears >= 1){
+    } else if (diffYears >= 1) {
         return month + " " + date + ", " + new Date(someDateTimeStamp).getFullYear();
-    }else {
+    } else {
         return month + " " + date;
     }
 }
 
+export function formatDateTodayOrYesterday(someDateTimeStamp: string) {
+    console.log(someDateTimeStamp)
+    let dt = new Date(someDateTimeStamp),
+        date = dt.getDate(),
+        diffDays = new Date().getDate() - date,
+        diffMonths = new Date().getMonth() - dt.getMonth(),
+        diffYears = new Date().getFullYear() - dt.getFullYear();
 
-export function isValidEmail(email : string) {
+    if (diffYears === 0 && diffDays === 0 && diffMonths === 0) {
+        return "(Сьогодні)";
+    } else if (diffYears === 0 && diffDays === 1) {
+        return "(Вчора)";
+    } else if (diffYears === 0 && diffDays === -1) {
+        return "(Завтра)";
+    }
+    else return ""
+}
+
+
+export function isValidEmail(email: string) {
     // Regular expression for validating email addresses
     var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -113,7 +131,7 @@ export function isWoman(nameStr: string | undefined) {
     return false;
 }
 
-export  function containsCyrillicCharacters(str : string) {
+export function containsCyrillicCharacters(str: string) {
     if (str === "") return true;
     // Regular expression to match Cyrillic characters
     var cyrillicRegex = /^[а-яА-ЯіЇ]+$/;
@@ -121,7 +139,8 @@ export  function containsCyrillicCharacters(str : string) {
     // Test if the string contains Cyrillic characters
     return cyrillicRegex.test(str);
 }
-export function getFileUploadUrl(isLarge : boolean | undefined, id : string | undefined) {
+
+export function getFileUploadUrl(isLarge: boolean | undefined, id: string | undefined) {
     if (isLarge === undefined || id === undefined) {
         console.error("is undefined")
         return "/none"
@@ -143,7 +162,7 @@ export function formatFileSize(size: number): string {
     } else return `${Math.round(Number(size) / 1000)} KB`
 }
 
-export const getBase64 = (file : File, cb : Function) => {
+export const getBase64 = (file: File, cb: Function) => {
     let reader = new FileReader();
     reader.readAsDataURL(file);
     reader.onload = function () {
@@ -154,7 +173,7 @@ export const getBase64 = (file : File, cb : Function) => {
     };
 }
 
-export const getBase642 = (blob : Blob, cb : Function) => {
+export const getBase642 = (blob: Blob, cb: Function) => {
     let reader = new FileReader();
     reader.readAsDataURL(blob);
     reader.onload = function () {
@@ -166,14 +185,14 @@ export const getBase642 = (blob : Blob, cb : Function) => {
 }
 
 interface JwtPayload {
-    permissions : string[]
-    scope : string
-    sub : string
+    permissions: string[]
+    scope: string
+    sub: string
 }
 
-export const checkPermission = (token : string | undefined, permission : string) => {
+export const checkPermission = (token: string | undefined, permission: string) => {
     if (token !== undefined) {
-        const  payload : JwtPayload = jwtDecode(token);
+        const payload: JwtPayload = jwtDecode(token);
         return payload.permissions.includes(permission);
     } else {
         return false

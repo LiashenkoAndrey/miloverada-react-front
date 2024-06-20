@@ -1,7 +1,7 @@
 import React, {FC} from 'react';
 import {INotification} from "../../../API/services/NotificationService";
 import {Badge, Flex} from "antd";
-import {formatDate, toDateV2, toDateV2DateFirst} from "../../../API/Util";
+import {formatDate} from "../../../API/Util";
 import classes from './Notification.module.css'
 
 interface NotificationProps {

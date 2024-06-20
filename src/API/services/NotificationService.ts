@@ -19,6 +19,11 @@ export interface INewNotification {
     authorId? : string
 }
 
+export interface IEditNotification {
+    message? : string,
+    text? : string
+}
+
 
 export const getAllNotifications = (userId : string, jwt : string) => {
     const config = {
@@ -70,6 +75,18 @@ export const newNotification = (data : INewNotification, jwt : string) => {
     const config = {
         url: `${apiServerUrl}/api/protected/admin/notification/new`,
         method: "POST",
+        data : data,
+        headers: {
+            Authorization: `Bearer ${jwt}`,
+        }
+    }
+    return callAndGetResult(config)
+}
+
+export const editNotification = (data : IEditNotification, id : number, jwt : string) => {
+    const config = {
+        url: `${apiServerUrl}/api/protected/admin/notification/${id}/edit`,
+        method: "PUT",
         data : data,
         headers: {
             Authorization: `Bearer ${jwt}`,

@@ -1,22 +1,21 @@
-import React, {FC, useContext, useEffect, useRef, useState} from 'react';
-import {Button, Drawer, Flex, Image, Input, Modal, notification} from "antd";
+import React, {FC, useContext, useEffect, useState} from 'react';
+import {Button, Drawer, Flex, Image, message, notification, Popconfirm} from "antd";
 import {useAuth0} from "@auth0/auth0-react";
 import {updateAdminMeta} from "../../../API/services/UserService";
 import {useTypedSelector} from "../../../hooks/useTypedSelector";
 import {AuthContext} from "../../../context/AuthContext";
 import {useActions} from "../../../hooks/useActions";
 import {
+    deleteNotificationById,
     getAllNotifications,
-    getNotificationById, INewNotification,
-    INotification,
-    newNotification
+    getNotificationById,
+    INotification
 } from "../../../API/services/NotificationService";
-import Notification from "../Notification/Notification";
-import {CloseOutlined, LeftOutlined, PlusOutlined} from "@ant-design/icons";
-import useInput from "../../../API/hooks/useInput";
-import HtmlEditor from "../../HtmlEditor";
-import {Editor as TinyMCEEditor} from "tinymce";
-import {checkPermission, toDateV2} from "../../../API/Util";
+import Notification from "../../Notifications/Notification/Notification";
+import {CloseOutlined, DeleteOutlined, EditOutlined, LeftOutlined, PlusOutlined} from "@ant-design/icons";
+import {checkPermission, formatDate, formatDateTodayOrYesterday, toDateV2} from "../../../API/Util";
+import CreateNotificationModal from "../../Notifications/CreateNotificationModal";
+import EditNotificationModal from "../../Notifications/EditNotificationModal";
 
 interface UserInfoDrawerProps {
     isUserDrawerActive: boolean
@@ -79,9 +78,10 @@ const UserInfoDrawer: FC<UserInfoDrawerProps> = ({setIsUserDrawerActive, isUserD
         }
     }
 
-    const [currentNotification, setCurrentNotification] = useState<INotification>()
+    const [currentNotification, setCurrentNotification] = useState<INotification | null>(null)
 
     const onReadNotification = async (notification: INotification) => {
+
         if (notification.id && jwt && user?.sub && notification.isViewed !== undefined) {
 
             const {
@@ -103,17 +103,61 @@ const UserInfoDrawer: FC<UserInfoDrawerProps> = ({setIsUserDrawerActive, isUserD
     }
 
     const onBackToProfile = () => {
-        setCurrentNotification(undefined);
+        setCurrentNotification(null);
     }
 
     const onCloseDrawer = () => {
         setIsUserDrawerActive(false)
     }
 
+    const [isEditNotificationModalOpen, setIsEditNotificationModalOpen] = useState<boolean>(false)
+
+    const onClickEditNotification = () => {
+        setIsEditNotificationModalOpen(true)
+    }
+
+    const [isDeleteNotificationLoading, setIsDeleteNotificationLoading] = useState<boolean>(false)
+
+    const onDeleteNotification =  async () => {
+        if (jwt && currentNotification) {
+            setIsDeleteNotificationLoading(true)
+            const {data, error} = await deleteNotificationById(currentNotification.id, jwt)
+            setIsDeleteNotificationLoading(false)
+            if (data) {
+                message.success({content: "Видалено успішно", duration : 1})
+                setNotifications(notifications.filter((e) => e.id !== currentNotification.id))
+                onBackToProfile()
+            }
+            if (error) {
+                notification.error({message: "Виникла помилка :( Спробуйте ще раз!"})
+            }
+        }
+    }
+
     return (
         <Drawer
             size={currentNotification ? 'large' : 'default'}
-            title={currentNotification ? currentNotification.message : "Мій профіль"}
+            title={currentNotification ? <Flex justify={"space-between"} gap={10} align={"center"}>
+                <span style={{fontSize: 20}}>{currentNotification.message}</span>
+
+                <Flex>
+                    <Button icon={<EditOutlined/>} onClick={onClickEditNotification}>
+                        Редагувати
+                    </Button>
+
+                    <Popconfirm
+                        title="Видалити"
+                        description="Ви впевнені? Дія незворотня."
+                        onConfirm={onDeleteNotification}
+                        okButtonProps={{loading: isDeleteNotificationLoading}}
+                    >
+                        <Button loading={isDeleteNotificationLoading}
+                                icon={<DeleteOutlined/>}>
+                            {isDeleteNotificationLoading ? "Видалення..." : "Видалити"}
+                        </Button>
+                    </Popconfirm>
+                </Flex>
+            </Flex> : "Мій профіль"}
             onClose={currentNotification ? onBackToProfile : onCloseDrawer}
             open={isUserDrawerActive}
             closeIcon={currentNotification ? <LeftOutlined/> : <CloseOutlined/>}
@@ -123,6 +167,17 @@ const UserInfoDrawer: FC<UserInfoDrawerProps> = ({setIsUserDrawerActive, isUserD
                   justify={"space-between"}
                   gap={40}
             >
+
+                {(isEditNotificationModalOpen && currentNotification) &&
+                    <EditNotificationModal notificationToEdit={currentNotification}
+                                           setCurrentNotification={setCurrentNotification}
+                                           notifications={notifications}
+                                           setNotifications={setNotifications}
+                                           isOpen={isEditNotificationModalOpen}
+                                           setIsOpen={setIsEditNotificationModalOpen}
+                    />
+                }
+
                 {!currentNotification &&
                     <Flex gap={10} vertical>
 
@@ -156,13 +211,24 @@ const UserInfoDrawer: FC<UserInfoDrawerProps> = ({setIsUserDrawerActive, isUserD
 
                 {currentNotification &&
                     <Flex vertical gap={10}>
-                        {currentNotification.createdOn &&
-                            <span style={{
-                                color: "brown",
-                                fontSize: 14,
-                                fontWeight: 600
-                            }}>{toDateV2(currentNotification.createdOn)}</span>
-                        }
+                        <Flex align={"center"} justify={"space-between"}>
+                            {currentNotification.createdOn &&
+                                <span style={{
+                                    color: "brown",
+                                    fontSize: 18,
+                                    fontWeight: 600
+                                }}>{toDateV2(currentNotification.createdOn)} {formatDateTodayOrYesterday(currentNotification.createdOn)}</span>
+                            }
+                            <Button  disabled icon={
+                                <img
+                                    src={currentNotification.author.avatarBase64Image ? currentNotification.author.avatarBase64Image : currentNotification.author.avatarUrl}
+                                    alt="автор"
+                                    height={25}
+                                    width={25}
+                                    style={{borderRadius: 10}}
+                                />
+                            }>Написати автору</Button>
+                        </Flex>
                         <p dangerouslySetInnerHTML={{__html: currentNotification.text}}></p>
                     </Flex>
                 }
@@ -171,10 +237,10 @@ const UserInfoDrawer: FC<UserInfoDrawerProps> = ({setIsUserDrawerActive, isUserD
                     <Flex vertical gap={5}>
 
                         {isUserDrawerActive &&
-                            <NewNotificationModal setIsOpen={setIsNewNotificationModalActive}
-                                                  isOpen={isNewNotificationModalActive}
-                                                  notifications={notifications}
-                                                  setNotifications={setNotifications}
+                            <CreateNotificationModal setIsOpen={setIsNewNotificationModalActive}
+                                                     isOpen={isNewNotificationModalActive}
+                                                     notifications={notifications}
+                                                     setNotifications={setNotifications}
                             />
                         }
                         {checkPermission(jwt, "admin") &&
@@ -199,73 +265,6 @@ const UserInfoDrawer: FC<UserInfoDrawerProps> = ({setIsUserDrawerActive, isUserD
     );
 };
 
-interface NewNotificationModalProps {
-    isOpen: boolean
-    setIsOpen: React.Dispatch<React.SetStateAction<boolean>>
-    setNotifications: React.Dispatch<React.SetStateAction<INotification[]>>
-    notifications: INotification[]
-}
-
-const NewNotificationModal: FC<NewNotificationModalProps> = ({
-                                                                 isOpen,
-                                                                 setIsOpen,
-                                                                 setNotifications,
-                                                                 notifications
-                                                             }) => {
-    const [isLoading, setIsLoading] = useState<boolean>(false)
-    const [text, setText] = useState<string>()
-    const {jwt} = useContext(AuthContext)
-    const {user} = useAuth0()
-    const message = useInput()
-    const editorRef = useRef<TinyMCEEditor | null>(null)
-
-    const onSave = async () => {
-        if (jwt && user?.sub && text && message.value) {
-            setIsLoading(true)
-            let notif: INewNotification = {
-                text: text,
-                message: message.value,
-                authorId : user.sub
-            }
-            const {data, error} = await newNotification(notif, jwt)
-
-            setIsLoading(false)
-            if (data) {
-                data.isViewed = false;
-                setNotifications([data, ...notifications])
-                notification.success({message: "Сповіщення збережено успішно!"})
-                setIsOpen(false)
-                setText('')
-                message.setValue("")
-            }
-            if (error) {
-                notification.error({message: "Виникла помилка :( Спробуйте ще раз!"})
-            }
-        } else {
-            notification.warning({message: "Не авторизована дія!"})
-        }
-    }
-
-    return (
-        <Modal open={isOpen}
-               okButtonProps={{loading: isLoading ? isLoading : false}}
-               onOk={onSave}
-               width={"50vw"}
-               onCancel={() => setIsOpen(false)}
-        >
-            <Flex vertical gap={5} style={{marginTop: 30}}>
-                <Input {...message} placeholder={"Повідомлення"}/>
-                <HtmlEditor val={text} onInit={(evt, editor) => {
-                    editorRef.current = editor
-                }}
-                            onChange={(str) => {
-                                setText(str)
-                            }}
-                />
-            </Flex>
-        </Modal>
-    );
-};
 
 
-export {UserInfoDrawer, NewNotificationModal};
+export default UserInfoDrawer;
