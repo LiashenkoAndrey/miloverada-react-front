@@ -1,0 +1,11 @@
+
+
+.draggedOption {
+    border: 1px solid rgba(0, 128, 0, 0.54) !important;
+    background-color: rgba(0, 128, 0, 0.24);
+}
+
+.option {
+    transition: background-color 300ms;
+    border: 1px solid white;
+}

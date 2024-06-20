@@ -73,13 +73,13 @@ const ChatHeader: FC<ChatHeaderProps> = ({
                         </Flex>
                     }
                     {(chatInfo && privateChatInfo === null) &&
-                        <span style={{ color:"var(--forum-primary-text-color)"}} >{chatInfo.description}</span>
+                        <span style={{ color:"var(--forum-primary-text-color)", userSelect: "none"}} >{chatInfo.description}</span>
                     }
                 </Flex>
 
-                <Flex style={{height: "100%"}} gap={5}>
+                <Flex gap={5} style={{height: "100%"}}>
                     {chatInfo ?
-                        <span className={classes.chatMessagesAmount}>{chatInfo.totalMessagesAmount} повідомлень</span>
+                        <span className={classes.chatMessagesAmount}>{chatInfo.totalMessagesAmount} повідомлень, {chatInfo.totalMembersAmount} учасників(а)</span>
                         :
                         <Flex style={{alignSelf: "flex-end", height: 20}}>
                             <Skeleton.Input  size={"small"} active/>
@@ -87,13 +87,27 @@ const ChatHeader: FC<ChatHeaderProps> = ({
                     }
 
                     {chatInfo ?
+                        chatInfo.picture ?
                         <img
                             onClick={showDrawer}
-                            className={"nonSelect " + classes.chatPicture}
+                            className={["nonSelect", classes.chatPicture, "imageWithPlaceholder"].join(' ')}
                             width={75}
+
                             height={75}
                             src={privateChatInfo ? privateChatInfo.user2.avatar : chatInfo.picture}
                         />
+                            :
+                            <Flex
+                                onClick={showDrawer}
+                                className={classes.noPicWrapper}
+                                justify={"center"}
+                                align={"center"}
+                            >
+                                <span className={classes.noPicText}>
+                                    {chatInfo.name.charAt(0)}
+
+                                </span>
+                            </Flex>
                         :
 
                         <Skeleton.Image style={{height: "100%"}} active/>

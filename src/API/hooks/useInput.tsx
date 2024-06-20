@@ -9,6 +9,10 @@ export default function useInput(initialValue? : string) {
         setValue(e.target.value)
     }
 
-    return {value, onChange, setValue};
+    const clear = () => {
+        setValue('')
+    }
+
+    return {value, onChange, setValue, clear};
 
 }

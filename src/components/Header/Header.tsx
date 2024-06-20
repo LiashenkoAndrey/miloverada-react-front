@@ -1,6 +1,6 @@
 import React, {useContext, useEffect, useState} from 'react';
 import classes from './Header.module.css'
-import {Badge, Dropdown, Flex, MenuProps, Space, Tooltip} from "antd";
+import {Badge, Dropdown, Flex, MenuProps, notification, Space} from "antd";
 // @ts-ignore
 import icon from '../../assets/icon.png'
 import {useLocation, useNavigate} from "react-router-dom";
@@ -8,12 +8,11 @@ import {MenuOutlined, UserOutlined} from "@ant-design/icons";
 import {useAuth0} from "@auth0/auth0-react";
 import {AuthContext} from "../../context/AuthContext";
 import {useTypedSelector} from "../../hooks/useTypedSelector";
-import {getUserById} from "../../API/services/UserService";
+import {getUserById, updateAdminMeta} from "../../API/services/UserService";
 import {AppUser} from "../../API/services/forum/ForumInterfaces";
 import {useActions} from "../../hooks/useActions";
 import {UserInfoDrawer} from "./UserInfoDrawer/UserInfoDrawer";
 import {getTotalNumberOfNotifications} from "../../API/services/NotificationService";
-import {checkPermission} from "../../API/Util";
 
 export interface HeaderOption {
     onClick : () => void
@@ -23,17 +22,19 @@ export interface HeaderOption {
 const Header = () => {
     const nav  = useNavigate()
     const { pathname } = useLocation();
-    const {loginWithRedirect, user} = useAuth0()
+    const {loginWithRedirect, isAuthenticated, user, logout } = useAuth0()
     const {jwt} = useContext(AuthContext)
-    const {appUser, unreadNotificationNumber} = useTypedSelector(state => state.user)
+    const {appUser, adminMetadata, unreadNotificationNumber} = useTypedSelector(state => state.user)
     const {setUser, setNotificationNumber} = useActions()
-    const [isUserDrawerActive, setIsUserDrawerActive] = useState<boolean>(false)
+    const {setAdminMetadata} = useActions()
+
 
     useEffect(() => {
         const getNotificationsNumber = async () => {
             if (jwt && user?.sub) {
                 const {data, error} = await getTotalNumberOfNotifications(encodeURIComponent(user?.sub),jwt)
                 if (data) {
+                    console.log(data)
                     setNotificationNumber(data)
                 }
                 if (error) console.log("error when load notific")
@@ -61,10 +62,10 @@ const Header = () => {
         {onClick : () => nav("/documents/all"), title : "Документи"},
         {onClick : () => nav("/newsFeed/all"), title : "Новини"},
         {onClick : () => {
-
-            }, title : <Tooltip title={"Незабаром буде доступно :)"}>Форум</Tooltip>},
-        // {onClick : () => nav("/"), title : "Управління"},
-        // {onClick : () => nav("/institutions"), title : "Установи"},
+                nav("/forum")
+            }, title :
+                    "Форум"
+        },
         {onClick : () => nav("/contacts"), title : "Контакти"},
     ]
     const onLogin = async () => {
@@ -78,17 +79,19 @@ const Header = () => {
         })
     }
 
+
     const userIcon =
-        jwt
+        isAuthenticated
             ?
-            <Flex  onClick={() => setIsUserDrawerActive(true)}
+            <Flex onClick={() => setIsUserDrawerActive(true)}
                   align={"center"}
                   vertical
                   className={classes.headNavItem}
-                  style={{position:"relative", top: "4px",padding: "10px 10px 0px 10px"}}
+
+                  style={{ background: "none", padding: 0}}
             >
-                <Badge size={"small"} count={checkPermission(jwt, "admin") ? unreadNotificationNumber : 0}>
-                    <img style={{borderRadius: 10}} src={user?.picture} height={30} alt=""/>
+                <Badge  count={unreadNotificationNumber}>
+                    <img className={classes.userIcon} src={user?.picture} alt=""/>
                 </Badge>
                 <span style={{color: "white"}}>{user?.firstName}</span>
             </Flex>
@@ -114,12 +117,17 @@ const Header = () => {
         return arr;
     }
 
+
+    const [isUserDrawerActive, setIsUserDrawerActive] = useState<boolean>(false)
+
     if ( pathname.includes("forum")) {
         return (
             <>
             </>
         )
     }
+
+
 
     return (
         <Flex justify={"center"}
@@ -132,6 +140,7 @@ const Header = () => {
             <Flex className={"IContainer"}
                   justify={"space-between"}
                   align={"center"}
+                  gap={5}
             >
                 <Flex onClick={() => nav("/")}
                       className={"nonSelect"}
@@ -149,19 +158,37 @@ const Header = () => {
                       className={[classes.navBtnWrapper, "nonSelect"].join(' ')}
                 >
                     {options.map((o) =>
-                        <span className={[classes.headNavItem, classes.btnText].join(' ')}
-                              key={"Head-option-" + o.title}
-                              onClick={o.onClick}
-                        >{o.title}</span>
+                        o.title === "Форум" ?
+                            <Badge.Ribbon className={classes.forumBadge}
+
+                                          text="ДОСТУПНО"
+                                          color={"#05a100"}
+                            >
+                                  <span style={{display: "block"}} className={[classes.headNavItem, classes.btnText].join(' ')}
+                                        key={"Head-option-" + o.title}
+                                        onClick={o.onClick}
+                                  >{o.title}</span>
+                            </Badge.Ribbon>
+                            :
+                            <span className={[classes.headNavItem, classes.btnText].join(' ')}
+                                  key={"Head-option-" + o.title}
+                                  onClick={o.onClick}
+                            >{o.title}</span>
                     )}
                     {userIcon}
                 </Flex>
+
 
                 <Flex wrap={"wrap"}
                       justify={"center"}
                       className={[classes.mobileNavBtnWrapper, "nonSelect"].join(' ')}
                 >
-                    <Dropdown menu={{items: items()}}
+                    <Dropdown menu={{items: items(),  className: classes.menuItems}}
+
+                              getPopupContainer={(triggerNode) => {
+                                  triggerNode.classList.add(classes.dropdown)
+                                  return triggerNode;
+                              }}
                               trigger={['click']}
                     >
                         <Space>

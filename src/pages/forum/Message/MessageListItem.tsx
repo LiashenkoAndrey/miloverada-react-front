@@ -23,7 +23,7 @@ import {useActions} from "../../../hooks/useActions";
 import MessageContent from "./MessageContent";
 
 interface MessageProps {
-    index : number
+    index: number
     message: Message
     observer: IntersectionObserver
     onEditMessage: (message: Message) => void
@@ -48,7 +48,7 @@ class MessageBtn {
         key: 'select-' + this.id,
     }
     reply = {
-        icon: <img src={refrenceArrowIconBlack} height={20} width={20} alt="" />,
+        icon: <img src={refrenceArrowIconBlack} height={20} width={20} alt=""/>,
         label: <span className={classes.dropDownOptionTitle}>Відповісти</span>,
         key: 'reply-' + this.id,
     }
@@ -58,17 +58,17 @@ class MessageBtn {
         key: 'copy-' + this.id,
     }
     forward = {
-        icon: <img src={refrenceArrowIconBlack} height={20} width={20} alt=""  style={{rotate : "180deg"}}/>,
+        icon: <img src={refrenceArrowIconBlack} height={20} width={20} alt="" style={{rotate: "180deg"}}/>,
         label: <span className={classes.dropDownOptionTitle}>Переслати</span>,
         key: 'forward-' + this.id,
     }
     edit = {
-        icon :<EditOutlined  className={classes.dropDownOptionIcon}/>,
+        icon: <EditOutlined className={classes.dropDownOptionIcon}/>,
         label: <span className={classes.dropDownOptionTitle}>Редагувати</span>,
         key: 'edit-' + this.id,
     }
     delete = {
-        icon : <DeleteOutlined className={classes.dropDownOptionIcon} />,
+        icon: <DeleteOutlined className={classes.dropDownOptionIcon}/>,
         label: <span className={classes.dropDownOptionTitle}>Видалити</span>,
         key: 'delete-' + this.id,
         danger: true
@@ -93,22 +93,25 @@ const MessageListItem: FC<MessageProps> = ({
 
     useEffect(() => {
         if (isAuthenticated) {
-            if (observer && messageRef.current && message.id > lastReadMessageId ) {
+            if (observer && messageRef.current && message.id > lastReadMessageId) {
                 observer.observe(messageRef.current)
                 return () => observer.disconnect()
             }
         }
     }, [isAuthenticated]);
 
-    const btns : MessageBtn = new MessageBtn(message.id)
+    const btns: MessageBtn = new MessageBtn(message.id)
 
     const messageMenuItems: MenuProps['items'] =
         isMine(message.sender.id)
             ?
             [btns.reply, btns.copyText, btns.forward, btns.edit, btns.select, btns.delete]
             :
-            [btns.reply, btns.copyText, btns.forward, btns.select]
-
+            isAuthenticated
+                ?
+                [btns.reply, btns.copyText, btns.forward, btns.select]
+                :
+                [btns.copyText]
 
 
     async function doAction(action: string, messageId: number) {
@@ -128,7 +131,7 @@ const MessageListItem: FC<MessageProps> = ({
                 break
             case 'copy' :
                 await navigator.clipboard.writeText(message.text)
-                antdMessage.success({content : "Текст скопійовано", icon : <CheckOutlined />})
+                antdMessage.success({content: "Текст скопійовано", icon: <CheckOutlined/>})
                 break
             case 'forward':
                 setSelectedMessages([message])
@@ -166,8 +169,10 @@ const MessageListItem: FC<MessageProps> = ({
     function isPrevMsgHasTheSameSender() {
         const elem = messages[index - 1];
         if (elem) {
-            return messages[index -1].sender.id === message.sender.id
-        }
+            const elem = messages[index - 1].sender.id === message.sender.id
+            console.log("isPrevMsgHasTheSameSender", message.text, elem)
+            return  elem;
+        } else console.log("isPrevMsgHasTheSameSender else", message)
         return false;
     }
 
@@ -177,9 +182,13 @@ const MessageListItem: FC<MessageProps> = ({
     function isNextMsgHasTheSameSender() {
         const elem = messages[index + 1];
         if (elem) {
-            return messages[index + 1].sender.id !== message.sender.id
+            const elem = messages[index + 1].sender.id !== message.sender.id
+            console.log('isNextMsgHasTheSameSender',message.text, elem)
+            return elem;
         } else {
-            return isPrevMsgHasTheSameSender();
+
+            console.log('isNextMsgHasTheSameSender else', message)
+            return !isPrevMsgHasTheSameSender();
         }
     }
 
@@ -231,9 +240,9 @@ const MessageListItem: FC<MessageProps> = ({
                   id={"msgWrapper-" + message.id}
             >
 
-            <Flex className={classes.messageWrapper2}
-                  justify={isMine(message.sender.id) ? "flex-end" : "flex-start"}
-            >
+                <Flex className={classes.messageWrapper2}
+                      justify={isMine(message.sender.id) ? "flex-end" : "flex-start"}
+                >
                     <Flex ref={messageRef}
                           className={classes.message}
                           style={{backgroundColor: isMyMessage(user?.sub, message.sender.id) ? "#8d654c" : "var(--message-bg-color)"}}
@@ -250,7 +259,8 @@ const MessageListItem: FC<MessageProps> = ({
                                 <Flex gap={5} align={"center"}>
                                     <div></div>
                                     {(!isPrevMsgHasTheSameSender() && message.sender) &&
-                                        <span className={classes.senderName} style={{color: generateContrastColor()}}>{message.sender.firstName}</span>
+                                        <span className={classes.senderName}
+                                              style={{color: generateContrastColor()}}>{message.sender.firstName}</span>
                                     }
 
                                     {message.forwardedMessage &&
@@ -259,7 +269,8 @@ const MessageListItem: FC<MessageProps> = ({
                                                 rotate: "180deg",
                                                 transform: "scaleY(-1)", position: "relative", top: -2
                                             }}/>
-                                            <span className={classes.senderName} style={{color: generateContrastColor()}}>{message.forwardedMessage.sender.firstName}</span>
+                                            <span className={classes.senderName}
+                                                  style={{color: generateContrastColor()}}>{message.forwardedMessage.sender.firstName}</span>
 
                                         </Flex>
                                     }
@@ -281,7 +292,7 @@ const MessageListItem: FC<MessageProps> = ({
                             </Flex>
 
                         </Flex>
-                        {(isNextMsgHasTheSameSender()) &&
+                        {(isNextMsgHasTheSameSender() || messages.length == 1) &&
                             <>
                                 {isMine(message.sender.id)
                                     ?
@@ -298,38 +309,39 @@ const MessageListItem: FC<MessageProps> = ({
 
 
                         {isPrevMsgHasTheSameSender() &&
-                            <img style={{position: "absolute", bottom: 3, right: 5}} src={referenceArrowIconSilver} height={10}
+                            <img style={{position: "absolute", bottom: 3, right: 5}} src={referenceArrowIconSilver}
+                                 height={10}
                                  width={10} alt=""/>
                         }
 
                     </Flex>
 
-                <ConfigProvider theme={{
-                    components : {
-                        Checkbox : {
-                            borderRadiusSM : 20,
-                            colorBgContainer : 'rgba(113,9,44,0)'
+                    <ConfigProvider theme={{
+                        components: {
+                            Checkbox: {
+                                borderRadiusSM: 20,
+                                colorBgContainer: 'rgba(113,9,44,0)'
+                            }
                         }
-                    }
-                }}>
-                    {isSelectionEnabled &&
-                        <div style={{
-                            position: "absolute",
-                            bottom: 10,
-                            left : -80
-                        }}>
-                            <Checkbox
-                                      checked={selectedMessages.includes(message)}
-                                      className={classes.messageCheckBox}
-                            />
-                        </div>
+                    }}>
+                        {isSelectionEnabled &&
+                            <div style={{
+                                position: "absolute",
+                                bottom: 10,
+                                left: -80
+                            }}>
+                                <Checkbox
+                                    checked={selectedMessages.includes(message)}
+                                    className={classes.messageCheckBox}
+                                />
+                            </div>
 
-                    }
+                        }
 
-                </ConfigProvider>
+                    </ConfigProvider>
+                </Flex>
             </Flex>
-        </Flex>
-</Dropdown>
+        </Dropdown>
 
     );
 };

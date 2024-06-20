@@ -7,7 +7,9 @@
     order: 1;
 }
 
-
+.maxWidth200 {
+    max-width: 200px;
+}
 
 @media (max-width: 600px) {
     .ForumNavbarWrapper {

@@ -1,6 +1,15 @@
 
 
+.moreMenuBtn {
+    color: #8649f1!important;
+    font-size: 20px!important;
+    transition: font-size 300ms;
+}
 
+.moreMenuBtn:hover {
+    color: #6e6ecf !important;
+    font-size: 23px!important;
+}
 
 .buttons {
     margin-top: 10px;

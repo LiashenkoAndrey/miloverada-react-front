@@ -67,6 +67,7 @@
 }
 
 .input {
+    position: absolute;
     background-color: #F9F1F3;
     font-size: 18px;
     transition: border-color 200ms;

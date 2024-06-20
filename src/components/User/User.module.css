@@ -2,18 +2,28 @@
 
 .user {
     width: 100%;
-    background-color: #F9F1F3;
+    background-color: rgba(94, 94, 107, 0.46);
 }
 
 .name {
-    padding: 5px;
-    font-size: 20px;
-    margin-left: 10px;
-    font-weight: 600;
-    color: black;
+    user-select: none;
+    font-size: 18px;
+    font-weight: 400;
+    color: white;
+    font-family: 'Open Sans', sans-serif;
+}
+
+.about {
+    user-select: none;
+    font-size: 18px;
+    font-weight: 400;
+    color: white;
+    font-family: 'Open Sans', sans-serif;
 }
 
 .date {
+    color: white;
+    user-select: none;
     margin-right: 10px;
     font-size: 16px;
     font-weight: 600;
