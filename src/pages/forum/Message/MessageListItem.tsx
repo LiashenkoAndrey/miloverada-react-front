@@ -169,8 +169,10 @@ const MessageListItem: FC<MessageProps> = ({
     function isPrevMsgHasTheSameSender() {
         const elem = messages[index - 1];
         if (elem) {
-            return messages[index - 1].sender.id === message.sender.id
-        }
+            const elem = messages[index - 1].sender.id === message.sender.id
+            console.log("isPrevMsgHasTheSameSender", message.text, elem)
+            return  elem;
+        } else console.log("isPrevMsgHasTheSameSender else", message)
         return false;
     }
 
@@ -180,9 +182,13 @@ const MessageListItem: FC<MessageProps> = ({
     function isNextMsgHasTheSameSender() {
         const elem = messages[index + 1];
         if (elem) {
-            return messages[index + 1].sender.id !== message.sender.id
+            const elem = messages[index + 1].sender.id !== message.sender.id
+            console.log('isNextMsgHasTheSameSender',message.text, elem)
+            return elem;
         } else {
-            return isPrevMsgHasTheSameSender();
+
+            console.log('isNextMsgHasTheSameSender else', message)
+            return !isPrevMsgHasTheSameSender();
         }
     }
 
@@ -286,7 +292,7 @@ const MessageListItem: FC<MessageProps> = ({
                             </Flex>
 
                         </Flex>
-                        {(isNextMsgHasTheSameSender()) &&
+                        {(isNextMsgHasTheSameSender() || messages.length == 1) &&
                             <>
                                 {isMine(message.sender.id)
                                     ?
