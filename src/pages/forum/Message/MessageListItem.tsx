@@ -291,11 +291,13 @@ const MessageListItem: FC<MessageProps> = ({
                                   align={"center"}
                                   justify={"space-between"}
                             >
-                                <Flex gap={5} align={"center"}>
+                                <Flex align={"center"}>
                                     <div></div>
                                     {(!isPrevMsgHasTheSameSender() && message.sender) &&
                                         <span className={classes.senderName}
-                                              style={{color: generateContrastColor()}}>{message.sender.firstName}</span>
+                                              style={{color: generateContrastColor()}}>
+                                            {message.sender.nickname}
+                                        </span>
                                     }
 
                                     {message.forwardedMessage &&
@@ -305,7 +307,7 @@ const MessageListItem: FC<MessageProps> = ({
                                                 transform: "scaleY(-1)", position: "relative", top: -2
                                             }}/>
                                             <span className={classes.senderName}
-                                                  style={{color: generateContrastColor()}}>{message.forwardedMessage.sender.firstName}</span>
+                                                  style={{color: generateContrastColor()}}>{message.forwardedMessage.sender.nickname}</span>
 
                                         </Flex>
                                     }

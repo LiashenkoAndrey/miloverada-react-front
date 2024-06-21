@@ -6,7 +6,7 @@ export interface Message {
     text : string,
     createdOn : string[],
     editedOn : string[],
-    sender : User
+    sender : ForumUser
     repliedMessage : Message,
     messages : Array<Message>
     imagesList : MessageImage[]
@@ -55,6 +55,7 @@ export interface PrivateChat {
 }
 
 export interface IChat {
+    isPrivate : boolean
     id : number,
     name : string,
     description : string,
@@ -117,7 +118,7 @@ export interface NewForumUserDto {
 
 export interface ForumUser {
     aboutMe : string,
-    id : number,
+    id : string,
     appUserId : string,
     registeredOn : string,
     nickname : string,

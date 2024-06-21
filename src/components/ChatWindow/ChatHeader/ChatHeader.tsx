@@ -79,7 +79,9 @@ const ChatHeader: FC<ChatHeaderProps> = ({
 
                 <Flex gap={5} style={{height: "100%"}}>
                     {chatInfo ?
-                        <span className={classes.chatMessagesAmount}>{chatInfo.totalMessagesAmount} повідомлень, {chatInfo.totalMembersAmount} учасників(а)</span>
+                        <span className={classes.chatMessagesAmount}>
+                            {chatInfo.totalMessagesAmount} повідомлень{chatInfo.isPrivate ? "" : `, ${chatInfo.totalMembersAmount} учасників(а)`}
+                        </span>
                         :
                         <Flex style={{alignSelf: "flex-end", height: 20}}>
                             <Skeleton.Input  size={"small"} active/>
@@ -104,7 +106,7 @@ const ChatHeader: FC<ChatHeaderProps> = ({
                                 align={"center"}
                             >
                                 <span className={classes.noPicText}>
-                                    {chatInfo.name.charAt(0)}
+                                    {chatInfo?.name?.charAt(0)}
 
                                 </span>
                             </Flex>

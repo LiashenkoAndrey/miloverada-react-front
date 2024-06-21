@@ -1,15 +1,15 @@
 import React, {FC} from 'react';
 import {Button, Flex, Image, Tooltip} from "antd";
-import {toDateShort} from "../../API/Util";
+import {toDateShort, toDateV2} from "../../API/Util";
 import messageClasses from "../../pages/forum/Message/Message.module.css";
-import {User} from "../../API/services/forum/ForumInterfaces";
+import {ForumUser, User} from "../../API/services/forum/ForumInterfaces";
 import {useAuth0} from "@auth0/auth0-react";
 import {useNavigate} from "react-router-dom";
 import {getImageV2Url} from "../../API/services/ImageService";
 import classes from './UserPicture.module.css'
 
 interface UserPictureProps  {
-    user : User
+    user : ForumUser
 }
 
 const UserPicture: FC<UserPictureProps> = ({user}) => {
@@ -49,11 +49,10 @@ const UserPicture: FC<UserPictureProps> = ({user}) => {
 
                     <Flex gap={5} vertical>
 
-                        <span>{user.firstName}</span>
-                        <span>{user.lastName}</span>
+                        <span>{user.nickname}</span>
 
                         {user.registeredOn &&
-                            <span>Зареєстрований(на): {toDateShort(user.registeredOn)}</span>
+                            <span>Зареєстрований(на): {toDateV2(user.registeredOn)}</span>
                         }
                     </Flex>
                     <Flex>
