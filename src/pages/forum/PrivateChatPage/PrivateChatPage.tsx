@@ -1,5 +1,6 @@
 import React, {useContext, useEffect, useState} from 'react';
 import {Flex} from "antd";
+import '../ChatPage/ChatPage.css'
 import {StompSessionProvider} from "react-stomp-hooks";
 import ChatWindow from "../../../components/ChatWindow/ChatWindow";
 import {useActions} from "../../../hooks/useActions";
@@ -11,31 +12,47 @@ import {useTypedSelector} from "../../../hooks/useTypedSelector";
 import {IChat, PrivateChat} from "../../../API/services/forum/ForumInterfaces";
 import ContentList from "../AllTopicsPage/ContentList/ContentList";
 import WindowSlider from "../../../components/WindowSlider/WindowSlider";
+import forumPageClasses from "../AllTopicsPage/ForumPage.module.css";
+import {setPrivateChatInfo} from "../../../store/actionCreators/chat";
 
 const PrivateChatPage = () => {
     const {setChatId, setHasPreviousMessages} = useActions()
-    const {user1_id} = useParams()
+    const {receiverId} = useParams()
     const {user, isAuthenticated} = useAuth0()
     const {jwt} = useContext(AuthContext)
     const {chatId} = useTypedSelector(state => state.chat)
-    const {setChatInfo} = useActions()
+    const {setChatInfo, setPrivateChatInfo} = useActions()
     const [privateChat, setPrivateChat] = useState<PrivateChat>();
     const [leftPanelWidth, setLeftPanelWidth] = useState<number>(500)
 
 
+    useEffect(() => {
+        if (jwt && user?.sub && receiverId) {
+            console.log("getPrivateChatId")
+            getPrivateChatId(receiverId, user.sub, jwt)
+        }
+    }, [user?.sub, jwt, receiverId]);
+
+
     const initChat = async (chatId: number, privateChat : PrivateChat) => {
+        console.log("initChat call!")
         const {data, error} = await getChatById(chatId);
+        console.log("initChat data", data)
         if (data) {
+            console.log("initChat, getChatById response", data)
             const chat : IChat = data;
             if (privateChat) {
-                if (user1_id === privateChat.user1.id) {
-                    chat.picture = privateChat.user1.avatar
-                    chat.name = privateChat.user1.firstName
-                }
-                if (user1_id === privateChat.user2.id) {
-                    chat.picture = privateChat.user2.avatar
-                    chat.name = privateChat.user2.firstName
-                }
+                console.log("Private chat ", privateChat)
+                chat.picture = privateChat.receiver.avatar
+                    chat.name = privateChat.receiver.nickname
+                // if (senderId === privateChat.sender.id.toString()) {
+                //     chat.picture = privateChat.receiver.avatar
+                //     chat.name = privateChat.receiver.nickname
+                // }
+                // if (senderId === privateChat.receiver.id.toString()) {
+                //     chat.picture = privateChat.sender.avatar
+                //     chat.name = privateChat.sender.nickname
+                // }
             }
             setChatInfo(chat)
         }
@@ -43,7 +60,6 @@ const PrivateChatPage = () => {
     }
 
     useEffect(() => {
-        console.log(chatId, privateChat)
         if (chatId && privateChat) {
             if (chatId > 0) {
 
@@ -52,28 +68,22 @@ const PrivateChatPage = () => {
             }
         }
     }, [chatId, privateChat]);
+
     const getPrivateChatId = async (user1_id : string, user2_id : string, jwt : string) => {
         const {data} = await getOrCreatePrivateChat(encodeURIComponent(user1_id), encodeURIComponent(user2_id), jwt)
+
         if (data) {
-            const privateChat : PrivateChat = data;
-            console.log(privateChat)
+            const privateChat : PrivateChat = {
+                receiver : data.user1,
+                sender : data.user2,
+                chat_id : data.chat_id
+            };
+            console.log("getPrivateChatId response",privateChat)
+            setPrivateChatInfo(privateChat)
             setPrivateChat(privateChat)
             setChatId(privateChat.chat_id)
         }
     }
-
-    useEffect(() => {
-
-        if (user?.sub) {
-            console.log("ok")
-        }
-        if (jwt && user?.sub && user1_id) {
-            console.log("getPrivateChatId")
-            getPrivateChatId(user1_id, user.sub, jwt)
-        } else {
-            console.error("is null", user1_id, user?.sub)
-        }
-    }, [user?.sub, jwt]);
 
 
     useEffect(() => {
@@ -81,8 +91,13 @@ const PrivateChatPage = () => {
     }, []);
 
     return (
-        <Flex className={"chatPageWrapper"} align={"flex-start"} justify={"center"}>
-            <Flex className={"chatWrapper"} gap={20} justify={"center"}>
+        <Flex className={['chatPageWrapper',  forumPageClasses.forumBg].join(' ')}
+             align={"flex-start"}
+              justify={"center"}
+        >
+            <Flex className={"chatWrapper"}
+                  justify={"center"}
+            >
                 <Flex className={"leftContent forumStyledScrollBar"}
                       style={{overflowY: "scroll", height: "100vh", width: leftPanelWidth}}
                 >

@@ -50,8 +50,8 @@ export interface ForumUserDto {
 
 export interface PrivateChat {
     chat_id : number
-    user1 : User
-    user2 : User
+    sender : ForumUser
+    receiver : ForumUser
 }
 
 export interface IChat {

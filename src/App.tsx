@@ -133,11 +133,11 @@ function App() {
                           <Route path={"/institution/:id"} element={<InstitutionPage/>}/>
 
                           <Route path={"/forum/chat/:id"} element={<ChatPage/>}/>
-                          <Route path={"/forum/chatWith/:userId"} element={<ChatPage/>}/>
+                          {/*<Route path={"/forum/chatWith/:userId"} element={<ChatPage/>}/>*/}
                           <Route path={"/forum/topic/:id"} element={<TopicPage/>}/>
                           <Route path={"/forum"} element={<ForumPage/>}/>
                           <Route path={"/resolveUser"} element={<IsRegisteredCheckPage/>}/>
-                          <Route path={"/forum/user/:user1_id/chat"} element={<PrivateChatPage/>}/>
+                          <Route path={"/forum/user/:receiverId/chat"} element={<PrivateChatPage/>}/>
                           <Route path={"/forum/users"} element={<AllUsersPage/>}/>
                       </Routes>
                       <Footer/>

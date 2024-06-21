@@ -17,7 +17,7 @@ const UserPicture: FC<UserPictureProps> = ({user}) => {
 
     const onUserStartChatButtonClick = () => {
         if (auth0.user?.sub) {
-            nav(`/forum/chatWith/${user.id}`)
+            nav(`/forum/user/${user.id}/chat`)
         } else console.log("user sub null")
     }
 

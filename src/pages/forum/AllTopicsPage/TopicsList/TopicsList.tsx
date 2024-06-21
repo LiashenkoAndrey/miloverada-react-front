@@ -62,8 +62,8 @@ const TopicsList: FC<TopicsListProps> = () => {
         <Flex vertical className={classes.topicWrapper}>
             {topics?.length > 0
                 ?
-                topics.map((topic) =>
-                    <Flex style={{padding: "10px 10px", marginBottom: 10, backgroundColor: "rgba(255,255,255,0.07)"}}
+                topics.map((topic, index) =>
+                    <Flex key={"topicsListItem-" + index } style={{padding: "10px 10px", marginBottom: 10, backgroundColor: "rgba(255,255,255,0.07)"}}
                           vertical>
                         <Flex style={{paddingBottom: 5}} gap={10}>
                             {(isAuthenticated && !pathname.includes("chat")) &&

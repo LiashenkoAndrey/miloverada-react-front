@@ -62,9 +62,9 @@ const ChatHeader: FC<ChatHeaderProps> = ({
                         <span className={classes.chatName}>{chatInfo.name}</span>
                     }
 
-                    {privateChatInfo &&
-                        <span className={classes.chatName}>{privateChatInfo.user2.firstName} {privateChatInfo.user2.lastName}</span>
-                    }
+                    {/*{privateChatInfo &&*/}
+                    {/*    <span className={classes.chatName}>{privateChatInfo.receiver.nickname}</span>*/}
+                    {/*}*/}
                     {!chatInfo && !privateChatInfo &&
                         <Flex vertical gap={3} style={{marginBottom: 2}} >
                             <Skeleton.Input active/>
@@ -94,7 +94,7 @@ const ChatHeader: FC<ChatHeaderProps> = ({
                             width={75}
 
                             height={75}
-                            src={privateChatInfo ? privateChatInfo.user2.avatar : chatInfo.picture}
+                            src={privateChatInfo ? privateChatInfo.receiver.avatar : chatInfo.picture}
                         />
                             :
                             <Flex
