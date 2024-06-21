@@ -170,9 +170,11 @@ const MessageListItem: FC<MessageProps> = ({
         const elem = messages[index - 1];
         if (elem) {
             const elem = messages[index - 1].sender.id === message.sender.id
-            console.log("isPrevMsgHasTheSameSender", message.text, elem)
+            // console.log("isPrevMsgHasTheSameSender", message.text, elem)
             return  elem;
-        } else console.log("isPrevMsgHasTheSameSender else", message)
+        } else {
+            // console.log("isPrevMsgHasTheSameSender else", message)
+        }
         return false;
     }
 
@@ -180,15 +182,40 @@ const MessageListItem: FC<MessageProps> = ({
      * Checks if sender of next message is the same as in this message
      */
     function isNextMsgHasTheSameSender() {
-        const elem = messages[index + 1];
-        if (elem) {
-            const elem = messages[index + 1].sender.id !== message.sender.id
-            console.log('isNextMsgHasTheSameSender',message.text, elem)
-            return elem;
-        } else {
+        console.log("isNextMsgHasTheSameSender")
+        if (index !== messages.length) {
+            console.log("is not last message", index)
 
-            console.log('isNextMsgHasTheSameSender else', message)
-            return !isPrevMsgHasTheSameSender();
+            // getting message
+            const nextMessage = messages[index + 1];
+            if (nextMessage) {
+
+                const isNextMessageHasTheSameSender = nextMessage.sender.id === message.sender.id
+                console.log('isNextMessageHasTheSameSender',message, nextMessage, isNextMessageHasTheSameSender)
+                return isNextMessageHasTheSameSender;
+            } else {
+
+            }
+        } else {
+            console.log("is last message ", index)
+            return false;
+        }
+        // const elem = messages[index + 1];
+        // if (elem) {
+        //
+        //     const elem = messages[index + 1].sender.id !== message.sender.id
+        //     console.log('isNextMsgHasTheSameSender',message.text, elem)
+        //     return elem;
+        // } else {
+        //
+        //     console.log('isNextMsgHasTheSameSender else', message)
+        //     return !isPrevMsgHasTheSameSender();
+        // }
+    }
+
+    function needsToShowUserPicture() {
+        if (isNextMsgHasTheSameSender()) {
+
         }
     }
 
@@ -236,7 +263,13 @@ const MessageListItem: FC<MessageProps> = ({
                   data-index={messages.indexOf(message)}
                   justify={"center"}
                   onDoubleClick={() => onEditMessage(message)}
-                  className={[isHighlighted(), classes.messageMainWrapper, (isSelectionEnabled && !selectedMessages.includes(message)) ? classes.selectable : "", selectedMessages.includes(message) ? classes.selected : ""].join(' ')}
+                  className={[
+                          isHighlighted(),
+                          classes.messageMainWrapper,
+                          (isSelectionEnabled && !selectedMessages.includes(message)) ? classes.selectable : "",
+                          selectedMessages.includes(message) ? classes.selected : ""
+                      ].join(' ')
+                  }
                   id={"msgWrapper-" + message.id}
             >
 
@@ -249,7 +282,9 @@ const MessageListItem: FC<MessageProps> = ({
                           id={"msgId-" + message.id}
                           gap={8}
                     >
-                        <Flex vertical={true} style={{paddingBottom: 3}}>
+                        <Flex vertical={true}
+                              style={{paddingBottom: 3}}
+                        >
                             <Flex style={{position: "relative"}}
                                   className={"nonSelect"}
                                   gap={8}
@@ -292,19 +327,8 @@ const MessageListItem: FC<MessageProps> = ({
                             </Flex>
 
                         </Flex>
-                        {(isNextMsgHasTheSameSender() || messages.length == 1) &&
-                            <>
-                                {isMine(message.sender.id)
-                                    ?
-                                    <div style={{position: "absolute", bottom: 3, right: -40}}>
-                                        <UserPicture user={message.sender}/>
-                                    </div>
-                                    :
-                                    <div style={{position: "absolute", bottom: 3, left: -40}}>
-                                        <UserPicture user={message.sender}/>
-                                    </div>
-                                }
-                            </>
+                        {!isNextMsgHasTheSameSender() &&
+                            <UserPicture user={message.sender}/>
                         }
 
 
