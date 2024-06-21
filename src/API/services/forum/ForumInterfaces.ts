@@ -49,6 +49,7 @@ export interface ForumUserDto {
 }
 
 export interface PrivateChat {
+    id : number
     chat_id : number
     sender : ForumUser
     receiver : ForumUser

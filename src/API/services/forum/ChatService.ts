@@ -4,9 +4,9 @@ import {NewChat} from "./ForumInterfaces";
 const apiServerUrl = process.env.REACT_APP_API_SERVER_URL;
 
 
-export const getOrCreatePrivateChat = (user1_id : string, user2_id : string, accessToken : string) => {
+export const getOrCreatePrivateChat = (receiverId : string, senderId : string, accessToken : string) => {
     const config = {
-        url: `${apiServerUrl}/api/protected/forum/user/${user1_id}/chat?user2_id=${user2_id}`,
+        url: `${apiServerUrl}/api/protected/forum/user/${receiverId}/chat?senderId=${senderId}`,
         method: "POST",
         headers: {
             Authorization: `Bearer ${accessToken}`,

@@ -13,7 +13,6 @@ import {IChat, PrivateChat} from "../../../API/services/forum/ForumInterfaces";
 import ContentList from "../AllTopicsPage/ContentList/ContentList";
 import WindowSlider from "../../../components/WindowSlider/WindowSlider";
 import forumPageClasses from "../AllTopicsPage/ForumPage.module.css";
-import {setPrivateChatInfo} from "../../../store/actionCreators/chat";
 
 const PrivateChatPage = () => {
     const {setChatId, setHasPreviousMessages} = useActions()
@@ -35,7 +34,6 @@ const PrivateChatPage = () => {
 
 
     const initChat = async (chatId: number, privateChat : PrivateChat) => {
-        console.log("initChat call!")
         const {data, error} = await getChatById(chatId);
         console.log("initChat data", data)
         if (data) {
@@ -44,15 +42,7 @@ const PrivateChatPage = () => {
             if (privateChat) {
                 console.log("Private chat ", privateChat)
                 chat.picture = privateChat.receiver.avatar
-                    chat.name = privateChat.receiver.nickname
-                // if (senderId === privateChat.sender.id.toString()) {
-                //     chat.picture = privateChat.receiver.avatar
-                //     chat.name = privateChat.receiver.nickname
-                // }
-                // if (senderId === privateChat.receiver.id.toString()) {
-                //     chat.picture = privateChat.sender.avatar
-                //     chat.name = privateChat.sender.nickname
-                // }
+                chat.name = privateChat.receiver.nickname
             }
             setChatInfo(chat)
         }
@@ -73,11 +63,8 @@ const PrivateChatPage = () => {
         const {data} = await getOrCreatePrivateChat(encodeURIComponent(user1_id), encodeURIComponent(user2_id), jwt)
 
         if (data) {
-            const privateChat : PrivateChat = {
-                receiver : data.user1,
-                sender : data.user2,
-                chat_id : data.chat_id
-            };
+            console.log("getPrivateChatId data ", data)
+            const privateChat : PrivateChat = data
             console.log("getPrivateChatId response",privateChat)
             setPrivateChatInfo(privateChat)
             setPrivateChat(privateChat)

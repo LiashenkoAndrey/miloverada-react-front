@@ -170,10 +170,8 @@ const MessageListItem: FC<MessageProps> = ({
         const elem = messages[index - 1];
         if (elem) {
             const elem = messages[index - 1].sender.id === message.sender.id
-            // console.log("isPrevMsgHasTheSameSender", message.text, elem)
             return  elem;
         } else {
-            // console.log("isPrevMsgHasTheSameSender else", message)
         }
         return false;
     }
@@ -182,42 +180,23 @@ const MessageListItem: FC<MessageProps> = ({
      * Checks if sender of next message is the same as in this message
      */
     function isNextMsgHasTheSameSender() {
-        console.log("isNextMsgHasTheSameSender")
         if (index !== messages.length) {
-            console.log("is not last message", index)
 
             // getting message
             const nextMessage = messages[index + 1];
             if (nextMessage) {
 
                 const isNextMessageHasTheSameSender = nextMessage.sender.id === message.sender.id
-                console.log('isNextMessageHasTheSameSender',message, nextMessage, isNextMessageHasTheSameSender)
                 return isNextMessageHasTheSameSender;
             } else {
 
             }
         } else {
-            console.log("is last message ", index)
             return false;
         }
-        // const elem = messages[index + 1];
-        // if (elem) {
-        //
-        //     const elem = messages[index + 1].sender.id !== message.sender.id
-        //     console.log('isNextMsgHasTheSameSender',message.text, elem)
-        //     return elem;
-        // } else {
-        //
-        //     console.log('isNextMsgHasTheSameSender else', message)
-        //     return !isPrevMsgHasTheSameSender();
-        // }
     }
 
-    function needsToShowUserPicture() {
-        if (isNextMsgHasTheSameSender()) {
 
-        }
-    }
 
 
     /**
