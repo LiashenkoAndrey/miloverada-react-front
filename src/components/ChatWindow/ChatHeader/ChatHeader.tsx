@@ -1,9 +1,6 @@
 import React, {FC, useState} from 'react';
-import {Drawer, Flex, Skeleton} from "antd";
-import {ForumUserDto, IChat, TypingUser} from "../../../API/services/forum/ForumInterfaces";
+import {Flex, Skeleton} from "antd";
 import classes from './ChatHeader.module.css'
-import {useSubscription} from "react-stomp-hooks";
-import {IMessage} from "@stomp/stompjs/src/i-message";
 import {useNavigate} from "react-router-dom";
 import ChatSettings from "../../ChatSettings/ChatSettings";
 
@@ -12,38 +9,17 @@ import leftArrImg from '../../../assets/leftArr/arrow-left-2827.svg'
 import {useTypedSelector} from "../../../hooks/useTypedSelector";
 
 interface ChatHeaderProps {
-    typingUsers : Array<TypingUser>
-    setTypingUsers : React.Dispatch<React.SetStateAction<TypingUser[]>>
-    chatId : number
-    filterTypingUsers ( userId: string | undefined) : void
 }
 
-const ChatHeader: FC<ChatHeaderProps> = ({
-                                             typingUsers,
-                                             setTypingUsers,
-                                             chatId,
-                                             filterTypingUsers
-                                         }) => {
+const ChatHeader: FC<ChatHeaderProps> = ({}) => {
+
     const {chatInfo, privateChatInfo} = useTypedSelector(state => state.chat)
     const [isSettingsActive, setIsSettingsActive] = useState<boolean>(false)
     const nav = useNavigate()
-    const onUsersStartTyping = (message : IMessage) => {
-        const userDto : ForumUserDto = JSON.parse( message.body)
-        setTypingUsers([{firstName: userDto.name, id: userDto.id},...typingUsers])
-    }
-
-    const onUsersStopTyping = (message : IMessage) => {
-        const data : ForumUserDto = JSON.parse( message.body)
-        filterTypingUsers(data.id)
-    }
-
-    useSubscription(`/chat/` + chatId + "/userStopTyping", onUsersStopTyping)
-    useSubscription(`/chat/` + chatId + "/typingUsers", onUsersStartTyping)
 
 
     const [open, setOpen] = useState(false);
     const showDrawer = () => {
-        console.log("ok")
         setOpen(true);
     };
 
@@ -62,9 +38,6 @@ const ChatHeader: FC<ChatHeaderProps> = ({
                         <span className={classes.chatName}>{chatInfo.name}</span>
                     }
 
-                    {/*{privateChatInfo &&*/}
-                    {/*    <span className={classes.chatName}>{privateChatInfo.receiver.nickname}</span>*/}
-                    {/*}*/}
                     {!chatInfo && !privateChatInfo &&
                         <Flex vertical gap={3} style={{marginBottom: 2}} >
                             <Skeleton.Input active/>
@@ -114,34 +87,8 @@ const ChatHeader: FC<ChatHeaderProps> = ({
 
                         <Skeleton.Image style={{height: "100%"}} active/>
                     }
-
-
                 </Flex>
             </Flex>
-
-        {typingUsers.length > 0 &&
-            <Flex justify={"space-between"}
-                  style={{position: "absolute"}}
-                  className={classes.typingUsersWrapper}
-            >
-                <Flex>
-                    <div className={classes.typing}>
-                        <div className={classes.dot}></div>
-                        <div className={classes.dot}></div>
-                        <div className={classes.dot}></div>
-                        <Flex>
-                            {typingUsers.length > 0 &&
-                                typingUsers.map((user) =>
-                                    <span key={"typingUser-" + user.id}
-                                          className={classes.typingUserName}>{user.firstName} пише...</span>
-                                )
-                            }
-                        </Flex>
-                    </div>
-                </Flex>
-            </Flex>
-        }
-
 
         <ChatSettings open={open} setOpen={setOpen}  />
         </Flex>

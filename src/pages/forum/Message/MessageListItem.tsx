@@ -21,6 +21,7 @@ import forwardIcon from '../../../assets/forwardIcon.svg'
 import {CheckCircleOutlined, CheckOutlined, CopyOutlined, DeleteOutlined, EditOutlined} from "@ant-design/icons";
 import {useActions} from "../../../hooks/useActions";
 import MessageContent from "./MessageContent";
+import privateChatPage from "../PrivateChatPage/PrivateChatPage";
 
 interface MessageProps {
     index: number
@@ -88,7 +89,7 @@ const MessageListItem: FC<MessageProps> = ({
                                            }) => {
     const messageRef = useRef<HTMLDivElement>(null)
     const {isAuthenticated, user} = useAuth0()
-    const {lastReadMessageId, messages, isSelectionEnabled, selectedMessages} = useTypedSelector(state => state.chat)
+    const {lastReadMessageId, messages, isSelectionEnabled, selectedMessages, chatInfo} = useTypedSelector(state => state.chat)
     const {setIsSelectionEnabled, setSelectedMessages, setIsSelectChatToForwardMessageModalActive} = useActions()
 
     useEffect(() => {
@@ -272,7 +273,7 @@ const MessageListItem: FC<MessageProps> = ({
                             >
                                 <Flex align={"center"}>
                                     <div></div>
-                                    {(!isPrevMsgHasTheSameSender() && message.sender) &&
+                                    {(!isPrevMsgHasTheSameSender() && message.sender && !chatInfo?.isPrivate) &&
                                         <span className={classes.senderName}
                                               style={{color: generateContrastColor()}}>
                                             {message.sender.nickname}

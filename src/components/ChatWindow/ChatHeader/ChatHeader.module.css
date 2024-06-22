@@ -44,19 +44,7 @@
 }
 
 
-.typingUsersWrapper {
-    z-index: 10;
-    bottom: -30px;
-    border-radius: 3px;
-    right: 8px;
-    /*border-bottom-left-radius: 8px;*/
-    padding: 3px 20px 3px 5px;
-    background-color: var(--forum-primary-text-color)
-}
-.typingUserName {
-    font-weight: 500;
-    color: var(--forum-primary-bg-color);
-}
+
 .chatPicture {
     margin: 5px;
     cursor: pointer;
@@ -78,46 +66,4 @@
     font-size: 33px;
 }
 
-.typing {
-    align-items: center;
-    display: flex;
-    height: 17px;
-}
-.typing .dot {
-    animation: mercuryTypingAnimation 1.8s infinite ease-in-out;
-    background-color: #202032;
-    border-radius: 50%;
-    height: 5px;
-    margin-right: 4px;
-    vertical-align: middle;
-    width: 5px;
-    display: inline-block;
-}
-.typing .dot:nth-child(1) {
-    animation-delay: 200ms;
-}
-.typing .dot:nth-child(2) {
-    animation-delay: 300ms;
-}
-.typing .dot:nth-child(3) {
-    animation-delay: 400ms;
-}
-.typing .dot:last-child {
-    margin-right: 0;
-}
 
-
-@keyframes mercuryTypingAnimation {
-    0% {
-        transform: translateY(0px);
-        background-color: #202032;
-    }
-    28% {
-        transform: translateY(-7px);
-        background-color: #50507c;
-    }
-    44% {
-        transform: translateY(0px);
-        background-color: #8F8FB7;
-    }
-}

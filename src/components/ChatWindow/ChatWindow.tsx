@@ -30,6 +30,7 @@ import refrenceArrowIconBlack from "../../assets/back-arrow-svgrepo-com.svg";
 import SelectionToolbar from "../forum/SelectionToolbar/SelectionToolbar";
 import SelectChatModalToForwardMessages
     from "../forum/SelectChatModalToForwradMessages/SelectChatModalToForwardMessages";
+import TypingUsersWidget from "../forum/TypingUsersWidget/TypingUsersWidget";
 
 interface ChatProps {
 }
@@ -46,8 +47,7 @@ const ChatWindow: FC<ChatProps> = () => {
     const {jwt} = useContext(AuthContext)
     const {notification} = App.useApp();
     const [isNeedScrollToBottom, setIsNeedScrollToBottom] = useState<boolean>(false)
-    const [typingUsers, setTypingUsers] = useState<Array<TypingUser>>([]);
-
+    const [typingUsers, setTypingUsers] = useState<Map<string,TypingUser>>(new Map<string,TypingUser>());
 
     useEffect(() => {
         if (chatId > 0) {
@@ -247,10 +247,15 @@ const ChatWindow: FC<ChatProps> = () => {
     useSubscription(`/chat/` + chatId, onChatMessagesSubscribe)
     useSubscription(`/chat/${chatId}/newForwardedMessagesEvent`, onForwardMessagesEvent)
 
-    const filterTypingUsers = (userId : string | undefined) => {
+    const addTypingUser = (userId : string, typingUser : TypingUser) => {
+        typingUsers.set(userId, typingUser)
+        setTypingUsers(typingUsers)
+    }
+
+    const removeTypingUserById = (userId : string | undefined) => {
         if (userId) {
-            const filtered = typingUsers.filter((user) => user.id !== userId)
-            setTypingUsers(filtered)
+            typingUsers.delete(userId)
+            setTypingUsers(typingUsers)
         }
     }
 
@@ -306,12 +311,15 @@ const ChatWindow: FC<ChatProps> = () => {
 
     return (
         <Flex style={{zIndex: 2}} className={chat_classes.chatWindow} justify={"space-between"} vertical={true}>
-            <ChatHeader typingUsers={typingUsers}
-                        chatId={chatId}
-                        setTypingUsers={setTypingUsers}
-                        filterTypingUsers={filterTypingUsers}
-            />
-            <Flex style={{backgroundColor: "black", overflowY: "hidden", flexGrow: 1}}>
+            <ChatHeader/>
+
+
+            <Flex style={{backgroundColor: "black", overflowY: "hidden", flexGrow: 1, position : "relative"}}>
+                <TypingUsersWidget removeTypingUser={removeTypingUserById}
+                                   addTypingUser={addTypingUser}
+                                   typingUsers={typingUsers}
+                />
+
                 <Flex vertical={true} className={chat_classes.chat} justify={"space-between"}>
                     <MessageList
                         saveLastReadMessageId={saveLastReadMessageId}
@@ -342,7 +350,7 @@ const ChatWindow: FC<ChatProps> = () => {
                                input={input}
                                setInput={setInput}
                                stompClient={stompClient}
-                               filterTypingUsers={filterTypingUsers}
+                               removeTypingUserById={removeTypingUserById}
                                editMessage={editMessage}
                                setEditMessage={setEditMessage}
                                replyMessage={replyMessage}

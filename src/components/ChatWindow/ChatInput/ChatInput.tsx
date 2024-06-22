@@ -25,7 +25,7 @@ interface ChatInputProps {
     stompClient?: Client
     chatId: number
 
-    filterTypingUsers(userId: string | undefined): void
+    removeTypingUserById(userId: string | undefined): void
 
     input: string
     setInput: React.Dispatch<React.SetStateAction<string>>
@@ -41,7 +41,7 @@ const ChatInput: FC<ChatInputProps> = ({
                                            editMessage,
                                            stompClient,
                                            chatId,
-                                           filterTypingUsers,
+                                           removeTypingUserById,
                                            input,
                                            setInput,
                                            replyMessage,
@@ -82,7 +82,7 @@ const ChatInput: FC<ChatInputProps> = ({
             if (isTyping) {
                 notifyThatUserStartedTyping()
             } else if (user?.sub) {
-                filterTypingUsers(user.sub)
+                removeTypingUserById(user.sub)
             }
         }
     }, [isTyping]);
@@ -143,7 +143,7 @@ const ChatInput: FC<ChatInputProps> = ({
 
                 setEditMessage(undefined)
                 setReplyMessage(undefined)
-                filterTypingUsers(user?.sub)
+                removeTypingUserById(user?.sub)
                 onStopTyping()
                 setImageList([])
                 setIsImageUploadActive(false)

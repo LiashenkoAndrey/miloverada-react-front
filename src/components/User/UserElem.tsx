@@ -49,11 +49,14 @@ const UserElem: FC<UserProps> = ({user}) => {
                 </Flex>
             </Flex>
 
+
             <Flex vertical
                   align={"center"}
                   style={{marginRight: 5}}
             >
-                <Button onClick={onUserStartChatButtonClick}>Написати</Button>
+                {auth0.isAuthenticated &&
+                    <Button onClick={onUserStartChatButtonClick}>Написати</Button>
+                }
             </Flex>
         </Flex>
     );
