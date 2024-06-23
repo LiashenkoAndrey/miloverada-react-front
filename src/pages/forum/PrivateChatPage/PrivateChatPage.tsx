@@ -13,15 +13,17 @@ import {IChat, PrivateChat} from "../../../API/services/forum/ForumInterfaces";
 import ContentList from "../AllTopicsPage/ContentList/ContentList";
 import WindowSlider from "../../../components/WindowSlider/WindowSlider";
 import forumPageClasses from "../AllTopicsPage/ForumPage.module.css";
+import SenderActivityMonitor from "../../../components/forum/PrivateChat/SenderActivityMonitor";
+import {formatDate, toDateShort} from "../../../API/Util";
+import ReceiverActivityMonitor from "../../../components/forum/PrivateChat/ReceiverActivityMonitor";
 
 const PrivateChatPage = () => {
     const {setChatId, setHasPreviousMessages} = useActions()
     const {receiverId} = useParams()
     const {user, isAuthenticated} = useAuth0()
     const {jwt} = useContext(AuthContext)
-    const {chatId} = useTypedSelector(state => state.chat)
+    const {chatId, privateChatInfo} = useTypedSelector(state => state.chat)
     const {setChatInfo, setPrivateChatInfo} = useActions()
-    const [privateChat, setPrivateChat] = useState<PrivateChat>();
     const [leftPanelWidth, setLeftPanelWidth] = useState<number>(500)
 
 
@@ -42,6 +44,7 @@ const PrivateChatPage = () => {
             if (privateChat) {
                 console.log("Private chat ", privateChat)
                 chat.picture = privateChat.receiver.avatar
+                chat.description = privateChat.receiver.isOnline ? "в мережі" : `був(ла) в мережі ${formatDate(privateChat.receiver.lastWasOnline).toLowerCase()}`
                 chat.name = privateChat.receiver.nickname
             }
             setChatInfo(chat)
@@ -50,14 +53,14 @@ const PrivateChatPage = () => {
     }
 
     useEffect(() => {
-        if (chatId && privateChat) {
+        if (chatId && privateChatInfo) {
             if (chatId > 0) {
 
-                console.log("INIT CHAT", chatId)
-                initChat(chatId, privateChat)
+                console.log("INIT CHAT", chatId, privateChatInfo)
+                initChat(chatId, privateChatInfo)
             }
         }
-    }, [chatId, privateChat]);
+    }, [chatId, privateChatInfo]);
 
     const getPrivateChatId = async (user1_id : string, user2_id : string, jwt : string) => {
         const {data} = await getOrCreatePrivateChat(encodeURIComponent(user1_id), encodeURIComponent(user2_id), jwt)
@@ -67,7 +70,6 @@ const PrivateChatPage = () => {
             const privateChat : PrivateChat = data
             console.log("getPrivateChatId response",privateChat)
             setPrivateChatInfo(privateChat)
-            setPrivateChat(privateChat)
             setChatId(privateChat.chat_id)
         }
     }
@@ -91,12 +93,20 @@ const PrivateChatPage = () => {
                     <ContentList/>
                 </Flex>
 
+
+
                 <WindowSlider leftPanelWidth={leftPanelWidth}
                               setLeftPanelWidth={setLeftPanelWidth}
                 />
                 {isAuthenticated &&
                     // <StompSessionProvider url={'https://api.miloverada.gov.ua:8443/ws-endpoint'}>
                     <StompSessionProvider url={'http://localhost:6060/ws-endpoint'}>
+                        <SenderActivityMonitor/>
+
+                        {privateChatInfo &&
+                            <ReceiverActivityMonitor privateChatInfo={privateChatInfo}/>
+                        }
+
                         <ChatWindow />
                     </StompSessionProvider>
                 }

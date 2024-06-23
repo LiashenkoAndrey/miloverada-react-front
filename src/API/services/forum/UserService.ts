@@ -2,6 +2,17 @@ import {NewUserDto} from "./ForumInterfaces";
 import {callAndGetResult} from "../ExternalApiService";
 import {apiServerUrl} from "../../Constants";
 
+export interface UpdateUserOnlineStatusDto {
+    userIdThatOnlineStatusNeedsToBeUpdated : string
+    userIdThatNeedsNotification : string
+    isOnline : boolean
+}
+
+export interface UserOnlineStatusChanged {
+    isOnline : boolean
+    date : string
+}
+
 export const getAllUsers = () => {
     const config = {
         url: `${apiServerUrl}/api/forum/users`,

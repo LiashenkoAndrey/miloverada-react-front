@@ -45,7 +45,7 @@ const ChatHeader: FC<ChatHeaderProps> = ({}) => {
 
                         </Flex>
                     }
-                    {(chatInfo && privateChatInfo === null) &&
+                    {chatInfo &&
                         <span style={{ color:"var(--forum-primary-text-color)", userSelect: "none"}} >{chatInfo.description}</span>
                     }
                 </Flex>

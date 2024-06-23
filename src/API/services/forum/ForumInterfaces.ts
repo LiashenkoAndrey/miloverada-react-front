@@ -125,6 +125,8 @@ export interface ForumUser {
     nickname : string,
     avatar : string
     isVerified : boolean
+    lastWasOnline : string,
+    isOnline : boolean
 }
 
 export interface AppUser {
