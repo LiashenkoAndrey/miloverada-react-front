@@ -1,11 +1,12 @@
 import React, {useContext, useEffect, useRef, useState} from 'react';
 
 import {
+    App,
     Button,
-    Divider, Dropdown,
+    Divider, Dropdown, Empty,
     Flex,
     InputNumber,
-    List, MenuProps,
+    List, MenuProps, message,
     Modal,
     notification, Popconfirm,
     Skeleton,
@@ -77,9 +78,22 @@ const DocumentPage = () => {
         setSelectedDocument(undefined);
     };
 
-    const onShowDocument = (document : IDocument) => {
+    const [messageApi, contextHolder] = message.useMessage();
+
+    const downloadFile = (doc : IDocument) => {
+        messageApi.success("Документ завантажено")
+        const a = document.createElement("a");
+        a.href = apiServerUrl + "/api/download/file/" + doc.name;
+        a.download = doc.name;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+    }
+
+    const onClickOnDocumentText = (document : IDocument) => {
+        downloadFile(document)
         setSelectedDocument(document)
-        setIsModalOpen(true)
+        // setIsModalOpen(true)
     }
 
     const getById = async () => {
@@ -426,6 +440,7 @@ const DocumentPage = () => {
 
     return (
         <Flex justify={"center"}>
+            {contextHolder}
             <Modal title="Вітаємо!"
                    open={isTourModalOpen}
                    footer={tourModalFooter}
@@ -499,6 +514,10 @@ const DocumentPage = () => {
 
                 <Divider/>
 
+                {groups.length === 0 &&
+                    <Empty description={<h3>Документи відсутні</h3>}/>
+                }
+
 
                 <Flex ref={groupsRef}
                       gap={10} vertical
@@ -527,7 +546,7 @@ const DocumentPage = () => {
                                             dataSource={group.documents}
                                             renderItem={(doc) =>
                                                 (
-                                                    <Document onClick={onShowDocument}
+                                                    <Document onClick={onClickOnDocumentText}
                                                               onEditName={updateDocumentName}
                                                               key={"doc-" + doc.id}
                                                               fontSize={fileNameFontSize}
@@ -548,7 +567,7 @@ const DocumentPage = () => {
                 </Flex>
                 <Flex vertical>
                     {docs.map((doc) =>
-                        <Document onClick={onShowDocument}
+                        <Document onClick={onClickOnDocumentText}
                                   onEditName={updateDocumentName}
                                   key={"doc-" + doc.id}
                                   fontSize={fileNameFontSize}
