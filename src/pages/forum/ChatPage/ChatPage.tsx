@@ -98,8 +98,7 @@ const ChatPage = () => {
                               setLeftPanelWidth={setLeftPanelWidth}
                 />
 
-                {/*<StompSessionProvider url={'https://api.miloverada.gov.ua:8443/ws-endpoint'}>  */}
-                <StompSessionProvider url={'http://localhost:6060/ws-endpoint'}>
+                <StompSessionProvider url={process.env.REACT_APP_API_WS_HANDSHAKE_ENDPOINT!}>
                     <ChatWindow />
                 </StompSessionProvider>
             </Flex>
