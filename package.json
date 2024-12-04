@@ -36,8 +36,8 @@
     "use-react-screenshot": "^4.0.0"
   },
   "scripts": {
-    "start": "cross-env react-scripts start",
-    "build": "CI=false cross-env react-scripts build",
+    "start": "cross-env react-scripts start .env.development",
+    "build": "cross-env react-scripts build .env.production",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
