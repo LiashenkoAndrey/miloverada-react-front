@@ -1,10 +1,25 @@
 import React, {FC, useCallback, useContext, useEffect, useState} from 'react';
-import {Checkbox, CheckboxProps, Dropdown, Flex, MenuProps, Modal, Typography} from "antd";
-import {CopyFilled, DownloadOutlined, InfoCircleOutlined} from "@ant-design/icons";
+import {
+    Button,
+    Checkbox,
+    CheckboxProps,
+    Dropdown,
+    Flex,
+    MenuProps,
+    message,
+    Modal,
+    Typography
+} from "antd";
+import {
+    CopyFilled,
+    DownloadOutlined,
+    InfoCircleOutlined,
+    ShareAltOutlined
+} from "@ant-design/icons";
 import {IDocument} from "../../API/services/InstitutionService";
 import FileFormat from "../Files/FileFormat";
 import classes from './Document.module.css'
-import {apiServerUrl} from "../../API/Constants";
+import {apiServerUrl, DOCUMENT_DOWNLOAD_PATH} from "../../API/Constants";
 import {useTypedSelector} from "../../hooks/useTypedSelector";
 import {updateAdminMeta} from "../../API/services/UserService";
 import {AuthContext} from "../../context/AuthContext";
@@ -37,7 +52,6 @@ const Document: FC<DocumentProps> = ({
     const {adminMetadata} = useTypedSelector(state => state.user)
     const {jwt} = useContext(AuthContext)
     const {setAdminMetadata} = useActions()
-    const {isAuthenticated} = useAuth0()
 
     const items: MenuProps['items'] = [
         {
@@ -141,7 +155,14 @@ const Document: FC<DocumentProps> = ({
         }
     }
 
+    function getDocumentDownloadUrl(document: IDocument) {
+        return DOCUMENT_DOWNLOAD_PATH.formatted(document.name)
+    }
 
+    function onShare(document: IDocument) {
+        message.success("Посилання скопійовано")
+        navigator.clipboard.writeText(getDocumentDownloadUrl(document))
+    }
 
     return (
         <Dropdown disabled={!checkPermission(jwt, "admin")}  menu={{items : items , onClick: onSelectAction}} trigger={['contextMenu']}>
@@ -174,6 +195,8 @@ const Document: FC<DocumentProps> = ({
                 <a href={apiServerUrl + "/api/download/file/" + document.name}  style={{ textDecoration: "none"}}>
                     <DownloadOutlined className={classes.downloadBtn} style={{fontSize: 30, cursor: "pointer"}}  />
                 </a>
+
+                <ShareAltOutlined onClick={() => onShare(document)} style={{fontSize: 30, cursor: "pointer"}} />
             </Flex>
         </Dropdown>
 

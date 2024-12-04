@@ -3,6 +3,17 @@ import {jwtDecode} from "jwt-decode";
 
 const apiServerUrl = process.env.REACT_APP_API_SERVER_URL;
 
+declare global {
+    interface String {
+        formatted(...args: any[]): string;
+    }
+}
+
+// Add the formatted method to the String prototype
+String.prototype.formatted = function (...args: any[]): string {
+    return this.replace(/%s/g, () => args.shift());
+};
+
 export function toTime(date: Array<string>) {
     return new Date(date.toString()).toTimeString().substring(0, 5)
 }
@@ -10,6 +21,7 @@ export function toTime(date: Array<string>) {
 export const NOT_AUTH_MSG = {message: "Не авторизовано"}
 
 export function getRandomColor(): string {
+
     const letters: string = '0123456789ABCDEF';
     let color: string = '#';
     for (let i = 0; i < 6; i++) {
