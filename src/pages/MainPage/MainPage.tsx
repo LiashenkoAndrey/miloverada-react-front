@@ -6,17 +6,10 @@ import NewsList from "../../components/NewsList/NewsList";
 import RedButton from "./RedButton";
 import NewsListLoader from "../../components/NewsList/NewsListLoader";
 import {useNavigate} from "react-router-dom";
-import BannersList from "../../components/BannersList/BannersList";
-import MainPageImageParallax from "./MainPageImageParallax";
 import ParallaxImage from "./ParallaxImage";
-// @ts-ignore
+
 import './ParallaxImage.css';
-// @ts-ignore
-import bg1 from '../../assets/backgrounds/bg1.png'
-// @ts-ignore
-import bg2 from '../../assets/backgrounds/bg2.png'
-// @ts-ignore
-import bg3 from '../../assets/backgrounds/bg3.png'
+import {backgroundImage} from "html2canvas/dist/types/css/property-descriptors/background-image";
 
 
 const MainPage = () => {
@@ -57,30 +50,16 @@ const MainPage = () => {
     return (
         <div style={{position: "relative", height: " 100%"}}>
             <div style={{position: "relative"}}>
-                <div className={"App"} style={{gap : `${Math.abs(position.x / 2)}px`}}>
-                    <ParallaxImage wrapperClass={"parallaxImageWrapper_1"}
-                                   className={"parallax_image_1"}
-                                   wrapperStyle={{zIndex : 1, overflow: "initial"}}
-                                   style={{clipPath : "polygon(5% 5%, 87.45% 4.46%, 51.01% 84.29%, 5% 95%)"}}
-                                   imgUrl={bg1}
-                                   moveSpeed={50}
-                    />
-                    <ParallaxImage className={'parallax_image_2'}
-                                   wrapperClass={"parallaxImageWrapper_2"}
-                                   moveSpeed={30}
-                                   wrapperStyle={{zIndex : 1}} style={{}}
-                                   imgUrl={bg2}
-                    />
-                    <ParallaxImage className={'parallax_image_3'}
-                                   moveSpeed={80}
-                                   wrapperClass={"parallaxImageWrapper_3"}
-                                   wrapperStyle={{overflow : "initial"}}
-                                   style={{}}
-                                   imgUrl={bg3}
-                    />
+                <div className={"App"}
+
+                     style={{backgroundImage: "url(https://t2-chat.s3.eu-north-1.amazonaws.com/test/temp/new_bg4.png)",
+                         backgroundRepeat: "no-repeat",
+                         backgroundPosition: "center",
+                         backgroundSize: "cover"}}
+                >
+
                 </div>
             </div>
-            {/*<MainPageImageParallax/>*/}
 
             <Flex vertical={true} className={classes.content}>
                 <Flex vertical={true}

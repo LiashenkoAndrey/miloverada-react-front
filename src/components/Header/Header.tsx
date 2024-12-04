@@ -1,6 +1,6 @@
 import React, {useContext, useEffect, useState} from 'react';
 import classes from './Header.module.css'
-import {Badge, Dropdown, Flex, MenuProps, Space} from "antd";
+import {Badge, Dropdown, Flex, MenuProps, Space, Tooltip} from "antd";
 // @ts-ignore
 import icon from '../../assets/icon.png'
 import {useLocation, useNavigate} from "react-router-dom";
@@ -62,9 +62,11 @@ const Header = () => {
         {onClick : () => nav("/documents/all"), title : "Документи"},
         {onClick : () => nav("/newsFeed/all"), title : "Новини"},
         {onClick : () => {
-                nav("/forum")
+
             }, title :
-                    "Форум"
+                    <Tooltip title={"Ведуться технічні роботи..."}>
+                        Форум
+                    </Tooltip>
         },
         {onClick : () => nav("/contacts"), title : "Контакти"},
     ]
@@ -158,22 +160,10 @@ const Header = () => {
                       className={[classes.navBtnWrapper, "nonSelect"].join(' ')}
                 >
                     {options.map((o) =>
-                        o.title === "Форум" ?
-                            <Badge.Ribbon className={classes.forumBadge}
-
-                                          text="ДОСТУПНО"
-                                          color={"#05a100"}
-                            >
-                                  <span style={{display: "block"}} className={[classes.headNavItem, classes.btnText].join(' ')}
-                                        key={"Head-option-" + o.title}
-                                        onClick={o.onClick}
-                                  >{o.title}</span>
-                            </Badge.Ribbon>
-                            :
-                            <span className={[classes.headNavItem, classes.btnText].join(' ')}
-                                  key={"Head-option-" + o.title}
-                                  onClick={o.onClick}
-                            >{o.title}</span>
+                        <span className={[classes.headNavItem, classes.btnText].join(' ')}
+                              key={"Head-option-" + o.title}
+                              onClick={o.onClick}
+                        >{o.title}</span>
                     )}
                     {userIcon}
                 </Flex>
