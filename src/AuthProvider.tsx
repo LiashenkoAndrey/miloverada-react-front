@@ -26,6 +26,8 @@ const AuthProvider : FC<AuthProviderProps> = ({children}) => {
         <Auth0Provider
             domain={domain}
             clientId={clientId}
+            useRefreshTokens={true}
+            cacheLocation="localstorage"
             authorizationParams={{
                 audience: "https://miloverada-api",
                 redirect_uri: redirectUri,
