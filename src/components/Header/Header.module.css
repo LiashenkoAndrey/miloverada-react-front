@@ -24,7 +24,7 @@
 .headNavItem {
     border-bottom-right-radius: 10px;
     border-bottom-left-radius: 10px;
-    padding: 10px 10px;
+    padding: 7px 10px;
     width: fit-content;
     transition: background-color 200ms,
                 font-size 300ms,
@@ -186,7 +186,6 @@
 
 .navBtnWrapper {
     margin-right: 10px;
-    margin-top: 8px;
 }
 
 @media (max-width: 1000px) {
