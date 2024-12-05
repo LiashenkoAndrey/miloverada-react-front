@@ -49,6 +49,7 @@ import {useTypedSelector} from "../../hooks/useTypedSelector";
 import {updateAdminMeta} from "../../API/services/UserService";
 import {useActions} from "../../hooks/useActions";
 import {checkPermission} from "../../API/Util";
+import GroupDocumentsList from "./GroupDocumentsList";
 
 const {  Title } = Typography;
 const DocumentPage = () => {
@@ -93,7 +94,6 @@ const DocumentPage = () => {
     const onClickOnDocumentText = (document : IDocument) => {
         downloadFile(document)
         setSelectedDocument(document)
-        // setIsModalOpen(true)
     }
 
     const getById = async () => {
@@ -135,7 +135,6 @@ const DocumentPage = () => {
         } else notification.error({message: "not auth"})
     }
 
-
     const updateGroupName = async (name : string, id : number, callback :  (name : string) => void) => {
         const formData = new FormData()
         formData.append("name", name)
@@ -160,14 +159,12 @@ const DocumentPage = () => {
         }
     }
 
-
     const editGroupNameCallback = (name : string) => {
         if (documentGroup) {
             documentGroup.name = name
             setDocumentGroup(Object.create(documentGroup))
         }
     }
-
 
     const updateDocumentName = async (name : string, document : IDocument) => {
         const formData = new FormData()
@@ -182,7 +179,6 @@ const DocumentPage = () => {
 
         setEditGroupId(undefined)
     }
-
 
     const updDocument = (name : string, document : IDocument) => {
         if (document.documentGroup.id ===  Number(id)) {
@@ -210,7 +206,6 @@ const DocumentPage = () => {
             }
         }
     }
-
 
     const removeDocument = (document : IDocument) => {
         if (document.documentGroup.id === Number(id)) {
@@ -264,7 +259,6 @@ const DocumentPage = () => {
         </a> ,
         <Button key={"showDocFooterBtn-2"} type={"primary"} onClick={handleCancel}>Заразд</Button>
     ]
-
 
     const addNewSubGroup = async (subGroup : IDocumentGroup) => {
         setGroups([...groups, subGroup])
@@ -540,25 +534,13 @@ const DocumentPage = () => {
                                 />
 
                                 <Accordion.Body>
-                                    {group.documents &&
-                                        <List
-                                            size="small"
-                                            dataSource={group.documents}
-                                            renderItem={(doc) =>
-                                                (
-                                                    <Document onClick={onClickOnDocumentText}
-                                                              onEditName={updateDocumentName}
-                                                              key={"doc-" + doc.id}
-                                                              fontSize={fileNameFontSize}
-                                                              document={doc}
-                                                              onDeleteDocument={onDeleteDocument}
-                                                              documentEditNameInputRef={documentEditNameInputRef}
-                                                    />
-                                                )}
-                                        />
-
-                                    }
-
+                                    <GroupDocumentsList group={group}
+                                                        onClickOnDocumentText={onClickOnDocumentText}
+                                                        updateDocumentName={updateDocumentName}
+                                                        fileNameFontSize={fileNameFontSize}
+                                                        onDeleteDocument={onDeleteDocument}
+                                                        documentEditNameInputRef={documentEditNameInputRef}
+                                    />
                                 </Accordion.Body>
                             </Accordion.Item>
                         )}
