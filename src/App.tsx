@@ -29,6 +29,7 @@ import {getForumUserByAppUserId} from "./API/services/forum/UserService";
 import CreateNewForumUserProfileModal from "./components/CreateNewForumUserProfileModal/CreateNewForumUserProfileModal";
 import AboutPage from "./pages/AboutPage/AboutPage";
 import {ContactsPage} from "./pages/ContactsPage/ContactsPage";
+import {Snowfall} from "react-snowfall";
 
 function App() {
     const [jwt, setJwt] = useState<string>()
