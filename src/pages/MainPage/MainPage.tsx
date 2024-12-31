@@ -52,7 +52,7 @@ const MainPage = () => {
             <div style={{position: "relative"}}>
                 <div className={"App"}
 
-                     style={{backgroundImage: "url(https://t2-chat.s3.eu-north-1.amazonaws.com/test/temp/new_bg4.png)",
+                     style={{backgroundImage: "url(https://t2-chat.s3.eu-north-1.amazonaws.com/test/temp/winterBackground.webp)",
                          backgroundRepeat: "no-repeat",
                          backgroundPosition: "center",
                          backgroundSize: "cover"}}
