@@ -212,3 +212,10 @@ export const checkPermission = (token: string | undefined, permission: string) =
         return false
     }
 }
+
+export const checkServerHealth = async () => {
+    const response = await fetch(`${apiServerUrl}/health`);
+    if (!response.ok) {
+        throw new Error("Server is down");
+    }
+};

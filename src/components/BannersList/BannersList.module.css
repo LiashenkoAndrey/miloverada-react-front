@@ -1,5 +1,8 @@
 
 .bannersListWrapper {
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
     user-select: none;
     padding-right: 20px;
     padding-bottom: 50px;

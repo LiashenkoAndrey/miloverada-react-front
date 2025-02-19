@@ -26,10 +26,13 @@ import DocumentPage from "./pages/DocumentPage/DocumentPage";
 import {useActions} from "./hooks/useActions";
 import {getAppUser, UserDto} from "./API/services/UserService";
 import {getForumUserByAppUserId} from "./API/services/forum/UserService";
-import CreateNewForumUserProfileModal from "./components/CreateNewForumUserProfileModal/CreateNewForumUserProfileModal";
+import CreateNewForumUserProfileModal
+    from "./components/CreateNewForumUserProfileModal/CreateNewForumUserProfileModal";
 import AboutPage from "./pages/AboutPage/AboutPage";
 import {ContactsPage} from "./pages/ContactsPage/ContactsPage";
-import {Snowfall} from "react-snowfall";
+import GlobalHealthCheck from "./components/util/GlobalHealthCheck";
+import UnavailableServerErrorPage from "./pages/ErrorPages/UnavailableServerErrorPage";
+import NotFoundPage from "./pages/ErrorPages/NotFoundPage";
 
 function App() {
     const [jwt, setJwt] = useState<string>()
@@ -118,28 +121,33 @@ function App() {
                       {isForumUserRegistered !== null && !isForumUserRegistered &&
                           <CreateNewForumUserProfileModal/>
                       }
+                      <GlobalHealthCheck/>
                       <Routes>
-                          <Route path={"/"} element={<MainPage/>}/>
-                          <Route path={"/about"} element={<AboutPage/>}/>
-                          <Route path={"/newsFeed/:id"} element={<NewsPage isPreview={false}/>}/>
-                          <Route path={"/newsFeed/all"} element={<AllNewsPage/>}/>
-                          <Route path={"/news/new"} element={<AddNewsPage/>}/>
 
-                          <Route path={"/documents/all"} element={<AllDocumentsPage/>}/>
-                          <Route path={"/documentGroup/:id/subGroup/:subGroupId"} element={<DocumentPage/>}/>
-                          <Route path={"/documentGroup/:id"} element={<DocumentPage/>}/>
+                              <Route path={"/server-unavailable"} element={<UnavailableServerErrorPage/>}/>
 
-                          <Route path={"/contacts"} element={<ContactsPage/>}/>
-                          <Route path={"/institutions"} element={<AllInstitutionsPage/>}/>
-                          <Route path={"/institution/:id"} element={<InstitutionPage/>}/>
+                              <Route path={"/"} element={<MainPage/>}/>
+                              <Route path={"/about"} element={<AboutPage/>}/>
+                              <Route path={"/newsFeed/:id"} element={<NewsPage isPreview={false}/>}/>
+                              <Route path={"/newsFeed/all"} element={<AllNewsPage/>}/>
+                              <Route path={"/news/new"} element={<AddNewsPage/>}/>
 
-                          <Route path={"/forum/chat/:id"} element={<ChatPage/>}/>
-                          {/*<Route path={"/forum/chatWith/:userId"} element={<ChatPage/>}/>*/}
-                          <Route path={"/forum/topic/:id"} element={<TopicPage/>}/>
-                          <Route path={"/forum"} element={<ForumPage/>}/>
-                          <Route path={"/resolveUser"} element={<IsRegisteredCheckPage/>}/>
-                          <Route path={"/forum/user/:receiverId/chat"} element={<PrivateChatPage/>}/>
-                          <Route path={"/forum/users"} element={<AllUsersPage/>}/>
+                              <Route path={"/documents/all"} element={<AllDocumentsPage/>}/>
+                              <Route path={"/documentGroup/:id/subGroup/:subGroupId"} element={<DocumentPage/>}/>
+                              <Route path={"/documentGroup/:id"} element={<DocumentPage/>}/>
+
+                              <Route path={"/contacts"} element={<ContactsPage/>}/>
+                              <Route path={"/institutions"} element={<AllInstitutionsPage/>}/>
+                              <Route path={"/institution/:id"} element={<InstitutionPage/>}/>
+
+                              <Route path={"/forum/chat/:id"} element={<ChatPage/>}/>
+                              <Route path={"/forum/topic/:id"} element={<TopicPage/>}/>
+                              <Route path={"/forum"} element={<ForumPage/>}/>
+                              <Route path={"/resolveUser"} element={<IsRegisteredCheckPage/>}/>
+                              <Route path={"/forum/user/:receiverId/chat"} element={<PrivateChatPage/>}/>
+                              <Route path={"/forum/users"} element={<AllUsersPage/>}/>
+
+                              <Route path={"*"} element={<NotFoundPage/>}/>
                       </Routes>
                       <Footer/>
                   </Layout>

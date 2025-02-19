@@ -1,15 +1,16 @@
 import React, {useEffect, useState} from 'react';
 import classes from './MainPage.module.css'
-import {Flex} from "antd";
+import {Flex, message} from "antd";
 import {getAllNews} from "../../API/services/NewsService";
 import NewsList from "../../components/NewsList/NewsList";
 import RedButton from "./RedButton";
 import NewsListLoader from "../../components/NewsList/NewsListLoader";
 import {useNavigate} from "react-router-dom";
-import ParallaxImage from "./ParallaxImage";
+// @ts-ignore
+import textContent from "../../assets/texts/main-page-greetings.txt";
 
 import './ParallaxImage.css';
-import {backgroundImage} from "html2canvas/dist/types/css/property-descriptors/background-image";
+import BannersList from "../../components/BannersList/BannersList";
 
 
 const MainPage = () => {
@@ -22,29 +23,9 @@ const MainPage = () => {
             const {data, error} = await getAllNews();
             if (data) {
                 setNews(data)
-            } else throw error;
+            } else    message.error("API Server is not responding. Please try again later.", 3);
         }
-
         getNews()
-    }, []);
-
-    const [position, setPosition] = useState({ x: 0, y: 0 });
-
-    useEffect(() => {
-        const handleMouseMove = (e: { clientX: any; clientY: any; }) => {
-            const { clientX, clientY } = e;
-            const centerX = window.innerWidth / 2;
-            const centerY = window.innerHeight / 2;
-            const offsetX = (clientX - centerX) / 30; // Зміна швидкості руху
-            const offsetY = (clientY - centerY) / 30;
-            setPosition({ x: offsetX, y: offsetY });
-        };
-
-        window.addEventListener('mousemove', handleMouseMove);
-
-        return () => {
-            window.removeEventListener('mousemove', handleMouseMove);
-        };
     }, []);
 
     return (
@@ -57,7 +38,6 @@ const MainPage = () => {
                          backgroundPosition: "center",
                          backgroundSize: "cover"}}
                 >
-
                 </div>
             </div>
 
@@ -69,9 +49,7 @@ const MainPage = () => {
                     <p className={classes.greetingTitle}>Вітаємо!</p>
 
                     <h1 className={classes.greetingText}>
-                        Вітаємо на офіційному сайті Милівської сільської територіальної громади,
-                        тут ви можете дізнаться останні новини, завантижити документи,
-                        поспілкуватся на форумі та багато іншого...
+                        {textContent}
                     </h1>
 
                     <RedButton onClick={() => nav("/about")}
@@ -117,7 +95,7 @@ const MainPage = () => {
                         </RedButton>
                     </Flex>
 
-                    {/*<BannersList/>*/}
+                    <BannersList/>
                 </Flex>
             </Flex>
         </div>

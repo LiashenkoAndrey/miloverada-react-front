@@ -31,7 +31,7 @@ const NewsNewCommentInput: FC<NewsNewCommentInputProps> = ({newsId}) => {
             return
         }
 
-        if (text.length > 30) {
+        if (text.length > 3000) {
             setWarning("Коментар занадто довгий")
             return
         }

@@ -1,64 +1,48 @@
-import React, {useEffect, useState} from 'react';
-import {Button, Flex} from "antd";
-import {getAllLinkBanners, getAllTextBanners, LinkBanner, TextBanner} from "../../API/services/BannersService";
+import React, {useContext, useEffect, useState} from 'react';
+import {Flex, message} from "antd";
+import {deleteLinkBanner, getAllLinkBanners, LinkBanner} from "../../API/services/BannersService";
 import classes from './BannersList.module.css'
-import {toDate, toTime} from "../../API/Util";
+import {AuthContext} from "../../context/AuthContext";
+import {checkPermission} from "../../API/Util";
+import {ADMIN_PERMISSION} from "../../Constants";
+import BannerItem from "./BannerItem";
+
 const BannersList = () => {
+  const [linkBanners, setLinkBanners] = useState<LinkBanner[]>([])
+  const {jwt} = useContext(AuthContext)
 
-    const [linkBanners, setLinkBanners] = useState<LinkBanner[]>([])
-    const [textBanners, setTextBanners] = useState<TextBanner[]>([])
+  useEffect(() => {
+      const fetchBanners = async () => {
+          try {
+              const banners = await getAllLinkBanners();
+              setLinkBanners(banners || []);
+          } catch (error) {
+              console.error("Failed to fetch banners:", error);
+              message.error("API Server is not responding. Please try again later.", 3); // Show message for 3 seconds
+          }
+      };
+      fetchBanners();
+  }, []);
 
-    const getLinkBanners = async () => {
-        const {data, error} = await getAllLinkBanners()
-        if (data) {
-            setLinkBanners(data)
-        } else throw error
+  const onDelete = (id: number) => {
+    if (!jwt) {
+      return
     }
+    deleteLinkBanner(id, jwt)
+  };
 
-    const getTextBanners = async () => {
-        const {data, error} = await getAllTextBanners()
-        if (data) {
-            setTextBanners(data)
-        } else throw error
-    }
-
-    useEffect(() => {
-        getLinkBanners()
-        getTextBanners()
-    }, []);
-
-    return (
-        <Flex align={"center"} justify={"center"} className={classes.bannersListWrapper} vertical >
-            <div className={classes.bannersList} >
-                {linkBanners.map((linkBanner) =>
-                    <Flex key={"linkBanner-" + linkBanner.id}
-                          gap={10}
-                          vertical
-                          className={classes.banner}
-                          justify={"space-between"}
-                    >
-                        <span>{linkBanner.text}</span>
-                        <a href={linkBanner.url} className={classes.bannerBtn}>Перейти →</a>
-                        <span className={classes.bannerTime}>{linkBanner.createdOn}</span>
-                    </Flex>
-                )}
-
-                {textBanners.map((textBanner) =>
-                    <Flex  key={"textBanner-" + textBanner.id}
-                           gap={10}
-                           vertical
-                           className={classes.banner}
-                           justify={"space-between"}
-                    >
-                        <span>{textBanner.description}</span>
-                        <span className={classes.bannerBtn} >Читати</span>
-                        <span className={classes.bannerTime}>{textBanner.createdOn}</span>
-                    </Flex>
-                )}
-
-            </div>
-        </Flex>
-    );
+  return (
+      <Flex className={classes.bannersListWrapper}>
+        <div className={classes.bannersList}>
+          {linkBanners.map((linkBanners) => (
+              <BannerItem key={linkBanners.id} banner={linkBanners}
+                          onDelete={() => onDelete(linkBanners.id)}
+                          isAdmin={checkPermission(jwt, ADMIN_PERMISSION)}/>
+          ))}
+        </div>
+      </Flex>
+  );
 };
+
 
 export default BannersList;

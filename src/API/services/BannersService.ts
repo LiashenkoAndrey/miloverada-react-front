@@ -1,6 +1,6 @@
 import {callAndGetResult} from "./ExternalApiService";
-
-const apiServerUrl = process.env.REACT_APP_API_SERVER_URL;
+import React from "react";
+import {API_SERVER_URL, DELETE_METHOD, PROTECTED_API} from "../../Constants";
 
 export interface LinkBanner {
     id : number
@@ -9,7 +9,6 @@ export interface LinkBanner {
     createdOn : string[]
 }
 
-
 export interface TextBanner {
     id : number
     description : string
@@ -17,19 +16,34 @@ export interface TextBanner {
     createdOn : string[]
 }
 
-
 export const getAllTextBanners = () => {
     const config = {
-        url: `${apiServerUrl}/api/text-banner/all`,
+        url: `${API_SERVER_URL}/api/text-banner/all`,
         method: "GET"
     }
     return callAndGetResult(config)
 }
 
-export const getAllLinkBanners = () => {
+export async function getAllLinkBanners() {
     const config = {
-        url: `${apiServerUrl}/api/link-banner/all`,
+        url: `${API_SERVER_URL}/api/link-banner/all`,
         method: "GET"
+    }
+    const {data, error} = await callAndGetResult(config)
+    if (data) {
+        return data
+    } else {
+        console.error('Failed to fetch link banners:', error);
+    }
+}
+
+export function deleteLinkBanner(id : number, jwt : string) {
+    const config = {
+        url: `${PROTECTED_API}/link-banner/${id}`,
+        method: DELETE_METHOD,
+        headers: {
+            Authorization: `Bearer ${jwt}`,
+        }
     }
     return callAndGetResult(config)
 }
