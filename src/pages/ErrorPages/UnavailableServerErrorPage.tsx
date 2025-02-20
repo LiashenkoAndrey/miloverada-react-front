@@ -11,10 +11,16 @@ const UnavailableServerErrorPage = () => {
                 status="500"
                 title="Сервер недоступний"
                 subTitle="Вибачте, Сервер вимнено. Будь ласка спробуйте пізніше."
-                extra={
+                extra={<>
                   <Button type="primary" onClick={() => navigate("/")}>
                     Спробувати ще раз
                   </Button>
+
+                  <Button type="primary" onClick={() => navigate(-1)}>
+                    назад
+                  </Button>
+                </>
+
                 }
         />
       </Flex>

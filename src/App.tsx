@@ -134,8 +134,6 @@ function App() {
                               <Route path={"/documentGroup/:id"} element={<DocumentPage/>}/>
 
                               <Route path={"/contacts"} element={<ContactsPage/>}/>
-                              <Route path={"/institutions"} element={<AllInstitutionsPage/>}/>
-                              <Route path={"/institution/:id"} element={<InstitutionPage/>}/>
                           <Route path={"/contacts"} element={<ContactsPage/>}/>
 
                               <Route path={"/forum/chat/:id"} element={<ChatPage/>}/>

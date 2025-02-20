@@ -1,6 +1,9 @@
 import {jwtDecode} from "jwt-decode";
+import {callAndGetResult} from "./services/shared/ExternalApiService";
 
-const apiServerUrl = process.env.REACT_APP_API_SERVER_URL;
+const API_SERVER_URL = process.env.REACT_APP_API_SERVER_URL;
+const HEALTH_CHECK_PROXY_SERVER_URL = 'http://localhost:3001/health-proxy';
+
 
 declare global {
     interface String {
@@ -145,9 +148,9 @@ export function getFileUploadUrl(isLarge: boolean | undefined, id: string | unde
         return "/none"
     }
     if (isLarge) {
-        return apiServerUrl + "/api/forum/upload/largeFile/" + id;
+        return API_SERVER_URL + "/api/forum/upload/largeFile/" + id;
     }
-    return apiServerUrl + "/api/forum/upload/file/" + id;
+    return API_SERVER_URL + "/api/forum/upload/file/" + id;
 }
 
 export function formatFileSize(size: number): string {
@@ -198,9 +201,15 @@ export const checkPermission = (token: string | undefined, permission: string) =
     }
 }
 
-export const checkServerHealth = async () => {
-    const response = await fetch(`${apiServerUrl}/health`);
-    if (!response.ok) {
-        throw new Error("Server is down");
+type ServerHealthResponse = {
+    data: { serverUp: boolean };
+    error?: {     message: unknown;   } | null;
+};
+
+export const checkServerHealth = () :  Promise<ServerHealthResponse> => {
+    const config = {
+        url: HEALTH_CHECK_PROXY_SERVER_URL,
+        method: "GET",
     }
+    return callAndGetResult(config)
 };

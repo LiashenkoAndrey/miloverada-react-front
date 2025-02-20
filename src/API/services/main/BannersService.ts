@@ -1,6 +1,5 @@
-import {callAndGetResult} from "./ExternalApiService";
-import React from "react";
-import {API_SERVER_URL, DELETE_METHOD, PROTECTED_API} from "../../Constants";
+import {API_SERVER_URL, DELETE_METHOD, PROTECTED_API} from "../../../Constants";
+import {callAndGetResult} from "../shared/ExternalApiService";
 
 export interface LinkBanner {
     id : number

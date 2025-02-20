@@ -1,19 +1,13 @@
 import React, {useEffect, useState} from 'react';
 import classes from './MainPage.module.css'
-import {Flex} from "antd";
-import {getAllNews} from "../../../API/services/main/NewsService";
 import NewsList from "../../../components/main/news/NewsList/NewsList";
 import {Flex, message} from "antd";
-import {getAllNews} from "../../API/services/NewsService";
-import NewsList from "../../components/NewsList/NewsList";
 import RedButton from "./RedButton";
 import NewsListLoader from "../../../components/main/news/NewsList/NewsListLoader";
 import {useNavigate} from "react-router-dom";
-// @ts-ignore
-import textContent from "../../assets/texts/main-page-greetings.txt";
 
-import './ParallaxImage.css';
-import BannersList from "../../components/BannersList/BannersList";
+import BannersList from "../../../components/main/BannersList/BannersList";
+import {getAllNews} from "../../../API/services/main/NewsService";
 
 
 const MainPage = () => {
@@ -23,10 +17,10 @@ const MainPage = () => {
 
     useEffect(() => {
         const getNews = async () => {
-            const {data, error} = await getAllNews();
+            const {data} = await getAllNews();
             if (data) {
                 setNews(data)
-            } else    message.error("API Server is not responding. Please try again later.", 3);
+            } else message.error("API Server is not responding. Please try again later.", 3);
         }
         getNews()
     }, []);
@@ -34,7 +28,7 @@ const MainPage = () => {
     return (
         <div style={{position: "relative", height: " 100%"}}>
             <div style={{position: "relative"}}>
-                <div className={"App"}
+                <div className={classes.App}
 
                      style={{backgroundImage: "url(https://faculty.sites.iastate.edu/lab-example/files/inline-images/fog-4597348_1920.jpg)",
                          backgroundRepeat: "no-repeat",

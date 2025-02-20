@@ -16,7 +16,7 @@ const BannersList = () => {
         const {data, error} = await getAllLinkBanners()
         if (data) {
             setLinkBanners(data.content)
-        } else throw error
+        }
     }
 
     useEffect(() => {

@@ -1,7 +1,7 @@
-import {LinkBanner} from "../../API/services/BannersService";
 import React from "react";
 import {Button, Flex, Popconfirm} from "antd";
 import classes from "./BannersList.module.css";
+import {LinkBanner} from "../../../API/services/main/BannersService";
 
 type BannerItemProps = {
   banner: LinkBanner;
