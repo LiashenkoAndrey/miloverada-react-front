@@ -46,7 +46,7 @@ const MainPage = () => {
         <div style={{position: "relative", height: " 100%"}}>
             <div style={{position: "relative"}}>
                 <div className={"App"}
-re
+
                      style={{backgroundImage: "url(https://faculty.sites.iastate.edu/lab-example/files/inline-images/fog-4597348_1920.jpg)",
                          backgroundRepeat: "no-repeat",
                          backgroundPosition: "center",
