@@ -1,4 +1,4 @@
-import {NewsType} from "../API/services/NewsService";
+import {NewsType} from "../API/services/main/NewsService";
 
 export interface INews {
     id?: number,

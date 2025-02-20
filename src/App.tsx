@@ -1,35 +1,33 @@
 import React, {useEffect, useState} from 'react';
 import './App.css';
 import {Route, Routes, useLocation} from "react-router-dom";
-import Header from "./components/Header/Header";
-import MainPage from "./pages/MainPage/MainPage";
-import Footer from "./components/Footer/Footer";
+import Header from "./components/shared/Header/Header";
+import MainPage from "./pages/main/MainPage/MainPage";
+import Footer from "./components/shared/Footer/Footer";
 import {App as AntdApp, ConfigProvider, Layout} from "antd";
-import NewsPage from "./pages/NewsPage/NewsPage";
-import AllNewsPage from "./pages/AllNewsPage/AllNewsPage";
-import AllDocumentsPage from "./pages/AllDocumentsPage/AllDocumentsPage";
+import NewsPage from "./pages/main/NewsPage/NewsPage";
+import AllNewsPage from "./pages/main/AllNewsPage/AllNewsPage";
+import AllDocumentsPage from "./pages/main/AllDocumentsPage/AllDocumentsPage";
 import ChatPage from "./pages/forum/ChatPage/ChatPage";
 import ForumPage from "./pages/forum/AllTopicsPage/ForumPage";
 import {AuthContext} from "./context/AuthContext";
 import {useAuth0} from "@auth0/auth0-react";
 import TopicPage from "./pages/forum/TopicPage/TopicPage";
-import IsRegisteredCheckPage from "./pages/IsRegisteredCheckPage";
+import IsRegisteredCheckPage from "./pages/main/IsRegisteredCheckPage";
 import PrivateChatPage from "./pages/forum/PrivateChatPage/PrivateChatPage";
 import AllUsersPage from "./pages/forum/AllUsersPage/AllUsersPage";
-import AllInstitutionsPage from "./pages/AllInstitutionsPage/AllInstitutionsPage";
-import InstitutionPage from "./pages/InstitutionPage/InstitutionPage";
-import AddNewsPage from "./pages/AddNewsPage/AddNewsPage";
+import AddNewsPage from "./pages/main/AddNewsPage/AddNewsPage";
 import locale from 'antd/es/locale/uk_UA';
 import 'dayjs/locale/uk'
 import 'bootstrap/dist/css/bootstrap.min.css';
-import DocumentPage from "./pages/DocumentPage/DocumentPage";
+import DocumentPage from "./pages/main/DocumentPage/DocumentPage";
 import {useActions} from "./hooks/useActions";
-import {getAppUser, UserDto} from "./API/services/UserService";
+import {getAppUser, UserDto} from "./API/services/main/UserService";
 import {getForumUserByAppUserId} from "./API/services/forum/UserService";
-import CreateNewForumUserProfileModal from "./components/CreateNewForumUserProfileModal/CreateNewForumUserProfileModal";
-import AboutPage from "./pages/AboutPage/AboutPage";
-import {ContactsPage} from "./pages/ContactsPage/ContactsPage";
-import {Snowfall} from "react-snowfall";
+import CreateNewForumUserProfileModal
+    from "./components/forum/CreateNewForumUserProfileModal/CreateNewForumUserProfileModal";
+import AboutPage from "./pages/main/AboutPage/AboutPage";
+import {ContactsPage} from "./pages/main/ContactsPage/ContactsPage";
 
 function App() {
     const [jwt, setJwt] = useState<string>()
@@ -37,7 +35,6 @@ function App() {
     const {setAdminMetadata, setUser} = useActions()
     const {pathname} = useLocation()
     const {setForumUser} = useActions()
-    // const {forumUser} = useTypedSelector(state => state.user)
     const [isForumUserRegistered, setIsForumUserRegistered] = useState<boolean | null>(null)
 
     const getForumUser = async (userId : string, jwt : string) => {
@@ -130,8 +127,6 @@ function App() {
                           <Route path={"/documentGroup/:id"} element={<DocumentPage/>}/>
 
                           <Route path={"/contacts"} element={<ContactsPage/>}/>
-                          <Route path={"/institutions"} element={<AllInstitutionsPage/>}/>
-                          <Route path={"/institution/:id"} element={<InstitutionPage/>}/>
 
                           <Route path={"/forum/chat/:id"} element={<ChatPage/>}/>
                           {/*<Route path={"/forum/chatWith/:userId"} element={<ChatPage/>}/>*/}

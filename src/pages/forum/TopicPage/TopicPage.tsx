@@ -1,13 +1,13 @@
 import React, {useEffect, useState} from 'react';
 import {useNavigate, useParams} from "react-router-dom";
-import ForumWrapper from "../../../components/ForumWrapper/ForumWrapper";
+import ForumWrapper from "../../../components/forum/ForumWrapper/ForumWrapper";
 import {Topic} from "../../../API/services/forum/ForumInterfaces";
 import {getTopicById} from "../../../API/services/forum/TopicService";
-import ForumNavbar from "../../../components/ForumNavbar/ForumNavbar";
+import ForumNavbar from "../../../components/forum/ForumNavbar/ForumNavbar";
 import {Button, Flex} from "antd";
 import {LeftOutlined} from "@ant-design/icons";
 import './TopicPage.css'
-import NewChatModal from "../../../components/NewChatModal";
+import NewChatModal from "../../../components/forum/NewChatModal";
 
 const TopicPage = () => {
 

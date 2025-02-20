@@ -1,5 +1,5 @@
 import {AppUser, ForumUser} from "../API/services/forum/ForumInterfaces";
-import {AdminMetadata} from "../API/services/UserService";
+import {AdminMetadata} from "../API/services/main/UserService";
 
 
 export interface UserState {

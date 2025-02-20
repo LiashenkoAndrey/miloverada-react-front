@@ -2,7 +2,7 @@ import React, {FC, useContext} from 'react';
 import {App, Dropdown, Image, MenuProps} from "antd";
 import PhotoAlbum, {Photo} from "react-photo-album";
 import {DeleteMessageImageDto, Message, MessageImage} from "../../../../API/services/forum/ForumInterfaces";
-import {getForumImageUrl} from "../../../../API/services/ImageService";
+import {getForumImageUrl} from "../../../../API/services/shared/ImageService";
 import {useAuth0} from "@auth0/auth0-react";
 import {deleteMessageImageById} from "../../../../API/services/forum/MessageImageService";
 import {AuthContext} from "../../../../context/AuthContext";

@@ -1,4 +1,4 @@
-import {INewsComment} from "../API/services/NewsCommentService";
+import {INewsComment} from "../API/services/main/NewsCommentService";
 
 
 export interface NewsCommentsState {

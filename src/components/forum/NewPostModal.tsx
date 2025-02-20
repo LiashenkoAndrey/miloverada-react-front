@@ -1,8 +1,8 @@
 import React, {FC, useContext, useRef, useState} from 'react';
 import {Button, Flex, Image, Modal, notification} from "antd";
-import classes from "../../pages/AddNewsPage/AddNewsPage.module.css";
-import classes2 from '../../pages/AddNewsPage/NewsImage/NewsImage.module.css'
-import textAreaClasses from '../../components/NewsNewCommentInput/NewsNewCommentInput.module.css'
+import classes from "../../pages/main/AddNewsPage/AddNewsPage.module.css";
+import classes2 from '../../pages/main/AddNewsPage/NewsImage/NewsImage.module.css'
+import textAreaClasses from '../main/news/NewsNewCommentInput/NewsNewCommentInput.module.css'
 // @ts-ignore
 import imagePlaceholder from "../../assets/image-placeholder.svg";
 import {CloseCircleOutlined, PlusOutlined} from "@ant-design/icons";

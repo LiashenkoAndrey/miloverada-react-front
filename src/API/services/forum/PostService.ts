@@ -1,6 +1,6 @@
 import {ForumUser, User} from "./ForumInterfaces";
 import {apiServerUrl} from "../../Constants";
-import {callAndGetResult} from "../ExternalApiService";
+import {callAndGetResult} from "../shared/ExternalApiService";
 
 
 export interface IPost {

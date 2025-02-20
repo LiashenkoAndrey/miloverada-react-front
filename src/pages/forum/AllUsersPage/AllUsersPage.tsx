@@ -3,8 +3,8 @@ import {Flex} from "antd";
 import {ForumUser} from "../../../API/services/forum/ForumInterfaces";
 import classes from './AllUsersPage.module.css'
 import {getAllUsers} from "../../../API/services/forum/UserService";
-import UserElem from "../../../components/User/UserElem";
-import ForumNavbar from "../../../components/ForumNavbar/ForumNavbar";
+import UserElem from "../../../components/shared/User/UserElem";
+import ForumNavbar from "../../../components/forum/ForumNavbar/ForumNavbar";
 import {ArrowLeftOutlined} from "@ant-design/icons";
 import {useNavigate} from "react-router-dom";
 

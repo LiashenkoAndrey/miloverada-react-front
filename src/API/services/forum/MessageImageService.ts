@@ -1,4 +1,4 @@
-import {callAndGetResult} from "../ExternalApiService";
+import {callAndGetResult} from "../shared/ExternalApiService";
 import {apiServerUrl} from "../../Constants";
 
 

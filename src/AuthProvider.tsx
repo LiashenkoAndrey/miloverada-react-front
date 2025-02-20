@@ -29,6 +29,7 @@ const AuthProvider : FC<AuthProviderProps> = ({children}) => {
             useRefreshTokens={true}
             cacheLocation="localstorage"
             authorizationParams={{
+                scope: "openid profile email offline_access",
                 audience: "https://miloverada-api",
                 redirect_uri: redirectUri,
             }}

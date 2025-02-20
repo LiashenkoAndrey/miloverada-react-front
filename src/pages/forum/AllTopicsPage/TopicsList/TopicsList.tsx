@@ -4,8 +4,8 @@ import {createSearchParams, useLocation, useNavigate} from "react-router-dom";
 import classes from './TopicList.module.css'
 import {getAllTopics} from "../../../../API/services/forum/TopicService";
 import {PlusOutlined, UserOutlined} from "@ant-design/icons";
-import NewChatModal from '../../../../components/NewChatModal';
-import ChatImage from "../../../../components/ChatImage/ChatImage";
+import NewChatModal from '../../../../components/forum/NewChatModal';
+import ChatImage from "../../../../components/forum/ChatImage/ChatImage";
 import {useTypedSelector} from "../../../../hooks/useTypedSelector";
 import {useActions} from "../../../../hooks/useActions";
 import {useAuth0} from "@auth0/auth0-react";

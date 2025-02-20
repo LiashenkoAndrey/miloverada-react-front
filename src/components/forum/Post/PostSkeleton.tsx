@@ -1,7 +1,7 @@
 import React from 'react';
 import classes from './Post.module.css'
 import {Flex, Image, Skeleton} from "antd";
-import {getImageV2Url} from "../../../API/services/ImageService";
+import {getImageV2Url} from "../../../API/services/shared/ImageService";
 import {toDateV2} from "../../../API/Util";
 import {HeartFilled} from "@ant-design/icons";
 // @ts-ignore

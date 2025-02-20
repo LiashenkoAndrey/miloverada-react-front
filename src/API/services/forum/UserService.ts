@@ -1,5 +1,5 @@
 import {NewUserDto} from "./ForumInterfaces";
-import {callAndGetResult} from "../ExternalApiService";
+import {callAndGetResult} from "../shared/ExternalApiService";
 import {apiServerUrl} from "../../Constants";
 
 export const getAllUsers = () => {

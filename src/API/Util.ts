@@ -1,6 +1,5 @@
 import {jwtDecode} from "jwt-decode";
 
-
 const apiServerUrl = process.env.REACT_APP_API_SERVER_URL;
 
 declare global {
@@ -31,28 +30,23 @@ export function getRandomColor(): string {
 }
 
 export function generateContrastColor2(): string {
-    // Генеруємо випадковий колір для тексту
     const randomColor = getRandomColor()
     const background = "#5C4742"
-    // Перевірка яскравості кольору фону
     const brightness = (
         parseInt(background.substring(1, 3), 16) * 0.299 +
         parseInt(background.substring(3, 5), 16) * 0.587 +
         parseInt(background.substring(5, 7), 16) * 0.114
     );
 
-    // Перевірка контрастності випадкового коліру тексту з фоном
     const textColorBrightness = (
         parseInt(randomColor.substring(1, 3), 16) * 0.299 +
         parseInt(randomColor.substring(3, 5), 16) * 0.587 +
         parseInt(randomColor.substring(5, 7), 16) * 0.114
     );
 
-    // Якщо контрастність достатня, повертаємо випадковий колір тексту
     if (Math.abs(brightness - textColorBrightness) > 125) {
         return randomColor;
     } else {
-        // Якщо контрастність недостатня, рекурсивно викликаємо функцію для генерації нового коліру
         return generateContrastColor2();
     }
 }
@@ -73,14 +67,6 @@ export function toDateV2(date: string) {
     const t = date.split("T")
     return t[0]
 }
-
-
-
-export function toDateV2DateFirst(date: string) {
-    const t = date.split("T")
-    return t[0].split("-").reverse().join("-")
-}
-
 
 var fulldays = ["Неділя", "Понеділок", "Вівторок", "Середа", "Четвер", "П'ятниця", "Субота"];
 var months = ["Січень", "Лютий", "Березень", "Квітень", "Травень", "Червень", "Липень", "Серпень", "Вересень", "Жовтень", "Листопад", "Грудень"];
@@ -126,7 +112,6 @@ export function formatDateTodayOrYesterday(someDateTimeStamp: string) {
     }
     else return ""
 }
-
 
 export function isValidEmail(email: string) {
     // Regular expression for validating email addresses

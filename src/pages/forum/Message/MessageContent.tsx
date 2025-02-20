@@ -3,8 +3,8 @@ import {Message} from "../../../API/services/forum/ForumInterfaces";
 import {Flex} from "antd";
 import classes from "./Message.module.css";
 import MessageImages from "./MessageImages/MessageImages";
-import FileDtoList from "../../../components/Files/FileDtoList";
-import FileList from "../../../components/Files/FileList";
+import FileDtoList from "../../../components/forum/Files/FileDtoList";
+import FileList from "../../../components/forum/Files/FileList";
 
 interface MessageContentProps {
     message : Message
