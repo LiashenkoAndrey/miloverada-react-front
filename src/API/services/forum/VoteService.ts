@@ -1,5 +1,5 @@
 import {apiServerUrl} from "../../Constants";
-import {callAndGetResult} from "../ExternalApiService";
+import {callAndGetResult} from "../shared/ExternalApiService";
 
 export interface NewVoteDto {
     text : string

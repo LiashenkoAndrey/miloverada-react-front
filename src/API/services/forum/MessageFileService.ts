@@ -2,7 +2,7 @@ import {apiServerUrl} from "../../Constants";
 import axios from "axios";
 import {MessageFileDtoSmall} from "./MessageDto";
 import {MenuProps} from "antd";
-import {callAndGetResult} from "../ExternalApiService";
+import {callAndGetResult} from "../shared/ExternalApiService";
 
 export const saveMessageFile = (files : File, messageId : number, chatId : number, token : string) => {
     const formData = new FormData();

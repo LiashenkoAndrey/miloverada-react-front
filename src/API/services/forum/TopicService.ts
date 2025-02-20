@@ -1,4 +1,4 @@
-import {callAndGetResult} from "../ExternalApiService";
+import {callAndGetResult} from "../shared/ExternalApiService";
 import {Topic} from "./ForumInterfaces";
 const apiServerUrl = process.env.REACT_APP_API_SERVER_URL;
 

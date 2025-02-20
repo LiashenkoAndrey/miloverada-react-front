@@ -1,6 +1,6 @@
 import React, {FC} from 'react';
 import {ConfigProvider, Flex} from "antd";
-import chat_classes from "../../ChatWindow/ChatWindow.module.css";
+import chat_classes from "../ChatWindow/ChatWindow.module.css";
 import {CloseOutlined, DeleteOutlined} from "@ant-design/icons";
 import classes from './SelectionToolbar.module.css'
 // @ts-ignore

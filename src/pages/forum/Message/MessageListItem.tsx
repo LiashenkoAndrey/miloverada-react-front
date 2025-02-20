@@ -6,7 +6,7 @@ import {generateContrastColor2, toTime} from "../../../API/Util";
 import classes from './Message.module.css'
 import {useTypedSelector} from "../../../hooks/useTypedSelector";
 import {isMyMessage} from "../../../API/services/forum/UserService";
-import UserPicture from "../../../components/UserPicture/UserPicture";
+import UserPicture from "../../../components/forum/UserPicture/UserPicture";
 
 
 // @ts-ignore

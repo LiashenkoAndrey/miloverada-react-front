@@ -1,7 +1,7 @@
 import React, {FC, useContext} from 'react';
 import {deletePostById, IPost} from "../../../API/services/forum/PostService";
 import {Button, Dropdown, Flex, Image, MenuProps, notification} from "antd";
-import {getImageV2Url} from "../../../API/services/ImageService";
+import {getImageV2Url} from "../../../API/services/shared/ImageService";
 import classes from './Post.module.css'
 // @ts-ignore
 import heartImg from '../../../assets/heart-svgrepo-com.svg'

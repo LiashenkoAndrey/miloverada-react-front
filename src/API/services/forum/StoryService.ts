@@ -1,5 +1,5 @@
 import {Topic, User} from "./ForumInterfaces";
-import {callAndGetResult} from "../ExternalApiService";
+import {callAndGetResult} from "../shared/ExternalApiService";
 import {apiServerUrl} from "../../Constants";
 
 

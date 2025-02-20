@@ -11,14 +11,14 @@ import {
 import classes from './StoriesList.module.css'
 import createContentBtnsClasses from './CreateContentBtns.module.css'
 import NewStoryModal from "../NewStoryModal";
-import {getImageV2Url} from "../../../API/services/ImageService";
+import {getImageV2Url} from "../../../API/services/shared/ImageService";
 import NewPostModal from "../NewPostModal";
 import {IPost} from "../../../API/services/forum/PostService";
 import {useTypedSelector} from "../../../hooks/useTypedSelector";
 import {useActions} from "../../../hooks/useActions";
 import {useAuth0} from "@auth0/auth0-react";
 import {useLocation} from "react-router-dom";
-import NewTopic from "../../NewTopic";
+import NewTopic from "../NewTopic";
 
 interface StoriesListProps {
     isPost : boolean

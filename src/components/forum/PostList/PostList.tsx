@@ -11,8 +11,8 @@ import {getPageVotes, newPageVote, NewVoteDto, IVote} from "../../../API/service
 import {PlusOutlined} from "@ant-design/icons";
 import NewVoteModal from "../NewVoteModal/NewVoteModal";
 import {AuthContext} from "../../../context/AuthContext";
-import Vote from "../../Vote/Vote";
-import vote from "../../Vote/Vote";
+import Vote from "../Vote/Vote";
+import vote from "../Vote/Vote";
 
 const PostList = () => {
     const {posts} = useTypedSelector(state => state.forum)

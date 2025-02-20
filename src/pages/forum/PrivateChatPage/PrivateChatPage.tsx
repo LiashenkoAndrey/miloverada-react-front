@@ -2,7 +2,7 @@ import React, {useContext, useEffect, useState} from 'react';
 import {Flex} from "antd";
 import '../ChatPage/ChatPage.css'
 import {StompSessionProvider} from "react-stomp-hooks";
-import ChatWindow from "../../../components/ChatWindow/ChatWindow";
+import ChatWindow from "../../../components/forum/ChatWindow/ChatWindow";
 import {useActions} from "../../../hooks/useActions";
 import {useParams} from "react-router-dom";
 import {getChatById, getOrCreatePrivateChat} from "../../../API/services/forum/ChatService";
@@ -11,7 +11,7 @@ import {AuthContext} from "../../../context/AuthContext";
 import {useTypedSelector} from "../../../hooks/useTypedSelector";
 import {IChat, PrivateChat} from "../../../API/services/forum/ForumInterfaces";
 import ContentList from "../AllTopicsPage/ContentList/ContentList";
-import WindowSlider from "../../../components/WindowSlider/WindowSlider";
+import WindowSlider from "../../../components/forum/WindowSlider/WindowSlider";
 import forumPageClasses from "../AllTopicsPage/ForumPage.module.css";
 import {setPrivateChatInfo} from "../../../store/actionCreators/chat";
 

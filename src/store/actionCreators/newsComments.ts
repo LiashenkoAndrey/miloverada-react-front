@@ -1,6 +1,6 @@
 import {Dispatch} from "redux";
 import {NewsCommentsAction, NewsCommentsActionTypes} from "../../types/NewsComments";
-import {INewsComment} from "../../API/services/NewsCommentService";
+import {INewsComment} from "../../API/services/main/NewsCommentService";
 
 
 export const setNewsComments =  (preview : INewsComment[]) => {

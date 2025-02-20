@@ -15,14 +15,11 @@ export interface MessageFileDto {
     isLarge? : boolean
 }
 
-
 export interface MessageFileDtoSmall {
     name : string
     size : number
     format : string
 }
-
-
 
 export interface File {
     name : string

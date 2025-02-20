@@ -7,7 +7,7 @@ import {useAuth0} from "@auth0/auth0-react";
 import {Avatar, Empty, Flex, List} from "antd";
 import classes from './ChatList.module.css'
 import {createSearchParams, useLocation, useNavigate} from "react-router-dom";
-import ChatImage from "../../ChatImage/ChatImage";
+import ChatImage from "../ChatImage/ChatImage";
 
 export enum Modes {
     CHATS = "CHATS",
