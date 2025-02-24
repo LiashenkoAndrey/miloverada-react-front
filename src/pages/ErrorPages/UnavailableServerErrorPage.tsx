@@ -1,9 +1,7 @@
 import React from 'react';
-import {Button, Flex, Result} from "antd";
-import {useNavigate} from "react-router-dom";
+import {Flex, Result} from "antd";
 
 const UnavailableServerErrorPage = () => {
-  const navigate = useNavigate();
 
   return (
       <Flex style={{height: "100vh", backgroundColor: "white"}} align={"center"} justify={"center"}>
@@ -11,17 +9,6 @@ const UnavailableServerErrorPage = () => {
                 status="500"
                 title="Сервер недоступний"
                 subTitle="Вибачте, Сервер вимнено. Будь ласка спробуйте пізніше."
-                extra={<>
-                  <Button type="primary" onClick={() => navigate("/")}>
-                    Спробувати ще раз
-                  </Button>
-
-                  <Button type="primary" onClick={() => navigate(-1)}>
-                    назад
-                  </Button>
-                </>
-
-                }
         />
       </Flex>
   );

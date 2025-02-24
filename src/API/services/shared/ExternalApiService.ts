@@ -30,7 +30,8 @@ export const callExternalApi = async (options: AxiosRequestConfig) => {
             if (response && response.data && response.data.message) {
                 message = response.data.message;
             }
-            console.log("Axios Error: ", error)
+            // @ts-ignore
+            console.log(error.name, error.message, error.request.responseURL)
             return {
                 data: null,
                 error: {

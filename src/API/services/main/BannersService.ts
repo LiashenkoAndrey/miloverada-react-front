@@ -23,17 +23,12 @@ export const getAllTextBanners = () => {
     return callAndGetResult(config)
 }
 
-export async function getAllLinkBanners() {
+export function getAllLinkBanners() {
     const config = {
         url: `${API_SERVER_URL}/api/link-banner/all`,
         method: "GET"
     }
-    const {data, error} = await callAndGetResult(config)
-    if (data) {
-        return data
-    } else {
-        console.error('Failed to fetch link banners:', error);
-    }
+    return callAndGetResult(config)
 }
 
 export function deleteLinkBanner(id : number, jwt : string) {

@@ -213,3 +213,7 @@ export const checkServerHealth = () :  Promise<ServerHealthResponse> => {
     }
     return callAndGetResult(config)
 };
+
+export function secToMilisec(sec : number) {
+    return sec * 1000
+}
