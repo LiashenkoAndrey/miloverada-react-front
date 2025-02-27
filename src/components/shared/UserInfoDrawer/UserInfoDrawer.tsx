@@ -195,7 +195,7 @@ const UserInfoDrawer: FC<UserInfoDrawerProps> = ({setIsUserDrawerActive, isUserD
 
           {!currentNotification &&
               <Flex gap={10} vertical>
-                    <Button type={"primary"} onClick={() => nav("/manage-panel")}>
+                    <Button disabled type={"primary"} onClick={() => nav("/manage-panel")}>
                         Панель керування
                     </Button>
                 <Flex gap={10} style={{marginTop: 10}}>
