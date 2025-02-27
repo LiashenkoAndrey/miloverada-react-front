@@ -2,7 +2,7 @@ import {jwtDecode} from "jwt-decode";
 import {callAndGetResult} from "./services/shared/ExternalApiService";
 
 const API_SERVER_URL = process.env.REACT_APP_API_SERVER_URL;
-const HEALTH_CHECK_PROXY_SERVER_URL = 'http://localhost:3001/health-proxy';
+const HEALTH_CHECK_PROXY_SERVER_URL = process.env.REACT_APP_HEALTH_CHECK_PROXY_SERVER_URL;
 
 
 declare global {
