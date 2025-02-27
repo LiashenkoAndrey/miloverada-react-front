@@ -2,9 +2,6 @@ import {callAndGetResult} from "../shared/ExternalApiService";
 import {apiServerUrl} from "../../Constants";
 import {IContact} from "../../../pages/main/ContactsPage/ContactsPage";
 
-
-
-
 export const getAllContacts = () => {
     const config = {
         url: `${apiServerUrl}/api/contacts`,
@@ -12,10 +9,6 @@ export const getAllContacts = () => {
     }
     return callAndGetResult(config)
 }
-
-
-
-
 
 export const newContact = (data : IContact, token : string) => {
     const config = {
@@ -28,7 +21,6 @@ export const newContact = (data : IContact, token : string) => {
     }
     return callAndGetResult(config)
 }
-
 
 export const deleteContactById = (id : number, token : string) => {
     const config = {

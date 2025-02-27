@@ -1,6 +1,6 @@
-import React, {useContext, useEffect, useState} from 'react';
+import React, {useContext, useEffect} from 'react';
 import classes from './Header.module.css'
-import {Badge, Dropdown, Flex, MenuProps, Space, Tooltip} from "antd";
+import {Dropdown, Flex, MenuProps, Space, Tooltip} from "antd";
 // @ts-ignore
 import icon from '../../../assets/icon.png'
 import {useLocation, useNavigate} from "react-router-dom";
@@ -11,8 +11,8 @@ import {useTypedSelector} from "../../../hooks/useTypedSelector";
 import {getUserById} from "../../../API/services/main/UserService";
 import {AppUser} from "../../../API/services/forum/ForumInterfaces";
 import {useActions} from "../../../hooks/useActions";
-import UserInfoDrawer from "./UserInfoDrawer/UserInfoDrawer";
 import {getTotalNumberOfNotifications} from "../../../API/services/main/NotificationService";
+import UserIcon from "./UserIcon";
 
 export interface HeaderOption {
     onClick : () => void
@@ -20,14 +20,13 @@ export interface HeaderOption {
 }
 
 const Header = () => {
-    const nav  = useNavigate()
-    const { pathname } = useLocation();
-    const {loginWithRedirect, isAuthenticated, user, logout } = useAuth0()
-    const {jwt} = useContext(AuthContext)
-    const {appUser, adminMetadata, unreadNotificationNumber} = useTypedSelector(state => state.user)
-    const {setUser, setNotificationNumber} = useActions()
-    const {setAdminMetadata} = useActions()
 
+    const nav  = useNavigate()
+    const {pathname} = useLocation();
+    const {loginWithRedirect, isAuthenticated, user} = useAuth0()
+    const {jwt} = useContext(AuthContext)
+    const {appUser} = useTypedSelector(state => state.user)
+    const {setUser, setNotificationNumber} = useActions()
 
     useEffect(() => {
         const getNotificationsNumber = async () => {
@@ -37,8 +36,8 @@ const Header = () => {
                     console.log(data)
                     setNotificationNumber(data)
                 }
-                if (error) console.log("error when load notific")
-            } else console.error("not auth")
+                if (error) console.log("error when load notifications")
+            }
         }
         getNotificationsNumber();
     }, [jwt]);
@@ -81,28 +80,15 @@ const Header = () => {
         })
     }
 
-
     const userIcon =
         isAuthenticated
             ?
-            <Flex onClick={() => setIsUserDrawerActive(true)}
-                  align={"center"}
-                  vertical
-                  className={classes.headNavItem}
-
-                  style={{ background: "none", padding: 0}}
-            >
-                <Badge  count={unreadNotificationNumber}>
-                    <img className={classes.userIcon} src={user?.picture} alt=""/>
-                </Badge>
-                <span style={{color: "white"}}>{user?.firstName}</span>
-            </Flex>
+            <UserIcon/>
             :
             <Flex align={"center"} onClick={onLogin} gap={10} className={classes.headNavItem} style={{paddingLeft: 10}}>
                 <UserOutlined style={{fontSize: 18, padding: 0, color: "white"}} />
                 <span className={classes.btnText} >Вхід</span>
             </Flex>
-
 
     let items = () : MenuProps['items'] => {
         let arr = options.map((o) => {
@@ -119,17 +105,9 @@ const Header = () => {
         return arr;
     }
 
-
-    const [isUserDrawerActive, setIsUserDrawerActive] = useState<boolean>(false)
-
-    if ( pathname.includes("forum")) {
-        return (
-            <>
-            </>
-        )
+    if (pathname.includes("forum") || pathname.includes("manage-panel")) {
+        return (<></>)
     }
-
-
 
     return (
         <Flex justify={"center"}
@@ -150,10 +128,6 @@ const Header = () => {
                     <span className={classes.title}>Милівська сільська територіальна громада</span>
                     <img className={classes.logo} src={icon} width={50} alt={"Герб України"}/>
                 </Flex>
-
-                <UserInfoDrawer isUserDrawerActive={isUserDrawerActive}
-                                setIsUserDrawerActive={setIsUserDrawerActive}
-                />
 
                 <Flex wrap={"wrap"}
                       justify={"center"}

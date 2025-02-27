@@ -30,15 +30,6 @@ const NewsList : FC<NewsListProps> = ({newsList,
         };
     }, []);
 
-    function getClasses(i : number) {
-        console.log(window.innerHeight)
-        if ((i === 0 || i === 3) && window.innerWidth > 800) {
-            return [mainPageClasses.wideNewsCard, classes.wideNewsCard].join(' ')
-        } else {
-            return [classes.whiteNewsCard, mainPageClasses.whiteNewsCard].join(' ')
-        }
-    }
-
     return (
         <Flex gap={35}
               wrap={"wrap"}

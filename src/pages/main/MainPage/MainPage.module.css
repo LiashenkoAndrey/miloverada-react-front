@@ -46,9 +46,10 @@
 
 
 
-.NewsAndBanners {
+.News {
     width: 100%;
     padding: 10px 10vw;
+    margin-bottom: 100px;
 }
 
 .gridNewsPageList {
@@ -66,12 +67,11 @@
     width: 100vw;
     background-color: #f4f4f4;
     padding-top: 30px;
-    /*flex-grow: 1;*/
 
 }
 
 @media (max-width: 688px)  {
-    .NewsAndBanners {
+    .News {
         display: grid;
     }
 

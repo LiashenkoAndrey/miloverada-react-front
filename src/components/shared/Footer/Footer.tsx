@@ -1,14 +1,21 @@
 import React from 'react';
 import './Footer.css'
-import {Button, Flex} from "antd";
-import './Footer.css'
+import {Flex} from "antd";
 import {useLocation, useNavigate} from "react-router-dom";
+
 const Footer = () => {
     const nav = useNavigate()
     const { pathname } = useLocation();
 
+
+    if (pathname.includes("chat") || pathname.includes("news/new") || pathname.includes("manage-panel")) {
+        return (<></>)
+    }
+
     return (
-        <Flex className={"footerWrapper"} justify={"flex-start"} align={"center"} style={{display: pathname.includes("chat") || pathname.includes("news/new") ? "none" : "flex"}} >
+        <Flex className={"footerWrapper"}
+              justify={"flex-start"}
+              align={"center"}>
             <Flex wrap={"wrap"}  className={"footerBody"}>
                 <h1 className={"footerTitle"} onClick={() => nav('/')}>Милівська сільська територіальна громада</h1>
                 <Flex vertical={true} wrap={"wrap"} gap={20}>

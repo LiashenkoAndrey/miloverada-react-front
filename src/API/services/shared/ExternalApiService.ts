@@ -8,6 +8,7 @@ export const callExternalApi = async (options: AxiosRequestConfig) => {
         const {data} = response;
 
         return {
+            code: response.status,
             data,
             error: null,
         };
@@ -17,32 +18,21 @@ export const callExternalApi = async (options: AxiosRequestConfig) => {
 
             const { response } = axiosError;
 
-            let message = "http request failed";
-
-            if (response && response.statusText) {
-                message = response.statusText;
-            }
-
-            if (axiosError.message) {
-                message = axiosError.message;
-            }
-
-            if (response && response.data && response.data.message) {
-                message = response.data.message;
-            }
-            // @ts-ignore
-            console.log(error.name, error.message, error.request.responseURL)
+            console.debug(error.name, error.message, error.request.responseURL)
             return {
                 data: null,
+                // @ts-ignore
+                code: response.status,
                 error: {
-                    message,
+                    axiosError,
                 },
             };
         }
-        console.log("External Api Error: ", error)
+        console.debug("External Api Error: ", error)
 
         return {
             data: null,
+            code : null,
             error: {
                 message: error,
             },
@@ -51,9 +41,10 @@ export const callExternalApi = async (options: AxiosRequestConfig) => {
 }
 
 export const callAndGetResult = async (config: AxiosRequestConfig) => {
-    const { data, error } = await callExternalApi(config);
+    const { data, error, code } = await callExternalApi(config);
     return {
         data: data || null,
         error,
+        code: code ?? undefined
     };
 }

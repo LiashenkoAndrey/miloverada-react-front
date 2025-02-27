@@ -203,7 +203,7 @@ export const checkPermission = (token: string | undefined, permission: string) =
 
 type ServerHealthResponse = {
     data: { serverUp: boolean };
-    error?: {     message: unknown;   } | null;
+    error?: any;
 };
 
 export const checkServerHealth = () :  Promise<ServerHealthResponse> => {

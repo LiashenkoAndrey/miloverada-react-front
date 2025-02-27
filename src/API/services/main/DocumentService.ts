@@ -1,6 +1,6 @@
 import {callAndGetResult} from "../shared/ExternalApiService";
 
- const apiServerUrl = process.env.REACT_APP_API_SERVER_URL;
+const apiServerUrl = process.env.REACT_APP_API_SERVER_URL;
 
 export const getAllDocumentsGroups = () => {
     const config = {
@@ -73,8 +73,6 @@ export const deleteDocument = (docId : number, token : string) => {
     return callAndGetResult(config)
 }
 
-
-
 export const addNewDocumentInSubGroup = (data : FormData, groupId : number, token : string) => {
     const config = {
         url: `${apiServerUrl}/api/protected/documentGroup/${groupId}/document/new`,
@@ -86,7 +84,6 @@ export const addNewDocumentInSubGroup = (data : FormData, groupId : number, toke
     }
     return callAndGetResult(config)
 }
-
 
 export const deleteSubGroup = (groupId : number, token : string) => {
     const config = {
@@ -119,4 +116,3 @@ export interface IDocumentGroupDto {
     name : string
     documentGroup : IDocumentGroupDto
 }
-

@@ -13,38 +13,43 @@ const GlobalHealthCheck: React.FC = () => {
                              previousPage: string,
                              setPreviousPage: React.Dispatch<React.SetStateAction<string>>
   ) => {
-    const {data, error} = await checkServerHealth();
-    if (data) {
-      if (data.serverUp === true) {
-        if (!isServerUp) {
-          if (previousPage === "/server-unavailable") {
-            console.log("Navigate to main page because server is up!");
-            navigate("/");
-          } else {
-            console.log("Navigate back to the previous page");
-            navigate(previousPage);
+    try {
+      const {data, error} = await checkServerHealth();
+      if (data) {
+        if (data.serverUp === true) {
+          if (!isServerUp) {
+            if (previousPage === "/server-unavailable") {
+              console.log("Navigate to main page because server is up!");
+              navigate("/");
+            } else {
+              console.log("Navigate back to the previous page");
+              navigate(previousPage);
+            }
+          }
+          setIsServerUp(true)
+        } else {
+          setIsServerUp(false)
+
+          const location = window.location.pathname;
+          console.log("Server is DOWN!")
+
+          if (location !== "/server-unavailable") {
+            console.log("location", location)
+            setPreviousPage(location);
+            navigate("/server-unavailable");
           }
         }
-        setIsServerUp(true)
       } else {
         setIsServerUp(false)
-
-        const location = window.location.pathname;
-        console.log("Server is DOWN!")
-
-        if (location !== "/server-unavailable") {
-          console.log("location", location)
-          setPreviousPage(location);
-          navigate("/server-unavailable");
-        }
+        console.log(error)
       }
-    } else {
-      setIsServerUp(false)
-      console.log(error)
+    } catch (e) {
+      console.error("Health check error")
     }
   }
 
   useEffect(() => {
+
     checkHealth(isServerUp, setIsServerUp, previousPage, setPreviousPage)
     let interval = setInterval(
         () => checkHealth(isServerUp, setIsServerUp, previousPage, setPreviousPage),

@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import './App.css';
-import {Route, Routes, useLocation} from "react-router-dom";
+import {Route, Routes, useLocation, Navigate } from "react-router-dom";
 import Header from "./components/shared/Header/Header";
 import MainPage from "./pages/main/MainPage/MainPage";
 import Footer from "./components/shared/Footer/Footer";
@@ -31,124 +31,119 @@ import {ContactsPage} from "./pages/main/ContactsPage/ContactsPage";
 import GlobalHealthCheck from "./components/util/GlobalHealthCheck";
 import UnavailableServerErrorPage from "./pages/ErrorPages/UnavailableServerErrorPage";
 import NotFoundPage from "./pages/ErrorPages/NotFoundPage";
+import ManagePanePage from "./pages/main/ManagePanelPage/ManagePanePage";
+import {Snowfall} from "react-snowfall";
 
 function App() {
-    const [jwt, setJwt] = useState<string>()
-    const {getAccessTokenSilently, isAuthenticated, user} = useAuth0()
-    const {setAdminMetadata, setUser} = useActions()
-    const {pathname} = useLocation()
-    const {setForumUser} = useActions()
-    const [isForumUserRegistered, setIsForumUserRegistered] = useState<boolean | null>(null)
+  const [jwt, setJwt] = useState<string>()
+  const {getAccessTokenSilently, isAuthenticated, user} = useAuth0()
+  const {setAdminMetadata, setUser} = useActions()
+  const {pathname} = useLocation()
+  const {setForumUser} = useActions()
+  const [isForumUserRegistered, setIsForumUserRegistered] = useState<boolean | null>(null)
 
-    const getForumUser = async (userId : string, jwt : string) => {
-        const {data} = await getForumUserByAppUserId(userId, jwt)
-        if (data) {
-            console.log(data, data.isRegistered)
-            if  (data.isRegistered == false) {
-                console.log("forum user is not registered ")
-                setIsForumUserRegistered(false);
-            } else {
-                console.log(data.forumUser)
-                setForumUser(data.forumUser)
-                console.log("forum user is registered")
-
-            }
-        }
-        console.log("forum user", data)
+  const getForumUser = async (userId: string, jwt: string) => {
+    const {data} = await getForumUserByAppUserId(userId, jwt)
+    if (data) {
+      if (data.isRegistered == false) {
+        setIsForumUserRegistered(false);
+      } else {
+        setForumUser(data.forumUser)
+      }
     }
+  }
 
-    useEffect(() => {
-        if (pathname.includes('forum') && user?.sub && jwt) {
-            console.log("load forum user ", user.sub)
-            getForumUser(user.sub, jwt)
-        }
-    }, [pathname, user?.sub, jwt]);
-
-    const getJwt = async () => {
-        const token = await getAccessTokenSilently();
-        setJwt(token)
+  useEffect(() => {
+    if (pathname.includes('forum') && user?.sub && jwt) {
+      getForumUser(user.sub, jwt)
     }
-    const getUser = async (userId : string, token : string) => {
-        const {data, error} = await getAppUser(userId, token)
-        if (data) {
-            const userDto : UserDto = data;
-            console.log("user dto", data)
-            setUser(userDto.appUser)
-            setAdminMetadata(userDto.adminMetadata)
-        }
-        if (error) {
-            console.error("App user not found")
-        }
+  }, [pathname, user?.sub, jwt]);
+
+  const getJwt = async () => {
+    const token = await getAccessTokenSilently();
+    setJwt(token)
+  }
+  const getUser = async (userId: string, token: string) => {
+    const {data, error} = await getAppUser(userId, token)
+    if (data) {
+      const userDto: UserDto = data;
+      setUser(userDto.appUser)
+      setAdminMetadata(userDto.adminMetadata)
     }
+    if (error) {
+      console.error("App user not found")
+    }
+  }
 
-    useEffect(() => {
-        if (isAuthenticated) {
-            getJwt()
-        }
-    }, [isAuthenticated]);
+  useEffect(() => {
+    if (isAuthenticated) {
+      getJwt()
+    }
+  }, [isAuthenticated]);
 
-    useEffect(() => {
-        if (jwt) {
-            if (user?.sub) {
-                console.log("Get App user")
-                getUser(encodeURIComponent(user.sub), jwt)
-            } else console.error("user null")
-        }
-    }, [jwt]);
+  useEffect(() => {
+    if (jwt) {
+      if (user?.sub) {
+        getUser(encodeURIComponent(user.sub), jwt)
+      } else console.error("user null")
+    }
+  }, [jwt]);
 
   return (
       <AuthContext.Provider value={{jwt, setJwt}}>
-          <AntdApp>
-              <ConfigProvider locale={locale} theme={{
-                  token : {
-                      colorPrimary: '#71092C',
-                      borderRadius: 2,
+        <AntdApp>
+          <ConfigProvider locale={locale} theme={{
+            token: {
+              colorPrimary: '#71092C',
+              borderRadius: 2,
 
-                  },
-                  components : {
-                      Input : {
-                          fontFamily : "'Source Serif 4', serif"
-                      }
+            },
+            components: {
+              Input: {
+                fontFamily: "'Source Serif 4', serif"
+              }
+            }
+          }}>
+            <Snowfall style={{zIndex: 100, display: pathname.includes("manage-panel") ? "none" : "initial"}}/>
 
-                  }
-              }}>
+            <Layout>
+              <Header/>
+              {isForumUserRegistered !== null && !isForumUserRegistered &&
+                  <CreateNewForumUserProfileModal/>
+              }
+              <GlobalHealthCheck/>
+              <Routes>
+                <Route path={"/manage-panel/:section"} element={<ManagePanePage/>}/>
+                <Route path="/manage-panel" element={<Navigate to="/manage-panel/news" replace />} />
 
-                  <Layout>
-                      <Header/>
-                      {isForumUserRegistered !== null && !isForumUserRegistered &&
-                          <CreateNewForumUserProfileModal/>
-                      }
-                      <GlobalHealthCheck/>
-                      <Routes>
+                <Route path={"/server-unavailable"} element={<UnavailableServerErrorPage/>}/>
 
-                              <Route path={"/server-unavailable"} element={<UnavailableServerErrorPage/>}/>
+                <Route path={"/"} element={<MainPage/>}/>
+                <Route path={"/about"} element={<AboutPage/>}/>
+                <Route path={"/newsFeed/:id"} element={<NewsPage isPreview={false}/>}/>
+                <Route path={"/newsFeed/all"} element={<AllNewsPage/>}/>
+                <Route path={"/news/new"} element={<AddNewsPage/>}/>
 
-                              <Route path={"/"} element={<MainPage/>}/>
-                              <Route path={"/about"} element={<AboutPage/>}/>
-                              <Route path={"/newsFeed/:id"} element={<NewsPage isPreview={false}/>}/>
-                              <Route path={"/newsFeed/all"} element={<AllNewsPage/>}/>
-                              <Route path={"/news/new"} element={<AddNewsPage/>}/>
+                <Route path={"/documents/all"} element={<AllDocumentsPage/>}/>
+                <Route path={"/documentGroup/:id/subGroup/:subGroupId"} element={<DocumentPage/>}/>
+                <Route path={"/documentGroup/:id"} element={<DocumentPage/>}/>
 
-                              <Route path={"/documents/all"} element={<AllDocumentsPage/>}/>
-                              <Route path={"/documentGroup/:id/subGroup/:subGroupId"} element={<DocumentPage/>}/>
-                              <Route path={"/documentGroup/:id"} element={<DocumentPage/>}/>
+                <Route path={"/contacts"} element={<ContactsPage/>}/>
+                <Route path={"/contacts"} element={<ContactsPage/>}/>
 
-                              <Route path={"/contacts"} element={<ContactsPage/>}/>
-                          <Route path={"/contacts"} element={<ContactsPage/>}/>
+                <Route path={"/forum/chat/:id"} element={<ChatPage/>}/>
+                <Route path={"/forum/topic/:id"} element={<TopicPage/>}/>
+                <Route path={"/forum"} element={<ForumPage/>}/>
+                <Route path={"/resolveUser"} element={<IsRegisteredCheckPage/>}/>
+                <Route path={"/forum/user/:receiverId/chat"} element={<PrivateChatPage/>}/>
+                <Route path={"/forum/users"} element={<AllUsersPage/>}/>
 
-                              <Route path={"/forum/chat/:id"} element={<ChatPage/>}/>
-                              <Route path={"/forum/topic/:id"} element={<TopicPage/>}/>
-                              <Route path={"/forum"} element={<ForumPage/>}/>
-                              <Route path={"/resolveUser"} element={<IsRegisteredCheckPage/>}/>
-                              <Route path={"/forum/user/:receiverId/chat"} element={<PrivateChatPage/>}/>
-                              <Route path={"/forum/users"} element={<AllUsersPage/>}/>
-
-                              <Route path={"*"} element={<NotFoundPage/>}/>
-                      </Routes>
-                      <Footer/>
-                  </Layout>
-              </ConfigProvider>
-          </AntdApp>
+                <Route path={"*"} element={<NotFoundPage/>}/>
+              </Routes>
+              <Footer/>
+            </Layout>
+          </ConfigProvider>
+        </AntdApp>
       </AuthContext.Provider>
   );
 }
