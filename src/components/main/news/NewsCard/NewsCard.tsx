@@ -40,7 +40,7 @@ const NewsCard: FC<NewsCardProps> = ({news, style, className}) => {
 
                         {news.description
                             ?
-                            <span style={{color: "white"}}>{news.description}</span>
+                            <span>{news.description}</span>
                             :
                             <Skeleton/>
                         }
