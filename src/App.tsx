@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import './App.css';
-import {Route, Routes, useLocation, Navigate} from "react-router-dom";
+import {Navigate, Route, Routes, useLocation} from "react-router-dom";
 import Header from "./components/shared/Header/Header";
 import MainPage from "./pages/main/MainPage/MainPage";
 import Footer from "./components/shared/Footer/Footer";
@@ -28,14 +28,10 @@ import CreateNewForumUserProfileModal
   from "./components/forum/CreateNewForumUserProfileModal/CreateNewForumUserProfileModal";
 import AboutPage from "./pages/main/AboutPage/AboutPage";
 import {ContactsPage} from "./pages/main/ContactsPage/ContactsPage";
-import GlobalHealthCheck from "./components/util/GlobalHealthCheck";
 import UnavailableServerErrorPage from "./pages/ErrorPages/UnavailableServerErrorPage";
 import NotFoundPage from "./pages/ErrorPages/NotFoundPage";
 import ManagePanePage from "./pages/main/ManagePanelPage/ManagePanePage";
 import {Snowfall} from "react-snowfall";
-import useGoogleAnalytics from "./hooks/useGoogleAnalytics";
-import {REACT_APP_GOOGLE_ANALYTICS_TRACK_ID} from "./API/Constants";
-import TrackPageViews from "./components/shared/TrackPageViews";
 
 const themeConfig: ThemeConfig = {
   token: {
@@ -51,8 +47,6 @@ const themeConfig: ThemeConfig = {
 }
 
 function App() {
-  useGoogleAnalytics(REACT_APP_GOOGLE_ANALYTICS_TRACK_ID!);
-
   const [jwt, setJwt] = useState<string>()
   const {getAccessTokenSilently, isAuthenticated, user} = useAuth0()
   const {setAdminMetadata, setUser} = useActions()
@@ -113,10 +107,6 @@ function App() {
       <AuthContext.Provider value={{jwt, setJwt}}>
         <AntdApp>
           <ConfigProvider locale={locale} theme={themeConfig}>
-
-            <TrackPageViews/>
-
-            <GlobalHealthCheck/>
 
             <Snowfall style={{
               zIndex: 100,
