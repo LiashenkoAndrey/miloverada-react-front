@@ -1,10 +1,10 @@
 import React, {useEffect, useState} from 'react';
 import './App.css';
-import {Route, Routes, useLocation, Navigate } from "react-router-dom";
+import {Route, Routes, useLocation, Navigate} from "react-router-dom";
 import Header from "./components/shared/Header/Header";
 import MainPage from "./pages/main/MainPage/MainPage";
 import Footer from "./components/shared/Footer/Footer";
-import {App as AntdApp, ConfigProvider, Layout} from "antd";
+import {App as AntdApp, ConfigProvider, Layout, ThemeConfig} from "antd";
 import NewsPage from "./pages/main/NewsPage/NewsPage";
 import AllNewsPage from "./pages/main/AllNewsPage/AllNewsPage";
 import AllDocumentsPage from "./pages/main/AllDocumentsPage/AllDocumentsPage";
@@ -33,8 +33,26 @@ import UnavailableServerErrorPage from "./pages/ErrorPages/UnavailableServerErro
 import NotFoundPage from "./pages/ErrorPages/NotFoundPage";
 import ManagePanePage from "./pages/main/ManagePanelPage/ManagePanePage";
 import {Snowfall} from "react-snowfall";
+import useGoogleAnalytics from "./hooks/useGoogleAnalytics";
+import {REACT_APP_GOOGLE_ANALYTICS_TRACK_ID} from "./API/Constants";
+import TrackPageViews from "./components/shared/TrackPageViews";
+
+const themeConfig: ThemeConfig = {
+  token: {
+    colorPrimary: '#71092C',
+    borderRadius: 2,
+
+  },
+  components: {
+    Input: {
+      fontFamily: "'Source Serif 4', serif"
+    }
+  }
+}
 
 function App() {
+  useGoogleAnalytics(REACT_APP_GOOGLE_ANALYTICS_TRACK_ID!);
+
   const [jwt, setJwt] = useState<string>()
   const {getAccessTokenSilently, isAuthenticated, user} = useAuth0()
   const {setAdminMetadata, setUser} = useActions()
@@ -63,6 +81,7 @@ function App() {
     const token = await getAccessTokenSilently();
     setJwt(token)
   }
+
   const getUser = async (userId: string, token: string) => {
     const {data, error} = await getAppUser(userId, token)
     if (data) {
@@ -89,32 +108,29 @@ function App() {
     }
   }, [jwt]);
 
+
   return (
       <AuthContext.Provider value={{jwt, setJwt}}>
         <AntdApp>
-          <ConfigProvider locale={locale} theme={{
-            token: {
-              colorPrimary: '#71092C',
-              borderRadius: 2,
+          <ConfigProvider locale={locale} theme={themeConfig}>
 
-            },
-            components: {
-              Input: {
-                fontFamily: "'Source Serif 4', serif"
-              }
-            }
-          }}>
-            <Snowfall style={{zIndex: 100, display: pathname.includes("manage-panel") ? "none" : "initial"}}/>
+            <TrackPageViews/>
+
+            <GlobalHealthCheck/>
+
+            <Snowfall style={{
+              zIndex: 100,
+              display: pathname.includes("manage-panel") ? "none" : "initial"
+            }}/>
 
             <Layout>
               <Header/>
               {isForumUserRegistered !== null && !isForumUserRegistered &&
                   <CreateNewForumUserProfileModal/>
               }
-              <GlobalHealthCheck/>
               <Routes>
                 <Route path={"/manage-panel/:section"} element={<ManagePanePage/>}/>
-                <Route path="/manage-panel" element={<Navigate to="/manage-panel/news" replace />} />
+                <Route path="/manage-panel" element={<Navigate to="/manage-panel/news" replace/>}/>
 
                 <Route path={"/server-unavailable"} element={<UnavailableServerErrorPage/>}/>
 
