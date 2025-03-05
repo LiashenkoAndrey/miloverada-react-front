@@ -31,7 +31,8 @@ import {ContactsPage} from "./pages/main/ContactsPage/ContactsPage";
 import UnavailableServerErrorPage from "./pages/ErrorPages/UnavailableServerErrorPage";
 import NotFoundPage from "./pages/ErrorPages/NotFoundPage";
 import ManagePanePage from "./pages/main/ManagePanelPage/ManagePanePage";
-import {Snowfall} from "react-snowfall";
+import ApplicationPage from "./pages/main/ApplicationPage/ApplicationPage";
+import ApplicationCreationPage from "./pages/main/ApplicationCreationPage/ApplicationCreationPage";
 
 const themeConfig: ThemeConfig = {
   token: {
@@ -107,12 +108,6 @@ function App() {
       <AuthContext.Provider value={{jwt, setJwt}}>
         <AntdApp>
           <ConfigProvider locale={locale} theme={themeConfig}>
-
-            <Snowfall style={{
-              zIndex: 100,
-              display: pathname.includes("manage-panel") ? "none" : "initial"
-            }}/>
-
             <Layout>
               <Header/>
               {isForumUserRegistered !== null && !isForumUserRegistered &&
@@ -135,7 +130,8 @@ function App() {
                 <Route path={"/documentGroup/:id"} element={<DocumentPage/>}/>
 
                 <Route path={"/contacts"} element={<ContactsPage/>}/>
-                <Route path={"/contacts"} element={<ContactsPage/>}/>
+                <Route path={"/application"} element={<ApplicationPage/>}/>
+                <Route path={"/application-creation"} element={<ApplicationCreationPage/>}/>
 
                 <Route path={"/forum/chat/:id"} element={<ChatPage/>}/>
                 <Route path={"/forum/topic/:id"} element={<TopicPage/>}/>

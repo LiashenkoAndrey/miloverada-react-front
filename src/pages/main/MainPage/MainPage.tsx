@@ -4,15 +4,16 @@ import NewsList from "../../../components/main/news/NewsList/NewsList";
 import {Flex, message} from "antd";
 import RedButton from "./RedButton";
 import NewsListLoader from "../../../components/main/news/NewsList/NewsListLoader";
-import {useNavigate} from "react-router-dom";
+import {useLocation, useNavigate} from "react-router-dom";
 
 import BannersList from "../../../components/main/BannersList/BannersList";
 import {getAllNews} from "../../../API/services/main/NewsService";
 import BannerItemNew from "../../../components/main/BannersList/BannerItemNew";
+import {Snowfall} from "react-snowfall";
 
 
 const MainPage = () => {
-
+  const {pathname} = useLocation()
   const [news, setNews] = useState(undefined);
   const nav = useNavigate()
 
@@ -28,6 +29,12 @@ const MainPage = () => {
 
   return (
       <div style={{position: "relative", height: " 100%"}}>
+
+        <Snowfall style={{
+          zIndex: 100,
+          display: pathname.includes("manage-panel") ? "none" : "initial"
+        }}/>
+
         <div style={{position: "relative"}}>
           <div className={classes.App}
                style={{
@@ -65,7 +72,7 @@ const MainPage = () => {
                 (banner, confirmDeleteBanner) =>
                     <BannerItemNew key={"BannerItemNew" + banner.id}
                                    confirmDeleteBanner={confirmDeleteBanner}
-                                   linkBanner={banner}
+                                   banner={banner}
                     />
               }
           />

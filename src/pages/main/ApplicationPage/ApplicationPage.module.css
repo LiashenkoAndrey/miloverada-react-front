@@ -1,0 +1,17 @@
+.citizen-appeal {
+  font-family: Arial, sans-serif;
+  background: #f8f9fa;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+.citizen-appeal h2 {
+  color: #007bff;
+}
+.citizen-appeal ul {
+  text-align: left;
+  display: inline-block;
+  margin: 10px auto;
+  padding-left: 20px;
+}

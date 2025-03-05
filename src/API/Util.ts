@@ -1,8 +1,17 @@
 import {jwtDecode} from "jwt-decode";
 import {callAndGetResult} from "./services/shared/ExternalApiService";
+import {message} from "antd";
 
 const API_SERVER_URL = process.env.REACT_APP_API_SERVER_URL;
 const HEALTH_CHECK_PROXY_SERVER_URL = process.env.REACT_APP_HEALTH_CHECK_PROXY_SERVER_URL;
+
+export const checkImageTypeBeforeUpload = (file: File) => {
+    const isImage = file.type.startsWith('image/');
+    if (!isImage) {
+        message.error('Ви можете завантажити лише зоображення!');
+    }
+    return isImage;
+};
 
 
 declare global {

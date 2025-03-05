@@ -2,7 +2,7 @@ import React, {FC, useContext, useRef, useState} from 'react';
 import type {FormProps, GetProp, UploadFile, UploadProps} from 'antd';
 import {Button, Flex, Form, Image, Input, message, Modal, Upload} from 'antd';
 import {AuthContext} from "../../../context/AuthContext";
-import {checkPermission, getBase64} from "../../../API/Util";
+import {checkImageTypeBeforeUpload, checkPermission, getBase64} from "../../../API/Util";
 import {createLinkBanner, CreateLinkBannerRequest} from "../../../API/services/main/BannersService";
 import {InboxOutlined} from "@ant-design/icons";
 import Draggable from 'react-draggable';
@@ -58,13 +58,6 @@ const AddBannerModal: FC<AddBannerModalProps> = ({onAdd}) => {
     return e?.fileList;
   };
 
-  const beforeUpload = (file: File) => {
-    const isImage = file.type.startsWith('image/');
-    if (!isImage) {
-      message.error('Ви можете завантажити лише зоображення!');
-    }
-    return isImage;
-  };
 
   const handlePreview = async (file: UploadFile) => {
     await getBase64(file.originFileObj as FileType, (res: string) => {
@@ -73,7 +66,7 @@ const AddBannerModal: FC<AddBannerModalProps> = ({onAdd}) => {
   };
 
   const props: UploadProps = {
-    beforeUpload: beforeUpload,
+    beforeUpload: checkImageTypeBeforeUpload,
     name: 'file',
     multiple: false,
     showUploadList: false,
@@ -212,8 +205,6 @@ const AddBannerModal: FC<AddBannerModalProps> = ({onAdd}) => {
               <Flex gap={15} vertical>
 
               <Dragger {...props}
-
-                       beforeUpload={beforeUpload}
                        customRequest={() => {
                        }}>
                 <p className="ant-upload-drag-icon">

@@ -58,6 +58,7 @@ const Header = () => {
     }, [jwt]);
 
     const options : HeaderOption[] = [
+        {onClick : () => nav("/application"), title : "Звернення"},
         {onClick : () => nav("/documents/all"), title : "Документи"},
         {onClick : () => nav("/newsFeed/all"), title : "Новини"},
         {onClick : () => {

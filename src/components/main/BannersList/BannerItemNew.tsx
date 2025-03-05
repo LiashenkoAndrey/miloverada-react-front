@@ -7,31 +7,30 @@ import {LinkBanner} from "../../../API/services/main/BannersService";
 import {AuthContext} from "../../../context/AuthContext";
 
 interface BannerItemNewProps {
-  linkBanner: LinkBanner
+  banner: LinkBanner
   confirmDeleteBanner : (id : number) => void
 }
 
-const BannerItemNew: FC<BannerItemNewProps> = ({linkBanner, confirmDeleteBanner}) => {
+const BannerItemNew: FC<BannerItemNewProps> = ({banner, confirmDeleteBanner}) => {
   const {jwt} = useContext(AuthContext)
 
     return (
-        <Flex key={"linkBanner-" + linkBanner.id}
+        <Flex key={"linkBanner-" + banner.id}
               gap={10}
               vertical
               wrap={"wrap"}
               className={classes.banner}
               justify={"space-between"}
         >
-          <a target="_blank" style={{textDecoration: "none", color: "black", userSelect: "auto"}} href={linkBanner.url}>
-            <span className={classes.bannerText}>{linkBanner.text}</span>
+          <a target="_blank" style={{textDecoration: "none", color: "black", userSelect: "auto"}} href={banner.url}>
+            <span className={classes.bannerText}>{banner.text}</span>
           </a>
-          {linkBanner.imageUrl !== null &&
-              <img className={classes.bannerImg} src={linkBanner.imageUrl}/>
+          {banner.imageUrl !== null &&
+              <img className={classes.bannerImg} src={banner.imageUrl}/>
           }
-          <a target="_blank" href={linkBanner.url} className={classes.bannerBtn}>Перейти →</a>
-          <span className={classes.bannerTime}>{linkBanner.createdOn}</span>
+          <span className={classes.bannerTime}>{banner.createdOn}</span>
           {(jwt && checkPermission(jwt, "admin")) &&
-              <Button icon={<DeleteOutlined/>} onClick={() => confirmDeleteBanner(linkBanner.id)}/>
+              <Button icon={<DeleteOutlined/>} onClick={() => confirmDeleteBanner(banner.id)}/>
           }
         </Flex>
     );
