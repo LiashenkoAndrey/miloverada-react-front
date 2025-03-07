@@ -1,0 +1,14 @@
+
+@media (max-width: 500px) {
+  .wrapper {
+    margin-top: 50px!important;
+    padding: 30px 15px!important;
+    border: none!important;
+  }
+
+  .mainWrapper {
+
+    background-image: none!important;
+    background-color: whitesmoke;
+  }
+}

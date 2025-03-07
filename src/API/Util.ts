@@ -226,3 +226,16 @@ export const checkServerHealth = () :  Promise<ServerHealthResponse> => {
 export function secToMilisec(sec : number) {
     return sec * 1000
 }
+
+export function generateClientTempId() {
+    return generateRandomString(5);
+}
+
+function generateRandomString(length : number) {
+    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    let result = '';
+    for (let i = 0; i < length; i++) {
+        result += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    return result;
+}

@@ -33,6 +33,7 @@ import NotFoundPage from "./pages/ErrorPages/NotFoundPage";
 import ManagePanePage from "./pages/main/ManagePanelPage/ManagePanePage";
 import ApplicationPage from "./pages/main/ApplicationPage/ApplicationPage";
 import ApplicationCreationPage from "./pages/main/ApplicationCreationPage/ApplicationCreationPage";
+import {StompSessionProvider} from "react-stomp-hooks";
 
 const themeConfig: ThemeConfig = {
   token: {
@@ -131,7 +132,11 @@ function App() {
 
                 <Route path={"/contacts"} element={<ContactsPage/>}/>
                 <Route path={"/application"} element={<ApplicationPage/>}/>
-                <Route path={"/application-creation"} element={<ApplicationCreationPage/>}/>
+                <Route path={"/application-creation"} element={
+                  <StompSessionProvider url={process.env.REACT_APP_API_WS_HANDSHAKE_ENDPOINT!}>
+                    <ApplicationCreationPage/>
+                  </StompSessionProvider>
+                  }/>
 
                 <Route path={"/forum/chat/:id"} element={<ChatPage/>}/>
                 <Route path={"/forum/topic/:id"} element={<TopicPage/>}/>

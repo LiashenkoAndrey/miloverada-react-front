@@ -4,8 +4,6 @@ import {Button, Flex, Statistic} from "antd";
 import CountUp from 'react-countup';
 import classes from './ApplicationPage.module.css'
 
-// @ts-ignore
-import applicationBg from '../../../assets/backgrounds/application.webp'
 import {useNavigate} from "react-router-dom";
 import ApplicationPageTemplate
   from "../../../components/main/ApplicationPageTemplate/ApplicationPageTemplate";
@@ -44,7 +42,7 @@ const ApplicationPage: FC<ApplicationPageProps> = (props) => {
           <Flex vertical gap={10} align={"center"}>
             <p><strong>📥 Натисніть кнопку нижче, щоб оформити звернення:</strong></p>
 
-            <Button style={{width: 200}} onClick={() => nav('/application-creation')}
+            <Button style={{width: 200, fontSize: 16}} onClick={() => nav('/application-creation')}
                     type={"primary"}>Оформити звернення</Button>
           </Flex>
         </div>
