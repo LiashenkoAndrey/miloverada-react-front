@@ -41,7 +41,7 @@ const NewsList : FC<NewsListProps> = ({newsList,
                 {newsList.map((news, i) =>
                     <NewsCard className={((i === 0 || i === 3) && (width > 800))
                         ?
-                        [mainPageClasses.wideNewsCard, classes.wideNewsCard].join(' ')
+                        [mainPageClasses.wideNewsCard, classes.wideNewsCard, classes.makeDescriptionBlack].join(' ')
 
                         :
                         [classes.whiteNewsCard, mainPageClasses.whiteNewsCard].join(' ')

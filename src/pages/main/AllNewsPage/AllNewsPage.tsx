@@ -98,7 +98,7 @@ const AllNewsPage = () => {
 
                             <NewsCard
                                 news={topNews[0]}
-                                className={[newsCardClasses.wideNewsCard, newsCardClasses.wideNewsCard, classes.WideNewsCard].join(" ")}
+                                className={[newsCardClasses.wideNewsCard, newsCardClasses.wideNewsCard, classes.WideNewsCard, newsCardClasses.makeDescriptionBlack].join(" ")}
                             />
                         </Flex>
 

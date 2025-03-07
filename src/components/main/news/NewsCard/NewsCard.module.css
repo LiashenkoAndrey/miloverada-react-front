@@ -38,27 +38,20 @@
     box-shadow: none;
     font-family: 'Source Serif 4', serif;
     background-color: #FFF;
-    /*max-height: 480px;*/
-    /*max-width: 277px;*/
 }
-
-
 
 .whiteNewsCard:hover {
     box-shadow: none;
 }
 
-
-
-
 .newsCardContent {
     padding: 3px;
     display: flex;
     flex-direction: column;
-    /*gap: 5px;*/
 }
-
-
+.makeDescriptionBlack .newsCardDescription {
+    color: white;
+}
 .wideNewsCard {
     position: relative!important;
 }
@@ -66,7 +59,6 @@
 .wideNewsCard .newsViews .eye {
     color: white!important;
 }
-
 
 .wideNewsCard img {
     width: 100%;
@@ -78,7 +70,6 @@
 .wideNewsCard .newsCardContent {
     width: 100%;
     position: absolute;
-    /*padding: 20px 20px 32px 20px;*/
     bottom: 0;
     background: linear-gradient(180deg,transparent,rgba(0,0,0,.85) 80%);
 }
@@ -91,8 +82,6 @@
     color: white;
     text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
 }
-
-
 
 .newsViews {
     width: fit-content;
@@ -107,15 +96,11 @@
     color: black!important;
 }
 
-
-
-
 @media (max-width: 800px)  {
     .newsCardDescriptionWrapper {
         margin: 0 10px 22px 10px!important;
     }
 }
-
 
 .newsCardDescription {
     display: block;
@@ -129,13 +114,16 @@
     font-weight: 400;
 
 }
+
 .newsCardContent {
     text-overflow: ellipsis;
     max-height: 100px;
 }
+
  .newsCardDescription:hover {
     text-decoration: underline;
 }
+
 .newsType {
     padding-left: 10px;
     font-size: 14px;
