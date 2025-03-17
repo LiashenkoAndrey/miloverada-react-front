@@ -5,6 +5,7 @@ interface PersonContactProps {
   photo : string,
   title : string,
   name : string,
+  email? : string,
   phoneNumber?: string
 }
 
@@ -17,7 +18,7 @@ const handleCopy = async (text : string) => {
   }
 };
 
-function createItems (phone : string) : MenuProps['items'] {
+function createItemsForPhone (phone : string) : MenuProps['items'] {
   return [
     {
       label: (
@@ -29,7 +30,7 @@ function createItems (phone : string) : MenuProps['items'] {
     },
     {
       label: (
-          <Button onChange={() => handleCopy(phone)}>
+          <Button onClick={() => handleCopy(phone)}>
             Копіювати
           </Button>
       ),
@@ -37,18 +38,41 @@ function createItems (phone : string) : MenuProps['items'] {
     },
   ];
 }
+function createItemsForEmail(email : string) : MenuProps['items'] {
+  return [
+    {
+      label: (
+          <Button onClick={() => handleCopy(email)}>
+            Копіювати
+          </Button>
+      ),
+      key: email + "2",
+    },
+  ];
+}
 
 
-const PersonContact: FC<PersonContactProps> = ({photo, title, phoneNumber, name}) => {
+const PersonContact: FC<PersonContactProps> = ({photo, title, phoneNumber, name, email}) => {
     return (
-        <Flex style={{padding: 5}} align={"center"} vertical gap={10}>
-         <span style={{maxWidth: 180, textAlign: "center"}}>{title}</span>
+        <Flex style={{padding: 5}} align={"center"} vertical gap={5}>
+         <span style={{maxWidth: 200, textAlign: "center"}}>{title}</span>
           <Image width={200} height={200} src={photo} style={{borderRadius: "50%", objectFit: "cover"}} preview={false}/>
-          {phoneNumber &&
-            <Dropdown menu={{ items: createItems(phoneNumber) }} trigger={['click']}>
-            </Dropdown>
-          }
-          <span>{name}</span>
+          <Flex vertical align={"center"} gap={5}>
+            {phoneNumber &&
+                <Dropdown menu={{ items: createItemsForPhone(phoneNumber) }} trigger={['click', "hover"]}>
+                  {phoneNumber}
+                </Dropdown>
+            }
+
+            {email &&
+                <Dropdown menu={{ items: createItemsForEmail(email) }} trigger={['click']}>
+                  {email}
+                </Dropdown>
+            }
+          </Flex>
+
+
+          <span style={{fontWeight: "bold"}}>{name}</span>
         </Flex>
     );
 };

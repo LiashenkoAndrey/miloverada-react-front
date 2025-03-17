@@ -37,33 +37,71 @@ const ContactsPage = () => {
         <h1 style={{marginTop: 70}}>Контакти</h1>
         <Flex wrap={"wrap"} style={{marginTop: 20, maxWidth: 1200}} gap={20}>
 
-          <PersonContact photo={person1} title={`Директор КНП "Качкарівський ЦПМСД"`}
-                         name="Логвиненко_Олена_Миколаївна.jpg"/>
-          <PersonContact photo={person2}
-                         title={`Начальник відділу культури, туризму, молоді та спорту"`}
-                         name="Зеленська Олена Валеріївна"/>
-          <PersonContact photo={person3} title={`Cтароста Качкарівського старостату`}
-                         name="Копил Людмила Анатоліївна"/>
-          <PersonContact photo={person4} title={`Начальник відділу освіти`}
-                         name="Мельник Тетяна Володимирівна"/>
-          <PersonContact photo={person5} title={`Cлужба у справах дітей Милівської сільської ради`}
-                         name="Савіцька Світлана Сергіївна"/>
-          <PersonContact photo={person6} title={`Cтароста Дудчанського старостату`}
-                         name="Горюшкін Сергій Васильович"/>
+          <PersonContact photo={person11} title={`Начальник сільської військової адміністрації`}
+                         name="Любов Мінько"
+                         phoneNumber={"0660768610"}
+                         email={"miloveadmin@ukr.net"}/>
+
+          <PersonContact photo={person6}
+                         title={`Cтароста Дудчанського старостату`}
+                         name="Сергій Горюшкін"
+                         email={"miloverada@i.ua"}
+                         phoneNumber={"0978251919"}/>
+
           <PersonContact photo={person7} title={`Відділ державної реєстрації речових майнових прав`}
-                         name="Олександр Розковерко"/>
+                         name="Олександр Розковерко"
+                         phoneNumber={"+380957777123"}
+                         email={"miloveadmin@ukr.net"}/>
+
           <PersonContact photo={person8}
                          title={`Начальник відділу земельних відносин, комунальної власності, містобудування та архітектури`}
-                         name="Горват Віталій Васильович"/>
+                         name="Віталій Горват"
+                         phoneNumber={"+380969532132"}
+                         email={"miloveadmin@ukr.net"}/>
+
+          <PersonContact photo={person10}
+                         title={`Начальник фінасового відділу`}
+                         name="Любов Ляшенко" phoneNumber={"0500349565"}
+                         email={"fv-miloverada@ukr.net"}/>
+
+          <PersonContact photo={person1} title={`Староста Нової Кам"янки"`}
+                         name="Олена Логвиненко"
+                         phoneNumber={"0994909942"}
+                         email={"miloverada@i.ua"} />
+
+          <PersonContact photo={person2}
+                         title={`Начальник відділу культури, туризму, молоді та спорту"`}
+                         name="Олена Зеленська"
+                         phoneNumber={"0991065741"}
+                         email={"kultyra.miloverada@ukr.net"}/>
+
+          <PersonContact photo={person3} title={`Cтароста Качкарівського старостату`}
+                         name="Копил Людмила Анатоліївна"
+                         phoneNumber={"+380671436890"}
+                         email={"miloverada@i.ua"} />
+
+          <PersonContact photo={person4}
+                         title={`Начальник відділу освіти`}
+                         name="Тетяна Мельник"
+                         phoneNumber={"0994007385"}
+                         email={"osvita_mylove@ukr.net"}/>
+
+          <PersonContact photo={person5}
+                         title={`Cлужба у справах дітей Милівської сільської ради`}
+                         name="Світлана Савіцька"
+                         phoneNumber={"0994007385"}
+                         email={"miloverada@i.ua"}/>
+
           <PersonContact photo={person9}
                          title={`Начальник центру надання адмістративних послуг (ЦНАП)`}
-                         name="Мар'яна Шніт"/>
-          <PersonContact photo={person12} title={`Староста  Новокаїрського старостинського округу`}
-                         name="Олена Логвиненко"/>
-          <PersonContact photo={person10} title={`Начальник фінасового відділу`}
-                         name="Любов Ляшенко"/>
-          <PersonContact photo={person11} title={`Начальник сільської військової адміністрації`}
-                         name="Любов Мінько"/>
+                         name="Мар'яна Шніт" phoneNumber={"+380960394729"}
+                         email={"marianashnit@ukr.net"}/>
+
+          <PersonContact photo={person12}
+                         title={`Староста  Новокаїрського старостинського округу`}
+                         name="Олена Логвиненко"
+                         phoneNumber={"0994909942"}
+                         email={"miloverada@i.ua"}/>
         </Flex>
       </Flex>
   );
