@@ -1,0 +1,25 @@
+.wrapper {
+
+  gap: 5px;
+}
+
+.jobTitle {
+  max-width: 160px;
+}
+
+.personImage {
+  width: 200px!important;
+  height: 200px!important;
+}
+
+@media (max-width: 500px) {
+  .personImage {
+    width: 150px!important;
+    height: 150px!important;
+  }
+
+  .wrapper {
+    max-width: 160px;
+    margin-bottom: 20px;
+  }
+}

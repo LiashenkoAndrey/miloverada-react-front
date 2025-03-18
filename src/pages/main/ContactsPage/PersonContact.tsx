@@ -1,5 +1,6 @@
 import React, {FC} from 'react';
 import {Button, Dropdown, Flex, Image, MenuProps, message} from "antd";
+import classes from './PersonContact.module.css'
 
 interface PersonContactProps {
   photo : string,
@@ -9,10 +10,10 @@ interface PersonContactProps {
   phoneNumber?: string
 }
 
-const handleCopy = async (text : string) => {
+const handleCopy = async (text : string, messageForUser : string) => {
   try {
     await navigator.clipboard.writeText(text);
-    message.info("Номер скопійовано!")
+    message.info(messageForUser);
   } catch (err) {
     console.error("Failed to copy:", err);
   }
@@ -30,7 +31,7 @@ function createItemsForPhone (phone : string) : MenuProps['items'] {
     },
     {
       label: (
-          <Button onClick={() => handleCopy(phone)}>
+          <Button onClick={() => handleCopy(phone, "Номер скопійовано")}>
             Копіювати
           </Button>
       ),
@@ -38,11 +39,12 @@ function createItemsForPhone (phone : string) : MenuProps['items'] {
     },
   ];
 }
+
 function createItemsForEmail(email : string) : MenuProps['items'] {
   return [
     {
       label: (
-          <Button onClick={() => handleCopy(email)}>
+          <Button onClick={() => handleCopy(email, "Пошту скопійовано")}>
             Копіювати
           </Button>
       ),
@@ -54,9 +56,9 @@ function createItemsForEmail(email : string) : MenuProps['items'] {
 
 const PersonContact: FC<PersonContactProps> = ({photo, title, phoneNumber, name, email}) => {
     return (
-        <Flex style={{padding: 5}} align={"center"} vertical gap={5}>
-         <span style={{maxWidth: 200, textAlign: "center"}}>{title}</span>
-          <Image width={200} height={200} src={photo} style={{borderRadius: "50%", objectFit: "cover"}} preview={false}/>
+        <Flex className={classes.wrapper} justify={"center"} style={{padding: 5}} align={"center"} vertical>
+         <span className={classes.jobTitle} style={{textAlign: "center"}}>{title}</span>
+          <Image className={classes.personImage}  src={photo} style={{borderRadius: "50%", objectFit: "cover"}} preview={false}/>
           <Flex vertical align={"center"} gap={5}>
             {phoneNumber &&
                 <Dropdown menu={{ items: createItemsForPhone(phoneNumber) }} trigger={['click', "hover"]}>
@@ -72,7 +74,7 @@ const PersonContact: FC<PersonContactProps> = ({photo, title, phoneNumber, name,
           </Flex>
 
 
-          <span style={{fontWeight: "bold"}}>{name}</span>
+          <span style={{fontWeight: "bold", textAlign: "center"}}>{name}</span>
         </Flex>
     );
 };
