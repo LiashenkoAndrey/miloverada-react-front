@@ -186,7 +186,10 @@ const Document: FC<DocumentProps> = ({
                                    icon: <CopyFilled style={{display: "none"}}/>,
                                    editing: isEditing,
                                    onCancel: () => setIsEditing(false),
-                                   onChange: (str: string) => setNewTitle(str)
+                                   onChange: (str: string) => {
+                                       console.log("upd name ", str)
+                                       setNewTitle(str)
+                                   }
                                }}
                     >{document.title}
                     </Paragraph>

@@ -510,7 +510,7 @@ const DocumentPage = () => {
 
                 <Divider/>
 
-                {groups.length === 0 &&
+                {groups.length === 0 && docs.length === 0 &&
                     <Empty description={<h3>Документи відсутні</h3>}/>
                 }
 

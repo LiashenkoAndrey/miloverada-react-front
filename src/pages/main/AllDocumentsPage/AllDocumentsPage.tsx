@@ -1,4 +1,4 @@
-import React, {useContext, useEffect, useState} from 'react';
+import React, {ChangeEvent, ChangeEventHandler, useContext, useEffect, useState} from 'react';
 import {Button, Divider, Flex} from 'antd';
 import {
   getAllDocumentsGroups, IDocument,
@@ -8,7 +8,7 @@ import {
 import classes from './AllDocumentsPage.module.css'
 import BackBtn from "../../../components/main/BackBtn/BackBtn";
 import Search from "antd/es/input/Search";
-import {useNavigate} from "react-router-dom";
+import {useNavigate, useSearchParams} from "react-router-dom";
 import {SearchProps} from "antd/lib/input";
 import Document from "../../../components/main/documents/Document/Document";
 import AddNewGroupModal from "../DocumentPage/AddNewSubGroupModal";
@@ -22,6 +22,18 @@ const AllDocumentsPage = () => {
   const [searchedDocs, setSearchedDocs] = useState<IDocument[][] | null>(null)
   const [isSearching, setIsSearching] = useState<boolean>(false)
   const {jwt} = useContext(AuthContext)
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [val, setVal] = useState<string>('')
+
+  useEffect(() => {
+    const query = searchParams.get('search')
+    if (query) {
+      setVal(query)
+      doSearch( query)
+    } else {
+      console.log("else")
+    }
+  }, [searchParams]);
 
   const getDocumentsGroups = async () => {
     const {data, error} = await getAllDocumentsGroups();
@@ -36,17 +48,22 @@ const AllDocumentsPage = () => {
   }, []);
 
 
-  const onSearchDocument: SearchProps['onSearch'] = async (value) => {
-    if (value === '') {
+  const onSearchDocument: SearchProps['onSearch'] = async (query) => {
+    if (query === '') {
       setSearchedDocs(null)
       return
     }
     setIsSearching(true)
-    const {data, error} = await searchDocuments(value)
+    setSearchParams({search: query})
+    doSearch(query)
+  }
+
+  const doSearch = async (query : string) => {
+    const {data, error} = await searchDocuments(query)
     if (data) {
       setIsSearching(false)
       const res = sort(data)
-
+      console.log(res)
       setSearchedDocs(res)
     }
     if (error) throw error
@@ -70,6 +87,32 @@ const AllDocumentsPage = () => {
     setDocumentsGroups([...documentsGroups, group])
   }
 
+  const onDocGroupNameClick = (docs : IDocument[]) => {
+    if (docs[0].documentGroup !== null) {
+      if (docs[0].documentGroup.documentGroup != null) {
+        nav(`/documentGroup/${docs[0].documentGroup.documentGroup.id}/subGroup/${docs[0].documentGroup.id}`)
+      } else {
+        nav(`/documentGroup/${docs[0].documentGroup.id}`)
+      }
+    }
+  }
+
+  const onChan = (e : ChangeEvent<HTMLInputElement>) => {
+    setVal(e.target.value)
+
+  }
+
+  const onDel = () => {
+    searchParams.delete('search');
+    setSearchParams(searchParams);
+  }
+
+  const showAllDocs = () => {
+    onDel()
+    setVal('')
+    setSearchedDocs(null)
+  }
+
   return (
       <Flex justify={"center"}>
         <Flex vertical className={classes.documentsPage}>
@@ -83,12 +126,14 @@ const AllDocumentsPage = () => {
             <Flex gap={3}>
 
               <Search allowClear
-
+                      value={val}
+                      onChange={onChan}
                       placeholder="Шукати..."
                       className={classes.input}
                       style={{width: 300, color: "black"}}
                       onSearch={onSearchDocument}
                       enterButton
+                      onClear={onDel}
                       loading={isSearching}
               />
 
@@ -108,7 +153,7 @@ const AllDocumentsPage = () => {
                     ?
                     <Flex align={"center"} vertical gap={10}>
                       <span className={classes.res}>Результатів не знайдено.</span>
-                      <Button style={{width: "fit-content"}} onClick={() => setSearchedDocs(null)}>Всі
+                      <Button style={{width: "fit-content"}} onClick={showAllDocs}>Всі
                         документи</Button>
                     </Flex>
                     :
@@ -116,11 +161,7 @@ const AllDocumentsPage = () => {
                         <Flex className={classes.searchGroup} vertical key={"docs-" + index}
                               style={{padding: 5}}>
                                 <span
-                                    onClick={() => {
-                                      if (docs[0].documentGroup !== null) {
-                                        nav(`/documentGroup/${docs[0].documentGroup.documentGroup.id}/subGroup/${docs[0].documentGroup.id}`)
-                                      }
-                                    }}
+                                    onClick={() => onDocGroupNameClick(docs)}
                                     style={{marginLeft: 20}} className={classes.groupName}
                                 >
                                     {docs[0].documentGroup && docs[0].documentGroup.documentGroup !== null ?
