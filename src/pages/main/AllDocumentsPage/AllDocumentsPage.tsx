@@ -56,7 +56,7 @@ const AllDocumentsPage = () => {
     const map = new Map()
     for (let i = 0; i < arr.length; i++) {
       const elem = arr[i]
-      const id = elem.documentGroup.id
+      const id = elem.documentGroup && elem.documentGroup.id
       if (!map.has(id)) {
         map.set(id, [elem])
       } else {
@@ -123,10 +123,10 @@ const AllDocumentsPage = () => {
                                     }}
                                     style={{marginLeft: 20}} className={classes.groupName}
                                 >
-                                    {docs[0].documentGroup.documentGroup !== null ?
+                                    {docs[0].documentGroup && docs[0].documentGroup.documentGroup !== null ?
                                         <span> {docs[0].documentGroup.documentGroup.name + ": "} {docs[0].documentGroup.name}</span>
                                         :
-                                        <span>{docs[0].documentGroup.name}</span>
+                                        <span>{docs[0].documentGroup?.name}</span>
                                     }
                                 </span>
                           <Flex gap={10} vertical>
@@ -141,22 +141,22 @@ const AllDocumentsPage = () => {
                 }
               </Flex>
               :
-              <Flex vertical gap={25}>
+              <div className={classes.docsGrid} >
                 {documentsGroups.map((group) =>
-                    <Flex key={"group-" + group.id} gap={8} vertical className={classes.group}>
+                    <Flex style={{order: group.order}} key={"group-" + group.id} gap={8}  vertical className={classes.group}>
                       <h2 onClick={() => nav("/documentGroup/" + group.id)}
                           className={classes.groupName}>{group.name}</h2>
-                      <Flex gap={20}>
+                      <div className={classes.subGroupGrid} >
                         {group.groups?.map((subGroup) =>
                             <Flex key={"subGroup-" + subGroup.id} className={classes.subGroup}>
                               <h3 onClick={() => nav(`/documentGroup/${group.id}/subGroup/${subGroup.id}`)}
                                   className={classes.subGroupName}>{subGroup.name}</h3>
                             </Flex>
                         )}
-                      </Flex>
+                      </div>
                     </Flex>
                 )}
-              </Flex>
+              </div>
           }
         </Flex>
       </Flex>

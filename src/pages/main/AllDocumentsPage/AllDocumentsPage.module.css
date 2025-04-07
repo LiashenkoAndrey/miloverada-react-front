@@ -1,5 +1,29 @@
 
+.docsGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(300px, 1fr));
+  grid-column-gap: 20px;
+}
 
+.subGroupGrid {
+  display: grid;
+  gap: 15px;
+  grid-template-columns: repeat(2, 1fr);
+}
+
+@media (max-width: 1200px) {
+  .docsGrid  {
+
+    grid-template-columns: repeat(2, minmax(300px, 1fr));
+  }
+}
+
+@media (max-width: 750px) {
+  .docsGrid  {
+
+    grid-template-columns: repeat(1, minmax(300px, 1fr));
+  }
+}
 
 .documentsPage {
     padding-bottom: 150px;
@@ -57,7 +81,10 @@
  }
 
 .group {
-
+  padding: 12px;
+  margin: 10px;
+  border-radius: 10%;
+  background-color: rgba(224, 223, 223, 0.47);
 }
 
 .subGroup h3 {

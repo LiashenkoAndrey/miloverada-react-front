@@ -102,6 +102,7 @@ export interface IDocumentGroup {
     documents : IDocument[]
     groups : IDocumentGroup[]
     createdOn : string
+    order : number
 }
 
 export interface IDocument {
